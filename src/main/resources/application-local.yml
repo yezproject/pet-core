@@ -10,8 +10,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
   datasource:
-    url: jdbc:postgresql://some_address:5432/y_project_2023
+    url: jdbc:postgresql://localhost:5432/y_project_2023
     username: admin
     password: password
     driver-class-name: org.postgresql.Driver
-    
