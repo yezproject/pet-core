@@ -1,0 +1,14 @@
+version: '3.8'
+services:
+  database:
+    image: postgres:${POSTGRES_VERSION}
+    restart: always
+    environment:
+      POSTGRES_DB: ${PET_CORE_DATABASE_NAME}
+      POSTGRES_USER: ${PET_CORE_DATABASE_USER}
+      POSTGRES_PASSWORD: ${PET_CORE_DATABASE_PASSWORD}
+    ports:
+      - '5432:5432'
+    volumes:
+      - ./volumes/pet-database:/var/lib/postgresql/data
+      - ./scripts/init.sql:/docker-entrypoint-initdb.d/init.sql
