@@ -10,7 +10,7 @@ spring:
     hibernate:
       ddl-auto: create-drop
   datasource:
-    url: jdbc:postgresql://localhost:5432/pet
-    username: admin
-    password: admin
+    url: jdbc:postgresql://${PET_CORE_DATABASE_HOST}:${PET_CORE_DATABASE_PORT}/${PET_CORE_DATABASE_NAME}
+    username: ${PET_CORE_DATABASE_USER}
+    password: ${PET_CORE_DATABASE_PASSWORD}
     driver-class-name: org.postgresql.Driver
