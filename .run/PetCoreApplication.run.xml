@@ -1,0 +1,17 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="PetCoreApplication" type="SpringBootApplicationConfigurationType" factoryName="Spring Boot">
+    <envs>
+      <env name="PET_CORE_DATABASE_HOST" value="localhost" />
+      <env name="PET_CORE_DATABASE_NAME" value="pet" />
+      <env name="PET_CORE_DATABASE_PASSWORD" value="admin" />
+      <env name="PET_CORE_DATABASE_PORT" value="5432" />
+      <env name="PET_CORE_DATABASE_USER" value="admin" />
+      <env name="SPRING_PROFILES_ACTIVE" value="local" />
+    </envs>
+    <module name="core" />
+    <option name="SPRING_BOOT_MAIN_CLASS" value="org.yproject.pet.core.PetCoreApplication" />
+    <method v="2">
+      <option name="Make" enabled="true" />
+    </method>
+  </configuration>
+</component>
