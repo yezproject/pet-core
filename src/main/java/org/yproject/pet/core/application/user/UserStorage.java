@@ -8,8 +8,6 @@ import java.util.Optional;
 public interface UserStorage {
     Optional<User> findById(String id);
 
-    Optional<User> findByUserName(String userName);
-
     Optional<User> findByEmail(String email);
 
     List<User> findALl();

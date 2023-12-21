@@ -39,7 +39,7 @@ public class ApplicationConfig {
     @Bean
     UserDetailsService userDetailsService() {
         return username -> {
-            Optional<User> userOptional = userStorage.findByUserName(username);
+            Optional<User> userOptional = userStorage.findByEmail(username);
             if (userOptional.isEmpty()) {
                 throw new UsernameNotFoundException(username);
             }

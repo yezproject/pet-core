@@ -22,28 +22,28 @@ public record JwtServiceImpl(
 ) implements JwtService {
 
     @Override
-    public String extractUserName(String token) {
+    public String extractEmail(String token) {
         return extractClaim(token, Claims::getSubject);
     }
 
     @Override
-    public String generateToken(UserInfo userInfo) {
-        return generateToken(new HashMap<>(), userInfo);
+    public String generateToken(String email) {
+        return generateToken(new HashMap<>(), email);
     }
 
     @Override
     public boolean isTokenValid(String token, UserInfo userInfo) {
-        final String username = extractUserName(token);
+        final String username = extractEmail(token);
         return username.equals(userInfo.getUsername()) && !isTokenExpired(token);
     }
 
-    private String generateToken(Map<String, Object> extractClaim, UserInfo userInfo) {
+    private String generateToken(Map<String, Object> extractClaim, String email) {
         Instant now = Instant.now();
         Instant hoursAfter = now.plus(jwtProperties.getExpiration(), ChronoUnit.HOURS);
 
         return Jwts.builder()
                 .addClaims(extractClaim)
-                .setSubject(userInfo.getUsername())
+                .setSubject(email)
                 .setIssuedAt(Date.from(now))
                 .setExpiration(Date.from(hoursAfter))
                 .signWith(getSigningKey(), SignatureAlgorithm.forName(jwtProperties.getAlgorithm())).compact();

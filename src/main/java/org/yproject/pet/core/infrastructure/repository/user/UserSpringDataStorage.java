@@ -18,12 +18,6 @@ public record UserSpringDataStorage(
     }
 
     @Override
-    public Optional<User> findByUserName(String userName) {
-        return userRepository.findById(userName)
-                .map(UserSpringDataStorage::fromEntity);
-    }
-
-    @Override
     public Optional<User> findByEmail(String email) {
         return userRepository.findById(email)
                 .map(UserSpringDataStorage::fromEntity);
@@ -53,8 +47,7 @@ public record UserSpringDataStorage(
                 domain.id(),
                 domain.email(),
                 domain.password(),
-                domain.userName(),
-                domain.displayName(),
+                domain.fullName(),
                 domain.role().name(),
                 domain.status().name(),
                 domain.createAt(),
@@ -67,8 +60,7 @@ public record UserSpringDataStorage(
                 entity.getId(),
                 entity.getEmail(),
                 entity.getPassword(),
-                entity.getUserName(),
-                entity.getDisplayName(),
+                entity.getEmail(),
                 Role.valueOf(entity.getRole()),
                 UserStatus.valueOf(entity.getStatus()),
                 entity.getCreateAt(),
