@@ -21,10 +21,10 @@ public record JoinServiceImpl(
 
     @Override
     public String signIn(String email, String password) throws UserNotFoundException, InvalidPasswordException {
-        final var isUser = userStorage.findByEmail(email);
-        if (isUser.isEmpty()) throw new UserNotFoundException();
+        final var existingUserOptional = userStorage.findByEmail(email);
+        if (existingUserOptional.isEmpty()) throw new UserNotFoundException();
 
-        final var isPasswordValid = passwordEncoder.matches(password, isUser.get().password());
+        final var isPasswordValid = passwordEncoder.matches(password, existingUserOptional.get().password());
         if (!isPasswordValid) throw new InvalidPasswordException();
 
         return jwtService.generateToken(email);
@@ -32,15 +32,15 @@ public record JoinServiceImpl(
 
     @Override
     public String signup(SignUpApplicationDto signUpApplicationDto) throws UserExistedException {
-        final var isUser = userStorage.findByEmail(signUpApplicationDto.fullName());
-        if (isUser.isPresent()) throw new UserExistedException();
+        final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.fullName());
+        if (existingUserOptional.isPresent()) throw new UserExistedException();
         final var id = generateId.nextId();
-        final var password = passwordEncoder.encode(signUpApplicationDto.password());
+        final var encodedPassword = passwordEncoder.encode(signUpApplicationDto.password());
        final var newUser = new User(
                id,
                signUpApplicationDto.email(),
                signUpApplicationDto.fullName(),
-               password,
+               encodedPassword,
                Role.USER,
                UserStatus.APPROVED,
                Instant.now(),

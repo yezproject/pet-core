@@ -13,6 +13,7 @@ import org.yproject.pet.core.configuration.JwtAuthenticationFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 import static org.yproject.pet.core.infrastructure.repository.user.Role.ADMIN;
+import static org.yproject.pet.core.infrastructure.repository.user.Role.USER;
 
 @Configuration
 @EnableWebSecurity
@@ -27,12 +28,12 @@ public class SecurityConfig {
     ) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/**")
-                                .permitAll()
-                                .requestMatchers("/**").hasAnyRole(ADMIN.name())
+                        req.requestMatchers("/auth/**").permitAll()
+                                .requestMatchers("/transactions/**").hasAnyRole(USER.name(), ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
                 )
+                .formLogin(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);

@@ -4,10 +4,9 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import java.util.Objects;
 
-public record SignInResponse(
-        @JsonProperty(value = "token") String token
-        ) {
-    public SignInResponse {
+record SignInResponse(
+        @JsonProperty(value = "token") String token) {
+    SignInResponse {
         Objects.requireNonNull(token);
     }
 }

@@ -35,13 +35,13 @@ public record JoinController(
     }
 
     @ExceptionHandler(JoinService.UserNotFoundException.class)
-    ResponseEntity<Void> userNotFoundExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).build();
+    ResponseEntity<String> userNotFoundExceptionHandler() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("USER_NOT_FOUND");
     }
 
     @ExceptionHandler(JoinService.InvalidPasswordException.class)
-    ResponseEntity<Void> invalidPasswordExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.CONFLICT).build();
+    ResponseEntity<String> invalidPasswordExceptionHandler() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("INVALID_PASSWORD");
     }
 
     @ExceptionHandler(JoinService.UserExistedException.class)
