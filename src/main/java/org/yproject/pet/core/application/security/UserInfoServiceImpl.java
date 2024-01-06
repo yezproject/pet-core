@@ -10,8 +10,8 @@ public record UserInfoServiceImpl(
         UserStorage userStorage
 ) implements UserInfoService {
     @Override
-    public UserInfo loadUserByUsername(String username) {
-        return userStorage.findByUserName(username)
+    public UserInfo loadUserByEmail(String email) {
+        return userStorage.findByEmail(email)
                 .map(UserInfo::new)
                 .orElseThrow(() -> new UsernameNotFoundException("User not found"));
     }

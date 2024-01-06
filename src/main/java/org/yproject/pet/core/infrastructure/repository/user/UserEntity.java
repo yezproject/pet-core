@@ -25,14 +25,11 @@ public class UserEntity{
     @Column(nullable = false)
     private String password;
 
-    @Column(nullable = false, unique = true)
-    private String userName;
+    @Column(nullable = false)
+    private String fullName;
 
     @Column(nullable = false)
     private String role;
-
-    @Column(nullable = false)
-    private String displayName;
 
     @Column(nullable = false)
     private String status;

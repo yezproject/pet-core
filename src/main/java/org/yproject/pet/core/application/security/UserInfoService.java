@@ -4,5 +4,5 @@ import org.yproject.pet.core.domain.UserInfo;
 
 public interface UserInfoService {
 
-    UserInfo loadUserByUsername(String username);
+    UserInfo loadUserByEmail(String email);
 }

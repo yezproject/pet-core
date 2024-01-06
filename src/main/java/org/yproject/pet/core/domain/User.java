@@ -10,9 +10,8 @@ import java.util.Objects;
 public record User(
         String id,
         String email,
+        String fullName,
         String password,
-        String userName,
-        String displayName,
         Role role,
         UserStatus status,
         Instant createAt,
@@ -22,8 +21,7 @@ public record User(
     public User {
         Objects.requireNonNull(id);
         Objects.requireNonNull(email);
-        Objects.requireNonNull(userName);
-        Objects.requireNonNull(displayName);
+        Objects.requireNonNull(fullName);
         Objects.requireNonNull(role);
         Objects.requireNonNull(status);
         Objects.requireNonNull(createAt);

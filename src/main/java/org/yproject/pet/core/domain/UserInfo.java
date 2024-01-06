@@ -35,7 +35,7 @@ public record UserInfo(
 
     @Override
     public String getUsername() {
-        return user.userName();
+        return null;
     }
 
     @Override
