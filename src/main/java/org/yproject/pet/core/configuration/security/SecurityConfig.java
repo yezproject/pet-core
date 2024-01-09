@@ -28,8 +28,10 @@ public class SecurityConfig {
     ) throws Exception {
         http.csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
-                        req.requestMatchers("/auth/**").permitAll()
-                                .requestMatchers("/transactions/**").hasAnyRole(USER.name(), ADMIN.name())
+                        req.requestMatchers("/auth/**",
+                                        "/v3/api-docs/**",
+                                        "/swagger-ui/**").permitAll()
+                                .requestMatchers("/api/**").hasAnyRole(USER.name(), ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
                 )
