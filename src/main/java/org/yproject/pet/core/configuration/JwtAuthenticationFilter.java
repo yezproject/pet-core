@@ -18,6 +18,7 @@ import org.yproject.pet.core.configuration.jwt.JwtService;
 import org.yproject.pet.core.domain.UserInfo;
 
 import java.io.IOException;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -25,32 +26,37 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private final JwtService jwtService;
     private final UserInfoService userInfoService;
 
+    private Optional<String> extractTokenFromRequest(HttpServletRequest request) {
+        String bearerToken = request.getHeader("Authorization");
+        if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+            final var token = bearerToken.substring(7);
+            return Optional.of(token);
+        }
+        return Optional.empty();
+    }
+
     @Override
     protected void doFilterInternal(
-           @NonNull HttpServletRequest request,
-           @NonNull HttpServletResponse response,
-           @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final String authHeader = request.getHeader("Authorization");
-        final String jwt;
-        final String email;
-        if (authHeader.isEmpty() || authHeader.startsWith("Bearer ")) {
-            filterChain.doFilter(request, response);
-            return;
-        }
-        jwt = authHeader.substring(7);
-        email = jwtService.extractEmail(jwt);
-        if (StringUtils.isNotEmpty(email)
-                && SecurityContextHolder.getContext().getAuthentication() == null) {
-            UserInfo userInfo = userInfoService.loadUserByEmail(email);
-            if (jwtService.isTokenValid(jwt, userInfo)) {
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                        userInfo,
-                        null,
-                        userInfo.getAuthorities());
-                authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                context.setAuthentication(authToken);
-                SecurityContextHolder.setContext(context);
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain filterChain) throws ServletException, IOException {
+        final var tokenOptional = extractTokenFromRequest(request);
+        if (tokenOptional.isPresent()) {
+            final var jwtToken = tokenOptional.get();
+            final var email = jwtService.extractEmail(jwtToken);
+            if (StringUtils.isNotEmpty(email)
+                    && SecurityContextHolder.getContext().getAuthentication() == null) {
+                final var userInfo = userInfoService.loadUserByEmail(email);
+                if (jwtService.isTokenValid(jwtToken, userInfo)) {
+                    final var context = SecurityContextHolder.createEmptyContext();
+                    final var authenticationToken = new UsernamePasswordAuthenticationToken(
+                            userInfo,
+                            null,
+                            userInfo.getAuthorities());
+                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                    context.setAuthentication(authenticationToken);
+                    SecurityContextHolder.setContext(context);
+                }
             }
         }
         filterChain.doFilter(request, response);
