@@ -10,7 +10,6 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.yproject.pet.core.domain.User;
-import org.yproject.pet.core.domain.UserInfo;
 import org.yproject.pet.core.application.user.UserStorage;
 
 import java.util.Optional;

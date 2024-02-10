@@ -1,8 +1,9 @@
-package org.yproject.pet.core.domain;
+package org.yproject.pet.core.configuration.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
+import org.yproject.pet.core.domain.User;
 
 import java.io.Serial;
 import java.util.Collection;

@@ -3,7 +3,7 @@ package org.yproject.pet.core.application.security;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.domain.UserInfo;
+import org.yproject.pet.core.configuration.security.UserInfo;
 
 @Component
 public record UserInfoServiceImpl(

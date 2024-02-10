@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.core.domain.UserInfo;
+import org.yproject.pet.core.configuration.security.UserInfo;
 
 import java.security.Key;
 import java.time.Instant;

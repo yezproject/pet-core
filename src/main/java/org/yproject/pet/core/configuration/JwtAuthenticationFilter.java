@@ -8,14 +8,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.yproject.pet.core.application.security.UserInfoService;
 import org.yproject.pet.core.configuration.jwt.JwtService;
-import org.yproject.pet.core.domain.UserInfo;
 
 import java.io.IOException;
 import java.util.Optional;
