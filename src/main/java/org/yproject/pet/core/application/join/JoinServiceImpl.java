@@ -3,8 +3,8 @@ package org.yproject.pet.core.application.join;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.configuration.GenerateId;
-import org.yproject.pet.core.configuration.jwt.JwtService;
+import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
+import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
 import org.yproject.pet.core.domain.User;
 import org.yproject.pet.core.infrastructure.repository.user.Role;
 import org.yproject.pet.core.infrastructure.repository.user.UserStatus;
@@ -16,7 +16,7 @@ public record JoinServiceImpl(
         UserStorage userStorage,
         JwtService jwtService,
         PasswordEncoder passwordEncoder,
-        GenerateId generateId
+        IdGenerator idGenerator
 ) implements JoinService {
 
     @Override
@@ -34,18 +34,18 @@ public record JoinServiceImpl(
     public String signup(SignUpApplicationDto signUpApplicationDto) throws UserExistedException {
         final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.fullName());
         if (existingUserOptional.isPresent()) throw new UserExistedException();
-        final var id = generateId.nextId();
+        final var id = idGenerator.nextId();
         final var encodedPassword = passwordEncoder.encode(signUpApplicationDto.password());
-       final var newUser = new User(
-               id,
-               signUpApplicationDto.email(),
-               signUpApplicationDto.fullName(),
-               encodedPassword,
-               Role.USER,
-               UserStatus.APPROVED,
-               Instant.now(),
-               Instant.now()
-       );
-       return userStorage.store(newUser);
+        final var newUser = new User(
+                id,
+                signUpApplicationDto.email(),
+                signUpApplicationDto.fullName(),
+                encodedPassword,
+                Role.USER,
+                UserStatus.APPROVED,
+                Instant.now(),
+                Instant.now()
+        );
+        return userStorage.store(newUser);
     }
 }

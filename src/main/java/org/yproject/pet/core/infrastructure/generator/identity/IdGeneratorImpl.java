@@ -1,12 +1,12 @@
-package org.yproject.pet.core.configuration;
+package org.yproject.pet.core.infrastructure.generator.identity;
 
 import org.springframework.stereotype.Component;
 
 import java.util.UUID;
 
 @Component
-public record GenerateIdImpl()
-        implements GenerateId {
+public record IdGeneratorImpl()
+        implements IdGenerator {
 
     @Override
     public String nextId() {

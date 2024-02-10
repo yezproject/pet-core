@@ -1,4 +1,4 @@
-package org.yproject.pet.core.configuration.security;
+package org.yproject.pet.core.infrastructure.web.config.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;

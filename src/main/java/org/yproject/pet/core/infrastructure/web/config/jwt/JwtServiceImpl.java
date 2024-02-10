@@ -1,4 +1,4 @@
-package org.yproject.pet.core.configuration.jwt;
+package org.yproject.pet.core.infrastructure.web.config.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -6,7 +6,7 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.core.configuration.security.UserInfo;
+import org.yproject.pet.core.infrastructure.web.config.security.UserInfo;
 
 import java.security.Key;
 import java.time.Instant;

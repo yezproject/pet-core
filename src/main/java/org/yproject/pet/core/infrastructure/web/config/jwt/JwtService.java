@@ -1,6 +1,6 @@
-package org.yproject.pet.core.configuration.jwt;
+package org.yproject.pet.core.infrastructure.web.config.jwt;
 
-import org.yproject.pet.core.configuration.security.UserInfo;
+import org.yproject.pet.core.infrastructure.web.config.security.UserInfo;
 
 public interface JwtService {
     String extractEmail(String token);

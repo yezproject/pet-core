@@ -1,4 +1,4 @@
-package org.yproject.pet.core.configuration.security;
+package org.yproject.pet.core.infrastructure.web.config.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -37,10 +37,10 @@ public class ApplicationConfig {
 
     @Bean
     UserDetailsService userDetailsService() {
-        return username -> {
-            Optional<User> userOptional = userStorage.findByEmail(username);
+        return email -> {
+            Optional<User> userOptional = userStorage.findByEmail(email);
             if (userOptional.isEmpty()) {
-                throw new UsernameNotFoundException(username);
+                throw new UsernameNotFoundException(email);
             }
             return new UserInfo(userOptional.get());
         };

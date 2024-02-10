@@ -1,4 +1,4 @@
-package org.yproject.pet.core.infrastructure.web;
+package org.yproject.pet.core.infrastructure.web.apis.join;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
