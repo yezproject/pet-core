@@ -1,4 +1,4 @@
-package org.yproject.pet.core.configuration.jwt;
+package org.yproject.pet.core.infrastructure.web.config.jwt;
 
 import lombok.Getter;
 import lombok.Setter;

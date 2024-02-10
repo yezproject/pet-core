@@ -1,4 +1,4 @@
-package org.yproject.pet.core.configuration.security;
+package org.yproject.pet.core.infrastructure.web.config.security;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Profile;

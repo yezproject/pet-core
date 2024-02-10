@@ -1,5 +1,8 @@
-package org.yproject.pet.core.infrastructure.web;
+package org.yproject.pet.core.infrastructure.web.apis.join;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -8,11 +11,14 @@ import org.yproject.pet.core.application.join.SignUpApplicationDto;
 
 @RestController
 @RequestMapping("/auth")
+@Tag(name = "User", description = "Join System APIs")
 public record JoinController(
         JoinService joinService
 ) {
     @PostMapping("/sign_in")
     @ResponseStatus(HttpStatus.OK)
+    @Operation(summary = "Sign In")
+    @ApiResponse(responseCode = "200", description = "Sign in success", useReturnTypeSchema = true)
     SignInResponse signIn(
             @RequestBody SignInRequest request
     ) throws JoinService.UserNotFoundException, JoinService.InvalidPasswordException {
@@ -25,6 +31,8 @@ public record JoinController(
 
     @PostMapping("/sign_up")
     @ResponseStatus(HttpStatus.CREATED)
+    @Operation(summary = "Sign Up")
+    @ApiResponse(responseCode = "200", description = "Sign up success", useReturnTypeSchema = true)
     SignUpResponse signUp(
             @RequestBody SignUpRequest request
     ) throws JoinService.UserExistedException {

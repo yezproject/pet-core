@@ -1,4 +1,4 @@
-package org.yproject.pet.core.infrastructure.web;
+package org.yproject.pet.core.infrastructure.web.apis.join;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 
