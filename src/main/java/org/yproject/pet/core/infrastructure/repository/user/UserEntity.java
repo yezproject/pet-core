@@ -37,6 +37,6 @@ public class UserEntity {
     @Column(nullable = false)
     private Instant createAt;
 
-    @Column()
+    @Column
     private Instant approvedAt;
 }

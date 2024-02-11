@@ -12,8 +12,8 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.yproject.pet.core.infrastructure.web.config.filter.JwtAuthenticationFilter;
 
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-import static org.yproject.pet.core.infrastructure.repository.user.Role.ADMIN;
-import static org.yproject.pet.core.infrastructure.repository.user.Role.USER;
+import static org.yproject.pet.core.domain.user.Role.ADMIN;
+import static org.yproject.pet.core.domain.user.Role.USER;
 
 @Configuration
 @EnableWebSecurity

@@ -5,9 +5,9 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
-import org.yproject.pet.core.domain.User;
-import org.yproject.pet.core.infrastructure.repository.user.Role;
-import org.yproject.pet.core.infrastructure.repository.user.UserStatus;
+import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.domain.user.Role;
+import org.yproject.pet.core.domain.user.ApprovalStatus;
 
 import java.time.Instant;
 
@@ -42,7 +42,7 @@ public record JoinServiceImpl(
                 signUpApplicationDto.fullName(),
                 encodedPassword,
                 Role.USER,
-                UserStatus.APPROVED,
+                ApprovalStatus.APPROVED,
                 Instant.now(),
                 Instant.now()
         );

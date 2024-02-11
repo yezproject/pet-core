@@ -2,7 +2,9 @@ package org.yproject.pet.core.infrastructure.repository.user;
 
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.domain.User;
+import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.domain.user.Role;
+import org.yproject.pet.core.domain.user.ApprovalStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -49,7 +51,7 @@ public record UserSpringDataStorage(
                 domain.password(),
                 domain.fullName(),
                 domain.role().name(),
-                domain.status().name(),
+                domain.approvalStatus().name(),
                 domain.createAt(),
                 domain.approvedAt()
         );
@@ -62,7 +64,7 @@ public record UserSpringDataStorage(
                 entity.getPassword(),
                 entity.getEmail(),
                 Role.valueOf(entity.getRole()),
-                UserStatus.valueOf(entity.getStatus()),
+                ApprovalStatus.valueOf(entity.getStatus()),
                 entity.getCreateAt(),
                 entity.getApprovedAt()
         );
