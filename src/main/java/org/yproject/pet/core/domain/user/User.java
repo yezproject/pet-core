@@ -26,7 +26,6 @@ public record User(
         Objects.requireNonNull(role);
         Objects.requireNonNull(approvalStatus);
         Objects.requireNonNull(createAt);
-        Objects.requireNonNull(approvedAt);
         Objects.requireNonNull(password);
     }
 

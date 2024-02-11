@@ -1,7 +1,7 @@
 package org.yproject.pet.core.application.join;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
@@ -11,7 +11,7 @@ import org.yproject.pet.core.domain.user.ApprovalStatus;
 
 import java.time.Instant;
 
-@Component
+@Service
 public record JoinServiceImpl(
         UserStorage userStorage,
         JwtService jwtService,
