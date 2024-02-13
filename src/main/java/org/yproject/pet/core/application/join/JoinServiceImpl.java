@@ -20,7 +20,7 @@ public record JoinServiceImpl(
 ) implements JoinService {
 
     @Override
-    public String signIn(String email, String password) throws UserNotFoundException, InvalidPasswordException {
+    public String signIn(String email, String password) {
         final var existingUserOptional = userStorage.findByEmail(email);
         if (existingUserOptional.isEmpty()) throw new UserNotFoundException();
 
@@ -31,10 +31,10 @@ public record JoinServiceImpl(
     }
 
     @Override
-    public String signup(SignUpApplicationDto signUpApplicationDto) throws UserExistedException {
-        final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.fullName());
+    public String signup(SignUpApplicationDto signUpApplicationDto) {
+        final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.email());
         if (existingUserOptional.isPresent()) throw new UserExistedException();
-        final var id = idGenerator.nextId();
+        final var id = idGenerator.get();
         final var encodedPassword = passwordEncoder.encode(signUpApplicationDto.password());
         final var newUser = new User(
                 id,
