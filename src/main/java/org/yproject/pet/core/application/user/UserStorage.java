@@ -1,6 +1,6 @@
 package org.yproject.pet.core.application.user;
 
-import org.yproject.pet.core.domain.User;
+import org.yproject.pet.core.domain.user.User;
 
 import java.util.List;
 import java.util.Optional;

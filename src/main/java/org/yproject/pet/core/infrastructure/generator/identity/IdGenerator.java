@@ -1,6 +1,7 @@
 package org.yproject.pet.core.infrastructure.generator.identity;
 
-public interface IdGenerator {
+import java.util.function.Supplier;
 
-    String nextId();
+public interface IdGenerator extends Supplier<String> {
+    String get();
 }

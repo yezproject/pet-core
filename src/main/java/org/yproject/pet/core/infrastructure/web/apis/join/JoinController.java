@@ -21,7 +21,7 @@ public record JoinController(
     @ApiResponse(responseCode = "200", description = "Sign in success", useReturnTypeSchema = true)
     SignInResponse signIn(
             @RequestBody SignInRequest request
-    ) throws JoinService.UserNotFoundException, JoinService.InvalidPasswordException {
+    ) {
         final var token = joinService.signIn(
                 request.email(),
                 request.password()
@@ -35,7 +35,7 @@ public record JoinController(
     @ApiResponse(responseCode = "200", description = "Sign up success", useReturnTypeSchema = true)
     SignUpResponse signUp(
             @RequestBody SignUpRequest request
-    ) throws JoinService.UserExistedException {
+    ) {
         final var userId = joinService.signup(
                 toSignUpApplicationDto(request)
         );

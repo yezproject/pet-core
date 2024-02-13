@@ -2,16 +2,16 @@ package org.yproject.pet.core.application.join;
 
 public interface JoinService {
 
-    String signIn(String email, String password) throws UserNotFoundException, InvalidPasswordException;
+    String signIn(String email, String password);
 
-    String signup(SignUpApplicationDto signUpApplicationDto) throws UserExistedException;
+    String signup(SignUpApplicationDto signUpApplicationDto);
 
-    final class UserNotFoundException extends Exception {
+    final class UserNotFoundException extends RuntimeException {
     }
 
-    final class InvalidPasswordException extends Exception {
+    final class InvalidPasswordException extends RuntimeException {
     }
 
-    final class UserExistedException extends Exception {
+    final class UserExistedException extends RuntimeException {
     }
 }

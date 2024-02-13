@@ -1,17 +1,17 @@
 package org.yproject.pet.core.application.join;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
-import org.yproject.pet.core.domain.User;
-import org.yproject.pet.core.infrastructure.repository.user.Role;
-import org.yproject.pet.core.infrastructure.repository.user.UserStatus;
+import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.domain.user.Role;
+import org.yproject.pet.core.domain.user.ApprovalStatus;
 
 import java.time.Instant;
 
-@Component
+@Service
 public record JoinServiceImpl(
         UserStorage userStorage,
         JwtService jwtService,
@@ -20,7 +20,7 @@ public record JoinServiceImpl(
 ) implements JoinService {
 
     @Override
-    public String signIn(String email, String password) throws UserNotFoundException, InvalidPasswordException {
+    public String signIn(String email, String password) {
         final var existingUserOptional = userStorage.findByEmail(email);
         if (existingUserOptional.isEmpty()) throw new UserNotFoundException();
 
@@ -31,10 +31,10 @@ public record JoinServiceImpl(
     }
 
     @Override
-    public String signup(SignUpApplicationDto signUpApplicationDto) throws UserExistedException {
-        final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.fullName());
+    public String signup(SignUpApplicationDto signUpApplicationDto) {
+        final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.email());
         if (existingUserOptional.isPresent()) throw new UserExistedException();
-        final var id = idGenerator.nextId();
+        final var id = idGenerator.get();
         final var encodedPassword = passwordEncoder.encode(signUpApplicationDto.password());
         final var newUser = new User(
                 id,
@@ -42,7 +42,7 @@ public record JoinServiceImpl(
                 signUpApplicationDto.fullName(),
                 encodedPassword,
                 Role.USER,
-                UserStatus.APPROVED,
+                ApprovalStatus.APPROVED,
                 Instant.now(),
                 Instant.now()
         );

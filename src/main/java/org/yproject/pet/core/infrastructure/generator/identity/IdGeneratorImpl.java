@@ -9,7 +9,7 @@ public record IdGeneratorImpl()
         implements IdGenerator {
 
     @Override
-    public String nextId() {
+    public String get() {
         UUID u = UUID.randomUUID();
         return toIDString(u.getMostSignificantBits()) + toIDString(u.getLeastSignificantBits());
     }
