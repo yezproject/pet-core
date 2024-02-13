@@ -39,11 +39,12 @@ class JoinControllerTest {
     @MockBean
     private JoinService joinService;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
+    private static ObjectMapper objectMapper;
     private static SignUpRequest signUpReq;
 
     @BeforeAll
     static void setup() {
+        objectMapper = new ObjectMapper();
         signUpReq = new SignUpRequest(
                 randomShortString(),
                 randomShortString(),
