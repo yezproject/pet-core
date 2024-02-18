@@ -3,10 +3,10 @@ package org.yproject.pet.core.application.security;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.infrastructure.web.config.security.UserInfo;
+import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 
 @Component
-public record UserInfoServiceImpl(
+record UserInfoServiceImpl(
         UserStorage userStorage
 ) implements UserInfoService {
     @Override

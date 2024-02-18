@@ -12,7 +12,7 @@ import org.yproject.pet.core.application.join.SignUpApplicationDto;
 @RestController
 @RequestMapping("/auth")
 @Tag(name = "User", description = "Join System APIs")
-public record JoinController(
+record JoinController(
         JoinService joinService
 ) {
     @PostMapping("/sign_in")

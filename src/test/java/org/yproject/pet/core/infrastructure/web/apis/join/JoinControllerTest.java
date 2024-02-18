@@ -13,8 +13,8 @@ import org.springframework.web.context.WebApplicationContext;
 import org.yproject.pet.core.application.join.JoinService;
 import org.yproject.pet.core.application.security.UserInfoService;
 import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
-import org.yproject.pet.core.infrastructure.web.config.security.SecurityConfig;
+import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
+import org.yproject.pet.core.infrastructure.web.security.SecurityConfig;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;

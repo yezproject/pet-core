@@ -1,4 +1,4 @@
-package org.yproject.pet.core.infrastructure.web.config.security;
+package org.yproject.pet.core.infrastructure.web.security;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.domain.user.User;
-import org.yproject.pet.core.infrastructure.web.config.filter.JwtAuthenticationFilter;
+import org.yproject.pet.core.infrastructure.web.filter.JwtAuthenticationFilter;
 
 import java.util.Optional;
 
