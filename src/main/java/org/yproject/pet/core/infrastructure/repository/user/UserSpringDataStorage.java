@@ -1,6 +1,6 @@
 package org.yproject.pet.core.infrastructure.repository.user;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.domain.user.ApprovalStatus;
 import org.yproject.pet.core.domain.user.Role;
@@ -9,7 +9,7 @@ import org.yproject.pet.core.domain.user.User;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 public record UserSpringDataStorage(
         UserRepository repository
 ) implements UserStorage {
@@ -30,8 +30,8 @@ public record UserSpringDataStorage(
         return new User(
                 entity.getId(),
                 entity.getEmail(),
+                entity.getFullName(),
                 entity.getPassword(),
-                entity.getEmail(),
                 Role.valueOf(entity.getRole()),
                 ApprovalStatus.valueOf(entity.getStatus()),
                 entity.getCreateAt(),
@@ -47,7 +47,7 @@ public record UserSpringDataStorage(
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return repository.findById(email)
+        return repository.findByEmail(email)
                 .map(UserSpringDataStorage::fromEntity);
     }
 

@@ -8,10 +8,12 @@ import org.springframework.security.authentication.dao.DaoAuthenticationProvider
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.yproject.pet.core.application.user.UserStorage;
@@ -19,10 +21,6 @@ import org.yproject.pet.core.domain.user.User;
 import org.yproject.pet.core.infrastructure.web.filter.JwtAuthenticationFilter;
 
 import java.util.Optional;
-
-import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
-import static org.yproject.pet.core.domain.user.Role.ADMIN;
-import static org.yproject.pet.core.domain.user.Role.USER;
 
 @Configuration
 @EnableWebSecurity
@@ -33,22 +31,24 @@ public class SecurityConfig {
     SecurityFilterChain securityFilterChain(
             final HttpSecurity http,
             final JwtAuthenticationFilter jwtAuthenticationFilter,
-            final AuthenticationProvider authenticationProvider
+            final AuthenticationProvider authenticationProvider,
+            final AuthenticationEntryPoint authenticationEntryPoint
     ) throws Exception {
-        http.csrf(AbstractHttpConfigurer::disable)
+        return http
+                .csrf(AbstractHttpConfigurer::disable)
+                .httpBasic(AbstractHttpConfigurer::disable)
+                .formLogin(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(req ->
                         req.requestMatchers("/auth/**",
                                         "/v3/api-docs/**",
                                         "/swagger-ui/**").permitAll()
-                                .requestMatchers("/api/**").hasAnyRole(USER.name(), ADMIN.name())
-                                .anyRequest()
-                                .authenticated()
+                                .anyRequest().authenticated()
                 )
-                .formLogin(AbstractHttpConfigurer::disable)
-                .sessionManagement(session -> session.sessionCreationPolicy(STATELESS))
+                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
-        return http.build();
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint))
+                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .build();
     }
 
     @Bean

@@ -5,7 +5,6 @@ import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
 import org.yproject.pet.core.application.transaction.TransactionService;
@@ -14,7 +13,7 @@ import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 
 import java.util.List;
 
-@Controller
+@RestController
 @RequestMapping("api/transactions")
 @Tag(name = "Transaction", description = "Transaction management")
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ class TransactionController {
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
-            ModifyTransactionRequest req,
+            @RequestBody ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         transactionService.modify(user.getId(), req.id(), req.description(), req.amount(), req.currency());

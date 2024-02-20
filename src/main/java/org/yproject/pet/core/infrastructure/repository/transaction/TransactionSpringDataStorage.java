@@ -1,6 +1,6 @@
 package org.yproject.pet.core.infrastructure.repository.transaction;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.transaction.TransactionStorage;
 import org.yproject.pet.core.domain.transaction.Transaction;
 
@@ -8,7 +8,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
-@Repository
+@Component
 record TransactionSpringDataStorage(
         TransactionRepository repository
 ) implements TransactionStorage {
