@@ -1,6 +1,8 @@
 package org.yproject.pet.core.application.transaction;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.transaction.Transaction;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
@@ -10,25 +12,27 @@ import java.time.Instant;
 import java.util.List;
 
 @Service
-record TransactionServiceImpl(
-        IdGenerator idGenerator,
-        TransactionStorage transactionStorage
-) implements TransactionService {
+@RequiredArgsConstructor
+class TransactionServiceImpl implements TransactionService {
+    private final IdGenerator idGenerator;
+    private final TransactionStorage transactionStorage;
 
     @Override
-    public String create(String userId, String description, double amount, String currency) {
+    @Transactional
+    public String create(String userId, String description, double amount, String currency, Long createTime) {
         return transactionStorage.save(new Transaction(
                 idGenerator.get(),
                 description,
                 BigDecimal.valueOf(amount),
                 Currency.valueOf(currency),
                 userId,
-                Instant.now()
+                createTime == null ? Instant.now() : Instant.ofEpochMilli(createTime)
         ));
     }
 
     @Override
-    public void modify(String userId, String transactionId, String description, double amount, String currency) {
+    @Transactional
+    public void modify(String userId, String transactionId, String description, double amount, String currency, Long createTime) {
         final var transactionOptional = transactionStorage.getByIdAndUserId(transactionId, userId);
         if (transactionOptional.isEmpty()) {
             throw new TransactionNotExisted();
@@ -40,12 +44,13 @@ record TransactionServiceImpl(
                 BigDecimal.valueOf(amount),
                 Currency.valueOf(currency),
                 oldTransaction.creatorUserId(),
-                oldTransaction.createTime()
+                createTime == null ? oldTransaction.createTime() : Instant.ofEpochMilli(createTime)
         );
         transactionStorage.save(modifedTransaction);
     }
 
     @Override
+    @Transactional
     public void delete(List<String> transactionIds, String userId) {
         transactionStorage.deleteByIdsAndUserId(transactionIds, userId);
     }

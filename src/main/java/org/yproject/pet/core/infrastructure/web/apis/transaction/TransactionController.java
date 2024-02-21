@@ -1,7 +1,6 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.websocket.server.PathParam;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,10 +32,10 @@ class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(
-            CreateTransactionRequest req,
+            @RequestBody CreateTransactionRequest req,
             @RequestUser UserInfo user
     ) {
-        String id = transactionService.create(user.getId(), req.description(), req.amount(), req.currency());
+        String id = transactionService.create(user.getId(), req.description(), req.amount(), req.currency(), req.createTime());
         return new CreateTransactionResponse(id);
     }
 
@@ -46,13 +45,13 @@ class TransactionController {
             @RequestBody ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
-        transactionService.modify(user.getId(), req.id(), req.description(), req.amount(), req.currency());
+        transactionService.modify(user.getId(), req.id(), req.description(), req.amount(), req.currency(), req.createTime());
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(
-            @PathParam("ids") List<String> ids,
+            @RequestParam("ids") List<String> ids,
             @RequestUser UserInfo user
     ) {
         transactionService.delete(ids, user.getId());

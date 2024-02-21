@@ -3,9 +3,9 @@ package org.yproject.pet.core.application.transaction;
 import java.util.List;
 
 public interface TransactionService {
-    String create(String userId, String description, double amount, String currency);
+    String create(String userId, String description, double amount, String currency, Long createTime);
 
-    void modify(String userId, String transactionId, String description, double amount, String currency);
+    void modify(String userId, String transactionId, String description, double amount, String currency, Long createTime);
 
     void delete(List<String> transactionIds, String userId);
 
