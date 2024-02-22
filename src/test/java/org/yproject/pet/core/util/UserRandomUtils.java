@@ -29,11 +29,11 @@ public class UserRandomUtils {
     }
 
     public static Role randomUserRole() {
-        return RandomUtils.random(Role.values());
+        return RandomUtils.randomFrom(Role.values());
     }
 
     public static ApprovalStatus randomApprovalStatus() {
-        return RandomUtils.random(ApprovalStatus.values());
+        return RandomUtils.randomFrom(ApprovalStatus.values());
     }
 
     public static User randomUser(ApprovalStatus approvalStatus) {

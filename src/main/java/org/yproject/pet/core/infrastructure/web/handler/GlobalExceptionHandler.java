@@ -8,6 +8,8 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.yproject.pet.core.domain.exception.DomainException;
+import org.yproject.pet.core.infrastructure.web.exception.BadRequestException;
+import org.yproject.pet.core.infrastructure.web.exception.GlobalResourceAccessPermissionException;
 
 @ControllerAdvice
 class GlobalExceptionHandler implements AuthenticationEntryPoint {
@@ -19,6 +21,11 @@ class GlobalExceptionHandler implements AuthenticationEntryPoint {
     @ExceptionHandler(GlobalResourceAccessPermissionException.class)
     void denyResourceAccess(HttpServletResponse response) {
         response.setStatus(HttpStatus.NOT_FOUND.value());
+    }
+
+    @ExceptionHandler(BadRequestException.class)
+    void badRequestBody(HttpServletResponse response) {
+        response.setStatus(HttpStatus.BAD_REQUEST.value());
     }
 
     @Override

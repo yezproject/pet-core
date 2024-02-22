@@ -1,6 +1,8 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -32,26 +34,39 @@ class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(
-            @RequestBody CreateTransactionRequest req,
+            @RequestBody @Valid CreateTransactionRequest req,
             @RequestUser UserInfo user
     ) {
-        String id = transactionService.create(user.getId(), req.description(), req.amount(), req.currency(), req.createTime());
+        String id = transactionService.create(
+                user.getId(),
+                req.description(),
+                req.amount(),
+                req.currency(),
+                req.createTime()
+        );
         return new CreateTransactionResponse(id);
     }
 
     @PutMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
-            @RequestBody ModifyTransactionRequest req,
+            @RequestBody @Valid ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
-        transactionService.modify(user.getId(), req.id(), req.description(), req.amount(), req.currency(), req.createTime());
+        transactionService.modify(
+                user.getId(),
+                req.id(),
+                req.description(),
+                req.amount(),
+                req.currency(),
+                req.createTime()
+        );
     }
 
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(
-            @RequestParam("ids") List<String> ids,
+            @RequestParam("ids") @NotEmpty List<String> ids,
             @RequestUser UserInfo user
     ) {
         transactionService.delete(ids, user.getId());

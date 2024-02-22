@@ -19,20 +19,27 @@ class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public String create(String userId, String description, double amount, String currency, Long createTime) {
+    public String create(String userId, String description, double amount, String currency, long createTime) {
         return transactionStorage.save(new Transaction(
                 idGenerator.get(),
                 description,
                 BigDecimal.valueOf(amount),
                 Currency.valueOf(currency),
                 userId,
-                createTime == null ? Instant.now() : Instant.ofEpochMilli(createTime)
+                Instant.ofEpochMilli(createTime)
         ));
     }
 
     @Override
     @Transactional
-    public void modify(String userId, String transactionId, String description, double amount, String currency, Long createTime) {
+    public void modify(
+            final String userId,
+            final String transactionId,
+            final String description,
+            final double amount,
+            final String currency,
+            final long createTime
+    ) {
         final var transactionOptional = transactionStorage.getByIdAndUserId(transactionId, userId);
         if (transactionOptional.isEmpty()) {
             throw new TransactionNotExisted();
@@ -44,7 +51,7 @@ class TransactionServiceImpl implements TransactionService {
                 BigDecimal.valueOf(amount),
                 Currency.valueOf(currency),
                 oldTransaction.creatorUserId(),
-                createTime == null ? oldTransaction.createTime() : Instant.ofEpochMilli(createTime)
+                Instant.ofEpochMilli(createTime)
         );
         transactionStorage.save(modifedTransaction);
     }
