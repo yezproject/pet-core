@@ -21,6 +21,15 @@ import java.util.List;
 class TransactionController {
     private final TransactionService transactionService;
 
+    @GetMapping("{transactionId}")
+    RetrieveTransactionResponse retrieve(
+            @PathVariable String transactionId,
+            @RequestUser UserInfo user
+    ) {
+        RetrieveTransactionDto transactionDto = transactionService.retrieve(user.getId(), transactionId);
+        return RetrieveTransactionResponse.toResponse(transactionDto);
+    }
+
     @GetMapping
     List<RetrieveTransactionResponse> retrieveAll(
             @RequestUser UserInfo user
@@ -47,15 +56,16 @@ class TransactionController {
         return new CreateTransactionResponse(id);
     }
 
-    @PutMapping
+    @PutMapping("{transactionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
+            @PathVariable String transactionId,
             @RequestBody @Valid ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         transactionService.modify(
                 user.getId(),
-                req.id(),
+                transactionId,
                 req.description(),
                 req.amount(),
                 req.currency(),

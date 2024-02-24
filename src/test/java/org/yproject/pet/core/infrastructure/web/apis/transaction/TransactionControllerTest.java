@@ -58,7 +58,8 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(jsonPath("$[0].id", is(transactions.get(0).id())))
                 .andExpect(jsonPath("$[0].description", is(transactions.get(0).description())))
                 .andExpect(jsonPath("$[0].amount", is(transactions.get(0).amount().doubleValue())))
-                .andExpect(jsonPath("$[0].currency", is(transactions.get(0).currency().toString())))
+                .andExpect(jsonPath("$[0].currency.name", is(transactions.get(0).currency().name())))
+                .andExpect(jsonPath("$[0].currency.symbol", is(transactions.get(0).currency().getSymbol())))
                 .andExpect(jsonPath("$[0].createTime", is(transactions.get(0).createTime().toEpochMilli())));
     }
 
@@ -110,13 +111,13 @@ class TransactionControllerTest extends BaseControllerTest {
     void modify_return_204() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
-                randomShortString(),
                 randomDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
+        final var requestModifyTransactionId = randomShortString();
 
-        this.mockMvc.perform(put("/api/transactions")
+        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -124,7 +125,7 @@ class TransactionControllerTest extends BaseControllerTest {
 
         then(this.transactionService).should().modify(
                 mockUser.id(),
-                requestBody.id(),
+                requestModifyTransactionId,
                 requestBody.description(),
                 requestBody.amount(),
                 requestBody.currency(),
@@ -135,17 +136,33 @@ class TransactionControllerTest extends BaseControllerTest {
     void modify_return_404() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
+                randomDouble(),
+                randomFrom(Currency.values()).name(),
+                randomInstant().toEpochMilli()
+        );
+        final var requestModifyTransactionId = randomShortString();
+
+        doThrow(TransactionService.TransactionNotExisted.class).when(this.transactionService)
+                .modify(anyString(), anyString(), anyString(), anyDouble(), anyString(), anyLong());
+
+        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(requestBody))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    void modify_missing_transaction_id_return_404() throws Exception {
+        final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
                 randomDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
+        final var requestModifyTransactionId = randomShortString();
 
-
-        doThrow(TransactionService.TransactionNotExisted.class).when(this.transactionService)
-                .modify(anyString(), anyString(), anyString(), anyDouble(), anyString(), anyLong());
-
-        this.mockMvc.perform(put("/api/transactions")
+        this.mockMvc.perform(put("/api/transactions/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -155,14 +172,14 @@ class TransactionControllerTest extends BaseControllerTest {
     @Test
     void modify_return_400() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
-                randomShortString(),
                 "",
                 randomDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
+        final var requestModifyTransactionId = randomShortString();
 
-        this.mockMvc.perform(put("/api/transactions")
+        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))

@@ -9,7 +9,7 @@ public interface TransactionStorage {
 
     String save(Transaction domain);
 
-    Optional<Transaction> getByIdAndUserId(String transactionId, String userId);
+    Optional<Transaction> retrieveOneByIdAndUserId(String transactionId, String userId);
 
     void deleteByIdsAndUserId(List<String> transactionIds, String userId);
 

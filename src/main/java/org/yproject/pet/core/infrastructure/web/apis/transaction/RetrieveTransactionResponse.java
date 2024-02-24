@@ -6,16 +6,22 @@ record RetrieveTransactionResponse(
         String id,
         String description,
         double amount,
-        String currency,
+        RetrieveTransactionCurrencyResponse currency,
         long createTime
 ) {
+
+    record RetrieveTransactionCurrencyResponse(
+            String name,
+            String symbol
+    ) {
+    }
 
     static RetrieveTransactionResponse toResponse(RetrieveTransactionDto dto) {
         return new RetrieveTransactionResponse(
                 dto.id(),
                 dto.description(),
                 dto.amount().doubleValue(),
-                dto.currency().name(),
+                new RetrieveTransactionCurrencyResponse(dto.currency().name(), dto.currency().getSymbol()),
                 dto.createTime().toEpochMilli()
         );
     }

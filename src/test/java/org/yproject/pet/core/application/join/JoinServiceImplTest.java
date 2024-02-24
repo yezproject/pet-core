@@ -26,7 +26,7 @@ import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 
 @ExtendWith(MockitoExtension.class)
 class JoinServiceImplTest {
-    private JoinServiceImpl underTest;
+    private JoinService underTest;
     @Mock
     private JwtService jwtService;
     @Mock

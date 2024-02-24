@@ -11,5 +11,7 @@ public interface TransactionService {
 
     List<RetrieveTransactionDto> retrieveAll(String userId);
 
+    RetrieveTransactionDto retrieve(String userId, String transactionId);
+
     final class TransactionNotExisted extends RuntimeException {}
 }

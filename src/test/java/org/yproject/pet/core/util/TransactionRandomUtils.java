@@ -23,4 +23,15 @@ public class TransactionRandomUtils {
                 randomInstant()
         );
     }
+
+    public static Transaction randomTransaction(String transactionId) {
+        return new Transaction(
+                transactionId,
+                randomShortString(),
+                BigDecimal.valueOf(randomDouble()),
+                randomCurrency(),
+                randomShortString(),
+                randomInstant()
+        );
+    }
 }

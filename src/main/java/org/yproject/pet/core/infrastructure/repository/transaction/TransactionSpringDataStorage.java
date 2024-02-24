@@ -19,7 +19,7 @@ record TransactionSpringDataStorage(
     }
 
     @Override
-    public Optional<Transaction> getByIdAndUserId(String transactionId, String userId) {
+    public Optional<Transaction> retrieveOneByIdAndUserId(String transactionId, String userId) {
         return repository.findByIdAndCreatorId(transactionId, userId)
                 .map(TransactionEntityMapper::fromEntity);
     }
