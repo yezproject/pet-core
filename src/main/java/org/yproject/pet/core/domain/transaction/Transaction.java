@@ -2,14 +2,13 @@ package org.yproject.pet.core.domain.transaction;
 
 import org.yproject.pet.core.domain.exception.DomainCreateException;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.Objects;
 
 public record Transaction(
         String id,
         String description,
-        BigDecimal amount,
+        Double amount,
         Currency currency,
         String creatorUserId,
         Instant createTime
@@ -22,7 +21,7 @@ public record Transaction(
         Objects.requireNonNull(creatorUserId);
         Objects.requireNonNull(createTime);
 
-        if (amount.equals(BigDecimal.ZERO)) {
+        if (amount.equals(0d)) {
             throw new DomainCreateException("Transaction amount must not be zero");
         }
         if (description.isEmpty() || description.length() > 100) {
@@ -31,7 +30,7 @@ public record Transaction(
     }
 
     public TransactionType type() {
-        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+        if (amount < 0) {
             return TransactionType.EXPENSE;
         } else {
             return TransactionType.INCOME;

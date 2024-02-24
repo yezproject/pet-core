@@ -16,7 +16,7 @@ import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
 import org.yproject.pet.core.util.TransactionRandomUtils;
 
-import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
@@ -47,6 +47,35 @@ class TransactionControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void retrieve_return_200() throws Exception {
+        final var transactionId = randomShortString();
+        final var transaction = TransactionRandomUtils.randomTransaction();
+        final var transactionDTO = RetrieveTransactionDto.fromDomain(transaction);
+        when(this.transactionService.retrieve(anyString(), anyString())).thenReturn(transactionDTO);
+
+        this.mockMvc.perform(get("/api/transactions/" + transactionId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", is(transactionDTO.id())))
+                .andExpect(jsonPath("$.description", comparesEqualTo(transactionDTO.description())))
+                .andExpect(jsonPath("$.amount", comparesEqualTo(transactionDTO.amount())))
+                .andExpect(jsonPath("$.currency.name", is(transactionDTO.currency().name())))
+                .andExpect(jsonPath("$.currency.symbol", is(transactionDTO.currency().getSymbol())))
+                .andExpect(jsonPath("$.createTime", is(transactionDTO.createTime().toEpochMilli())));
+    }
+
+    @Test
+    void retrieve_return_404() throws Exception {
+        final var transactionId = randomShortString();
+        when(this.transactionService.retrieve(anyString(), anyString()))
+                .thenThrow(TransactionService.TransactionNotExisted.class);
+
+        this.mockMvc.perform(get("/api/transactions/" + transactionId)
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
     void retrieveAll_return_200() throws Exception {
         final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
         final var transactionDTOs = transactions.stream().map(RetrieveTransactionDto::fromDomain).toList();
@@ -57,7 +86,7 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(transactions.get(0).id())))
                 .andExpect(jsonPath("$[0].description", is(transactions.get(0).description())))
-                .andExpect(jsonPath("$[0].amount", is(transactions.get(0).amount().doubleValue())))
+                .andExpect(jsonPath("$[0].amount", comparesEqualTo(transactions.get(0).amount())))
                 .andExpect(jsonPath("$[0].currency.name", is(transactions.get(0).currency().name())))
                 .andExpect(jsonPath("$[0].currency.symbol", is(transactions.get(0).currency().getSymbol())))
                 .andExpect(jsonPath("$[0].createTime", is(transactions.get(0).createTime().toEpochMilli())));
@@ -160,7 +189,6 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
-        final var requestModifyTransactionId = randomShortString();
 
         this.mockMvc.perform(put("/api/transactions/")
                         .contentType(MediaType.APPLICATION_JSON)

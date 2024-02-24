@@ -54,7 +54,7 @@ class TransactionServiceImplTest {
         assertThat(transactionArgumentCaptor.getValue())
                 .returns(id, Transaction::id)
                 .returns(description, Transaction::description)
-                .returns(amount, transaction -> transaction.amount().doubleValue())
+                .returns(amount, Transaction::amount)
                 .returns(currency, transaction -> transaction.currency().name())
                 .returns(userId, Transaction::creatorUserId)
                 .returns(createTime, transaction -> transaction.createTime().toEpochMilli());
@@ -86,7 +86,7 @@ class TransactionServiceImplTest {
         assertThat(transactionArgumentCaptor.getValue())
                 .returns(oldTransaction.id(), Transaction::id)
                 .returns(description, Transaction::description)
-                .returns(amount, transaction -> transaction.amount().doubleValue())
+                .returns(amount, Transaction::amount)
                 .returns(currency, transaction -> transaction.currency().name())
                 .returns(oldTransaction.creatorUserId(), Transaction::creatorUserId)
                 .returns(createTime, transaction -> transaction.createTime().toEpochMilli());

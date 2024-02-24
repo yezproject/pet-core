@@ -1,14 +1,12 @@
 package org.yproject.pet.core.application.transaction;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.transaction.Transaction;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 import java.util.List;
 
@@ -20,11 +18,11 @@ class TransactionServiceImpl implements TransactionService {
 
     @Override
     @Transactional
-    public String create(String userId, String description, double amount, String currency, long createTime) {
+    public String create(String userId, String description, Double amount, String currency, Long createTime) {
         return transactionStorage.save(new Transaction(
                 idGenerator.get(),
                 description,
-                BigDecimal.valueOf(amount),
+                amount,
                 Currency.valueOf(currency),
                 userId,
                 Instant.ofEpochMilli(createTime)
@@ -37,9 +35,9 @@ class TransactionServiceImpl implements TransactionService {
             final String userId,
             final String transactionId,
             final String description,
-            final double amount,
+            final Double amount,
             final String currency,
-            final long createTime
+            final Long createTime
     ) {
         final var transactionOptional = transactionStorage.retrieveOneByIdAndUserId(transactionId, userId);
         if (transactionOptional.isEmpty()) {
@@ -49,7 +47,7 @@ class TransactionServiceImpl implements TransactionService {
         Transaction modifedTransaction = new Transaction(
                 oldTransaction.id(),
                 description,
-                BigDecimal.valueOf(amount),
+                amount,
                 Currency.valueOf(currency),
                 oldTransaction.creatorUserId(),
                 Instant.ofEpochMilli(createTime)

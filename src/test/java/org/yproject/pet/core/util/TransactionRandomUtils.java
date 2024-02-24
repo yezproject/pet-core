@@ -3,8 +3,6 @@ package org.yproject.pet.core.util;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.transaction.Transaction;
 
-import java.math.BigDecimal;
-
 import static org.yproject.pet.core.util.RandomUtils.*;
 
 public class TransactionRandomUtils {
@@ -17,7 +15,7 @@ public class TransactionRandomUtils {
         return new Transaction(
                 randomShortString(),
                 randomShortString(),
-                BigDecimal.valueOf(randomDouble()),
+                randomDouble(),
                 randomCurrency(),
                 randomShortString(),
                 randomInstant()
@@ -28,7 +26,7 @@ public class TransactionRandomUtils {
         return new Transaction(
                 transactionId,
                 randomShortString(),
-                BigDecimal.valueOf(randomDouble()),
+                randomDouble(),
                 randomCurrency(),
                 randomShortString(),
                 randomInstant()

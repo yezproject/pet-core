@@ -5,24 +5,24 @@ import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
 record RetrieveTransactionResponse(
         String id,
         String description,
-        double amount,
+        Double amount,
         RetrieveTransactionCurrencyResponse currency,
-        long createTime
+        Long createTime
 ) {
-
-    record RetrieveTransactionCurrencyResponse(
-            String name,
-            String symbol
-    ) {
-    }
 
     static RetrieveTransactionResponse toResponse(RetrieveTransactionDto dto) {
         return new RetrieveTransactionResponse(
                 dto.id(),
                 dto.description(),
-                dto.amount().doubleValue(),
+                dto.amount(),
                 new RetrieveTransactionCurrencyResponse(dto.currency().name(), dto.currency().getSymbol()),
                 dto.createTime().toEpochMilli()
         );
+    }
+
+    record RetrieveTransactionCurrencyResponse(
+            String name,
+            String symbol
+    ) {
     }
 }

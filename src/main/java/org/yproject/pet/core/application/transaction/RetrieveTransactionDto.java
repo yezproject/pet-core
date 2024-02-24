@@ -3,13 +3,12 @@ package org.yproject.pet.core.application.transaction;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.transaction.Transaction;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 public record RetrieveTransactionDto(
         String id,
         String description,
-        BigDecimal amount,
+        Double amount,
         Currency currency,
         Instant createTime
 ) {

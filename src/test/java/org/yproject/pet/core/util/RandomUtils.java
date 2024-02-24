@@ -37,7 +37,7 @@ public final class RandomUtils {
     }
 
     public static Instant randomInstant() {
-        return randomInstantBetween(Instant.EPOCH, Instant.EPOCH.plus(365*100, ChronoUnit.DAYS));
+        return randomInstantBetween(Instant.EPOCH, Instant.EPOCH.plus(365 * 100, ChronoUnit.DAYS));
     }
 
     public static Instant randomInstantBetween(Instant startInclusive, Instant endExclusive) {
@@ -51,4 +51,5 @@ public final class RandomUtils {
     public static double randomDouble() {
         return random().nextDouble();
     }
+
 }

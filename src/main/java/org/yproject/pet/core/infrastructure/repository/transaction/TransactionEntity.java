@@ -22,7 +22,7 @@ class TransactionEntity {
     private String description;
 
     @Column(nullable = false)
-    private double amount;
+    private Double amount;
 
     @Column(nullable = false)
     private String currency;
@@ -31,7 +31,7 @@ class TransactionEntity {
     private String creatorId;
 
     @Column(nullable = false)
-    private long createTime;
+    private Long createTime;
 
     @Column(nullable = false)
     private String type;

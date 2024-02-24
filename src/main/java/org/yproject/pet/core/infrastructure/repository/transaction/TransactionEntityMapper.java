@@ -3,7 +3,6 @@ package org.yproject.pet.core.infrastructure.repository.transaction;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.transaction.Transaction;
 
-import java.math.BigDecimal;
 import java.time.Instant;
 
 record TransactionEntityMapper() {
@@ -11,7 +10,7 @@ record TransactionEntityMapper() {
         return new TransactionEntity(
                 domain.id(),
                 domain.description(),
-                domain.amount().doubleValue(),
+                domain.amount(),
                 domain.currency().name(),
                 domain.creatorUserId(),
                 domain.createTime().toEpochMilli(),
@@ -23,7 +22,7 @@ record TransactionEntityMapper() {
         return new Transaction(
                 entity.getId(),
                 entity.getDescription(),
-                BigDecimal.valueOf(entity.getAmount()),
+                entity.getAmount(),
                 Currency.valueOf(entity.getCurrency()),
                 entity.getCreatorId(),
                 Instant.ofEpochMilli(entity.getCreateTime())
