@@ -1,4 +1,4 @@
-package org.yproject.pet.core.infrastructure.web.config.security;
+package org.yproject.pet.core.infrastructure.web.security;
 
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -36,7 +36,7 @@ public record UserInfo(
 
     @Override
     public String getUsername() {
-        return null;
+        return user.email();
     }
 
     @Override

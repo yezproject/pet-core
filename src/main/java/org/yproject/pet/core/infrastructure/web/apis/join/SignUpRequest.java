@@ -7,7 +7,8 @@ import java.util.Objects;
 record SignUpRequest(
         @JsonProperty(value = "fullName") String fullName,
         @JsonProperty(value = "email") String email,
-        @JsonProperty(value = "password") String password) {
+        @JsonProperty(value = "password") String password
+) {
     SignUpRequest {
         Objects.requireNonNull(fullName);
         Objects.requireNonNull(email);

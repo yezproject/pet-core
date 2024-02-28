@@ -1,6 +1,7 @@
-package org.yproject.pet.core.infrastructure.web.config.security;
+package org.yproject.pet.core.infrastructure.web.security;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpMethod;
 import org.springframework.web.cors.CorsConfiguration;
@@ -9,6 +10,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import java.util.List;
 
+@Configuration
 public class CorsConfig {
 
     @Profile("local")
@@ -26,10 +28,6 @@ public class CorsConfig {
                 HttpMethod.PUT.name(),
                 HttpMethod.PATCH.name(),
                 HttpMethod.DELETE.name()
-        ));
-        corsConfiguration.setMaxAge(8400L);
-        corsConfiguration.setAllowedHeaders(List.of(
-                "*"
         ));
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", corsConfiguration);

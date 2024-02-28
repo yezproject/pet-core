@@ -10,7 +10,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.domain.user.User;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
-import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
+import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
 import java.util.Optional;
 
@@ -26,7 +26,7 @@ import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 
 @ExtendWith(MockitoExtension.class)
 class JoinServiceImplTest {
-    private JoinServiceImpl underTest;
+    private JoinService underTest;
     @Mock
     private JwtService jwtService;
     @Mock

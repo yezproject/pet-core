@@ -1,4 +1,4 @@
-package org.yproject.pet.core.infrastructure.web.config.filter;
+package org.yproject.pet.core.infrastructure.web.filter;
 
 import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
@@ -13,7 +13,7 @@ import org.springframework.security.web.authentication.WebAuthenticationDetailsS
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 import org.yproject.pet.core.application.security.UserInfoService;
-import org.yproject.pet.core.infrastructure.web.config.jwt.JwtService;
+import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
 import java.io.IOException;
 import java.util.Optional;

@@ -5,14 +5,17 @@ import org.springframework.stereotype.Component;
 import java.util.UUID;
 
 @Component
-public record IdGeneratorImpl()
-        implements IdGenerator {
+record IdGeneratorImpl() implements IdGenerator {
 
-    @Override
-    public String get() {
-        UUID u = UUID.randomUUID();
-        return toIDString(u.getMostSignificantBits()) + toIDString(u.getLeastSignificantBits());
-    }
+    // array de 64+2 digitos
+    private static final char[] DIGITS66 = {
+            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
+            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
+            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
+            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
+            '-', '.', '_', '~'
+    };
 
     private static String toIDString(long i) {
         char[] buf = new char[32];
@@ -26,13 +29,9 @@ public record IdGeneratorImpl()
         return new String(buf, cp, (32 - cp));
     }
 
-    // array de 64+2 digitos
-    private static final char[] DIGITS66 = {
-            '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
-            'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm',
-            'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z',
-            'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M',
-            'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z',
-            '-', '.', '_', '~'
-    };
+    @Override
+    public String get() {
+        UUID u = UUID.randomUUID();
+        return toIDString(u.getMostSignificantBits()) + toIDString(u.getLeastSignificantBits());
+    }
 }

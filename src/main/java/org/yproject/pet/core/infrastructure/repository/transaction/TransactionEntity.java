@@ -1,4 +1,5 @@
-package org.yproject.pet.core.infrastructure.repository.user;
+package org.yproject.pet.core.infrastructure.repository.transaction;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -8,35 +9,31 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.time.Instant;
-
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
-@Entity(name = "users")
-class UserEntity {
+@Entity(name = "transactions")
+class TransactionEntity {
     @Id
     private String id;
 
-    @Column(nullable = false, unique = true)
-    private String email;
+    @Column(nullable = false)
+    private String description;
 
     @Column(nullable = false)
-    private String password;
+    private Double amount;
 
     @Column(nullable = false)
-    private String fullName;
+    private String currency;
 
     @Column(nullable = false)
-    private String role;
+    private String creatorId;
 
     @Column(nullable = false)
-    private String status;
+    private Long createTime;
 
     @Column(nullable = false)
-    private Instant createAt;
+    private String type;
 
-    @Column
-    private Instant approvedAt;
 }
