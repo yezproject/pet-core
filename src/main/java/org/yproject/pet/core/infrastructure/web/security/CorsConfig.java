@@ -19,8 +19,7 @@ public class CorsConfig {
         final var corsConfiguration = new CorsConfiguration();
         corsConfiguration.setAllowCredentials(true);
         corsConfiguration.setAllowedOrigins(List.of(
-                "http://localhost:8080",
-                "http://127.0.0.1:8080"
+                "*"
         ));
         corsConfiguration.setAllowedMethods(List.of(
                 HttpMethod.POST.name(),

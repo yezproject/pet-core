@@ -63,7 +63,7 @@ record JoinController(
     }
 
     @ExceptionHandler(JoinService.UserExistedException.class)
-    ResponseEntity<Void> userExistedExceptionHandler() {
-        return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+    ResponseEntity<String> userExistedExceptionHandler() {
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("EMAIL EXISTED");
     }
 }
