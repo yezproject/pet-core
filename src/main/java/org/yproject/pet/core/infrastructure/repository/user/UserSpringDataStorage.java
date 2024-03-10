@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public record UserSpringDataStorage(
+record UserSpringDataStorage(
         UserRepository repository
 ) implements UserStorage {
     private static UserEntity toEntity(final User domain) {
