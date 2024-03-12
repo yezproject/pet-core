@@ -24,9 +24,9 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.yproject.pet.core.util.FloatUtils.delta;
 import static org.yproject.pet.core.util.RandomUtils.*;
 import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
-
 
 @WebMvcTest(value = TransactionController.class)
 class TransactionControllerTest extends BaseControllerTest {
@@ -57,8 +57,8 @@ class TransactionControllerTest extends BaseControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(transactionDTO.id())))
-                .andExpect(jsonPath("$.description", comparesEqualTo(transactionDTO.description())))
-                .andExpect(jsonPath("$.amount", comparesEqualTo(transactionDTO.amount())))
+                .andExpect(jsonPath("$.description", is(transactionDTO.description())))
+                .andExpect(jsonPath("$.amount", closeTo(transactionDTO.amount(), delta)))
                 .andExpect(jsonPath("$.currency.name", is(transactionDTO.currency().name())))
                 .andExpect(jsonPath("$.currency.symbol", is(transactionDTO.currency().getSymbol())))
                 .andExpect(jsonPath("$.createTime", is(transactionDTO.createTime().toEpochMilli())));
@@ -86,7 +86,7 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$[0].id", is(transactions.get(0).id())))
                 .andExpect(jsonPath("$[0].description", is(transactions.get(0).description())))
-                .andExpect(jsonPath("$[0].amount", comparesEqualTo(transactions.get(0).amount())))
+                .andExpect(jsonPath("$[0].amount", closeTo(transactions.get(0).amount(), delta)))
                 .andExpect(jsonPath("$[0].currency.name", is(transactions.get(0).currency().name())))
                 .andExpect(jsonPath("$[0].currency.symbol", is(transactions.get(0).currency().getSymbol())))
                 .andExpect(jsonPath("$[0].createTime", is(transactions.get(0).createTime().toEpochMilli())));
