@@ -5,6 +5,7 @@ import java.util.List;
 public interface UserTokenService {
     UserTokenIdWithTokenDto create(
             String userId,
+            String email,
             String name
     );
 

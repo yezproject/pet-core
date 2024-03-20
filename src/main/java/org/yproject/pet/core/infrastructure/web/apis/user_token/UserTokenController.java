@@ -17,7 +17,7 @@ record UserTokenController(
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     UserTokenCreateResponse create(@RequestUser UserInfo user, @RequestBody @Valid UserTokenCreateRequest request) {
-        final var dto = userTokenService.create(user.getId(), request.name());
+        final var dto = userTokenService.create(user.getId(), user.getEmail(), request.name());
         return new UserTokenCreateResponse(dto.id(), dto.token());
     }
 

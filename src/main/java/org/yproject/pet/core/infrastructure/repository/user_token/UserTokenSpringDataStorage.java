@@ -16,8 +16,7 @@ record UserTokenSpringDataStorage(
         return new UserTokenEntity(
                 domain.id(),
                 domain.userId(),
-                domain.name(),
-                domain.secret()
+                domain.name()
         );
     }
 
@@ -25,8 +24,7 @@ record UserTokenSpringDataStorage(
         return new UserToken(
                 entity.getId(),
                 entity.getUserId(),
-                entity.getName(),
-                entity.getSecret()
+                entity.getName()
         );
     }
 

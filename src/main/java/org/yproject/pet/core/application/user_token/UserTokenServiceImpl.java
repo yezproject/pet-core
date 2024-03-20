@@ -3,31 +3,27 @@ package org.yproject.pet.core.application.user_token;
 import org.springframework.stereotype.Service;
 import org.yproject.pet.core.domain.user_token.UserToken;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
-import org.yproject.pet.core.infrastructure.generator.key.SecretHashGenerator;
+import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
 import java.util.List;
 
 @Service
 record UserTokenServiceImpl(
         IdGenerator idGenerator,
-        SecretHashGenerator secretHashGenerator,
+        JwtService jwtService,
         UserTokenStorage userTokenStorage
 ) implements UserTokenService {
 
-    public static final String DUMMYTOKEN = "DUMMYTOKEN";
-
     @Override
-    public UserTokenIdWithTokenDto create(String userId, String name) {
+    public UserTokenIdWithTokenDto create(String userId, String email, String name) {
         final var id = idGenerator.get();
-        final var secret = secretHashGenerator.get(userId.concat(id));
         userTokenStorage.store(new UserToken(
                 id,
                 userId,
-                name,
-                secret
+                name
         ));
-        /* TODO: require update return JWT token with user data to integrate with current JWT Auth Based */
-        return new UserTokenIdWithTokenDto(id, DUMMYTOKEN);
+        final var oneTimeToken = jwtService.generateToken(email, id);
+        return new UserTokenIdWithTokenDto(id, oneTimeToken);
     }
 
     @Override

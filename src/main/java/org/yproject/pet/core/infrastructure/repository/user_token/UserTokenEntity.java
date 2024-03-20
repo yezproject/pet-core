@@ -23,6 +23,4 @@ class UserTokenEntity {
     @Column(nullable = false)
     private String name;
 
-    @Column(nullable = false, unique = true)
-    private String secret;
 }

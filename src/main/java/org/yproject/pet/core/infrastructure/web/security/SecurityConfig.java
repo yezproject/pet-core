@@ -10,23 +10,18 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.application.security.UserInfoService;
 import org.yproject.pet.core.infrastructure.web.filter.JwtAuthenticationFilter;
-
-import java.util.Optional;
 
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-
     @Bean
     SecurityFilterChain securityFilterChain(
             final HttpSecurity http,
@@ -67,13 +62,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService(UserStorage userStorage) {
-        return email -> {
-            Optional<User> userOptional = userStorage.findByEmail(email);
-            if (userOptional.isEmpty()) {
-                throw new UsernameNotFoundException(email);
-            }
-            return new UserInfo(userOptional.get());
-        };
+    UserDetailsService userDetailsService(UserInfoService userInfoService) {
+        return userInfoService::loadUserByEmail;
     }
 }
