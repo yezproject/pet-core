@@ -1,6 +1,5 @@
 package org.yproject.pet.core.infrastructure.repository.transaction;
 
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;

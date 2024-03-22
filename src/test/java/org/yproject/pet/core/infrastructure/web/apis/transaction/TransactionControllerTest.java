@@ -11,10 +11,14 @@ import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
 import org.yproject.pet.core.application.transaction.TransactionService;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.domain.user_token.UserToken;
 import org.yproject.pet.core.infrastructure.web.apis.BaseControllerTest;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
 import org.yproject.pet.core.util.TransactionRandomUtils;
+
+import java.util.Collections;
+import java.util.Set;
 
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.*;
@@ -32,6 +36,7 @@ import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 class TransactionControllerTest extends BaseControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final User mockUser = randomUser();
+    private final Set<UserToken> mockTokenSet = Collections.emptySet();
 
     @MockBean
     TransactionService transactionService;
@@ -43,7 +48,7 @@ class TransactionControllerTest extends BaseControllerTest {
         when(this.jwtService.isTokenValid(any(), any()))
                 .thenReturn(true);
         when(this.userInfoService.loadUserByEmail(any()))
-                .thenReturn(new UserInfo(mockUser));
+                .thenReturn(new UserInfo(mockUser, mockTokenSet));
     }
 
     @Test
