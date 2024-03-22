@@ -11,7 +11,7 @@ import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
 import org.yproject.pet.core.application.transaction.TransactionService;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.user.User;
-import org.yproject.pet.core.domain.user_token.UserToken;
+import org.yproject.pet.core.domain.open_api_token.OpenApiToken;
 import org.yproject.pet.core.infrastructure.web.apis.BaseControllerTest;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
@@ -36,7 +36,7 @@ import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 class TransactionControllerTest extends BaseControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final User mockUser = randomUser();
-    private final Set<UserToken> mockTokenSet = Collections.emptySet();
+    private final Set<OpenApiToken> mockTokenSet = Collections.emptySet();
 
     @MockBean
     TransactionService transactionService;

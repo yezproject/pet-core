@@ -1,4 +1,4 @@
-package org.yproject.pet.core.infrastructure.repository.user_token;
+package org.yproject.pet.core.infrastructure.repository.open_api_token;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,12 +12,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Getter
 @Builder
-@Entity(name = "user_tokens")
-class UserTokenEntity {
+@Entity(name = "open_api_tokens")
+public class OpenApiToken {
     @Id
     private String id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, updatable = false)
     private String userId;
 
     @Column(nullable = false)

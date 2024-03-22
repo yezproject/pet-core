@@ -4,7 +4,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.yproject.pet.core.domain.user.User;
-import org.yproject.pet.core.domain.user_token.UserToken;
+import org.yproject.pet.core.domain.open_api_token.OpenApiToken;
 
 import java.io.Serial;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 public record UserInfo(
         User user,
-        Set<UserToken> userTokenSet
+        Set<OpenApiToken> openApiTokenSet
 ) implements UserDetails {
 
     @Serial

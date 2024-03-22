@@ -13,7 +13,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity(name = "transactions")
-class TransactionEntity {
+public class TransactionEntity {
     @Id
     private String id;
 
