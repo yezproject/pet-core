@@ -1,6 +1,6 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
-import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
+import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 
 record RetrieveTransactionResponse(
         String id,
@@ -10,7 +10,7 @@ record RetrieveTransactionResponse(
         Long createTime
 ) {
 
-    static RetrieveTransactionResponse toResponse(RetrieveTransactionDto dto) {
+    static RetrieveTransactionResponse toResponse(RetrieveTransactionDTO dto) {
         return new RetrieveTransactionResponse(
                 dto.id(),
                 dto.description(),

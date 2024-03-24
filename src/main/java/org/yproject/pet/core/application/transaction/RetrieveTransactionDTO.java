@@ -5,7 +5,7 @@ import org.yproject.pet.core.domain.transaction.Transaction;
 
 import java.time.Instant;
 
-public record RetrieveTransactionDto(
+public record RetrieveTransactionDTO(
         String id,
         String description,
         Double amount,
@@ -13,8 +13,8 @@ public record RetrieveTransactionDto(
         Instant createTime
 ) {
 
-    public static RetrieveTransactionDto fromDomain(Transaction domain) {
-        return new RetrieveTransactionDto(
+    public static RetrieveTransactionDTO fromDomain(Transaction domain) {
+        return new RetrieveTransactionDTO(
                 domain.id(),
                 domain.description(),
                 domain.amount(),

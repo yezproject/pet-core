@@ -1,10 +1,6 @@
-package org.yproject.pet.core.application.join;
+package org.yproject.pet.core.application.user;
 
 public interface JoinService {
-
-    String signIn(String email, String password);
-
-    String signup(SignUpApplicationDto signUpApplicationDto);
 
     final class UserNotFoundException extends RuntimeException {
     }
@@ -14,4 +10,8 @@ public interface JoinService {
 
     final class UserExistedException extends RuntimeException {
     }
+
+    String signIn(String email, String password);
+
+    String signup(SignUpApplicationDto signUpApplicationDto);
 }

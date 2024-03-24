@@ -1,18 +1,20 @@
 package org.yproject.pet.core.infrastructure.web.apis.join;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yproject.pet.core.application.join.JoinService;
-import org.yproject.pet.core.application.join.SignUpApplicationDto;
+import org.yproject.pet.core.application.user.JoinService;
+import org.yproject.pet.core.application.user.SignUpApplicationDto;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/auth")
 @Tag(name = "User", description = "Join System APIs")
-record JoinController(
-        JoinService joinService
-) {
+class JoinController {
+    private final JoinService joinService;
+
     private static SignInResponse toSignInResponse(String token) {
         return new SignInResponse(token);
     }

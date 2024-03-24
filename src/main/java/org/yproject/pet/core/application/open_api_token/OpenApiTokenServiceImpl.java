@@ -1,18 +1,19 @@
 package org.yproject.pet.core.application.open_api_token;
 
-import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Component;
 import org.yproject.pet.core.domain.open_api_token.OpenApiToken;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
 import java.util.List;
 
-@Service
-record OpenApiTokenServiceImpl(
-        IdGenerator idGenerator,
-        JwtService jwtService,
-        OpenApiTokenStorage openApiTokenStorage
-) implements OpenApiTokenService {
+@Component
+@RequiredArgsConstructor
+class OpenApiTokenServiceImpl implements OpenApiTokenService {
+    private final IdGenerator idGenerator;
+    private final JwtService jwtService;
+    private final OpenApiTokenStorage openApiTokenStorage;
 
     @Override
     public OpenApiTokenIdWithTokenDto create(String userId, String email, String name) {

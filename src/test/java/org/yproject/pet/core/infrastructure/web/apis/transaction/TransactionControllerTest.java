@@ -7,7 +7,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
+import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.core.application.transaction.TransactionService;
 import org.yproject.pet.core.domain.transaction.Currency;
 import org.yproject.pet.core.domain.user.User;
@@ -55,7 +55,7 @@ class TransactionControllerTest extends BaseControllerTest {
     void retrieve_return_200() throws Exception {
         final var transactionId = randomShortString();
         final var transaction = TransactionRandomUtils.randomTransaction();
-        final var transactionDTO = RetrieveTransactionDto.fromDomain(transaction);
+        final var transactionDTO = RetrieveTransactionDTO.fromDomain(transaction);
         when(this.transactionService.retrieve(anyString(), anyString())).thenReturn(transactionDTO);
 
         this.mockMvc.perform(get("/api/transactions/" + transactionId)
@@ -83,7 +83,7 @@ class TransactionControllerTest extends BaseControllerTest {
     @Test
     void retrieveAll_return_200() throws Exception {
         final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
-        final var transactionDTOs = transactions.stream().map(RetrieveTransactionDto::fromDomain).toList();
+        final var transactionDTOs = transactions.stream().map(RetrieveTransactionDTO::fromDomain).toList();
         when(this.transactionService.retrieveAll(any())).thenReturn(transactionDTOs);
 
         this.mockMvc.perform(get("/api/transactions")

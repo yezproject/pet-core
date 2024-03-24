@@ -146,11 +146,11 @@ class TransactionServiceImplTest {
 
         then(transactionStorage).should().retrieveOneByIdAndUserId(transactionId, userId);
         assertThat(result)
-                .returns(transactionId, RetrieveTransactionDto::id)
-                .returns(transaction.description(), RetrieveTransactionDto::description)
-                .returns(transaction.amount(), RetrieveTransactionDto::amount)
-                .returns(transaction.currency(), RetrieveTransactionDto::currency)
-                .returns(transaction.createTime(), RetrieveTransactionDto::createTime);
+                .returns(transactionId, RetrieveTransactionDTO::id)
+                .returns(transaction.description(), RetrieveTransactionDTO::description)
+                .returns(transaction.amount(), RetrieveTransactionDTO::amount)
+                .returns(transaction.currency(), RetrieveTransactionDTO::currency)
+                .returns(transaction.createTime(), RetrieveTransactionDTO::createTime);
     }
 
     @Test

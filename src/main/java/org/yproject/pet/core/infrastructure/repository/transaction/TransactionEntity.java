@@ -1,12 +1,11 @@
 package org.yproject.pet.core.infrastructure.repository.transaction;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.yproject.pet.core.infrastructure.repository.category.CategoryEntity;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -35,4 +34,7 @@ public class TransactionEntity {
     @Column(nullable = false)
     private String type;
 
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name = "category_id")
+    private CategoryEntity category;
 }

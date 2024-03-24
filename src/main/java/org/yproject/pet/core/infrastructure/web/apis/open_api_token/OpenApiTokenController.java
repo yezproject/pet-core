@@ -1,6 +1,7 @@
 package org.yproject.pet.core.infrastructure.web.apis.open_api_token;
 
 import jakarta.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.yproject.pet.core.application.open_api_token.OpenApiTokenService;
@@ -10,10 +11,11 @@ import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import java.util.List;
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("tokens")
-record OpenApiTokenController(
-        OpenApiTokenService openApiTokenService
-) {
+class OpenApiTokenController {
+    private final OpenApiTokenService openApiTokenService;
+
     @PostMapping
     @ResponseStatus(HttpStatus.OK)
     OpenApiTokenCreateResponse create(@RequestUser UserInfo user, @RequestBody @Valid OpenApiTokenCreateRequest request) {

@@ -1,4 +1,4 @@
-package org.yproject.pet.core.application.join;
+package org.yproject.pet.core.application.user;
 
 import java.util.Objects;
 

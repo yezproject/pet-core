@@ -1,26 +1,26 @@
-package org.yproject.pet.core.application.join;
+package org.yproject.pet.core.application.user;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.stereotype.Service;
-import org.yproject.pet.core.application.user.UserStorage;
+import org.springframework.stereotype.Component;
+import org.yproject.pet.core.domain.user.ApprovalStatus;
+import org.yproject.pet.core.domain.user.Role;
+import org.yproject.pet.core.domain.user.User;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
-import org.yproject.pet.core.domain.user.User;
-import org.yproject.pet.core.domain.user.Role;
-import org.yproject.pet.core.domain.user.ApprovalStatus;
 
 import java.time.Instant;
 
-@Service
-record JoinServiceImpl(
-        UserStorage userStorage,
-        JwtService jwtService,
-        PasswordEncoder passwordEncoder,
-        IdGenerator idGenerator
-) implements JoinService {
+@Component
+@RequiredArgsConstructor
+class JoinServiceImpl implements JoinService {
+    private final UserStorage userStorage;
+    private final JwtService jwtService;
+    private final PasswordEncoder passwordEncoder;
+    private final IdGenerator idGenerator;
 
     @Override
-    public String signIn(String email, String password) {
+    public String signIn(final String email, final String password) {
         final var existingUserOptional = userStorage.findByEmail(email);
         if (existingUserOptional.isEmpty()) throw new UserNotFoundException();
 
@@ -31,7 +31,7 @@ record JoinServiceImpl(
     }
 
     @Override
-    public String signup(SignUpApplicationDto signUpApplicationDto) {
+    public String signup(final SignUpApplicationDto signUpApplicationDto) {
         final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.email());
         if (existingUserOptional.isPresent()) throw new UserExistedException();
         final var id = idGenerator.get();

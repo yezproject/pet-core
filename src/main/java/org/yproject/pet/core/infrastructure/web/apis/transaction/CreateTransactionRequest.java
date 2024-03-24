@@ -7,6 +7,7 @@ record CreateTransactionRequest(
         @NotBlank String description,
         @NotNull Double amount,
         @NotBlank String currency,
-        @NotNull Long createTime
+        @NotNull Long createTime,
+        String categoryId
 ) {
 }
