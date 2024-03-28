@@ -11,7 +11,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import java.util.List;
 
 @Configuration
-class CorsConfig {
+public class CorsConfig {
 
     @Profile("local")
     @Bean

@@ -1,7 +1,8 @@
 package org.yproject.pet.core.domain.user;
 
 import org.junit.jupiter.api.Test;
-import org.yproject.pet.core.domain.exception.DomainModifyException;
+import org.yproject.pet.core.domain.common.error.DomainModifyException;
+import org.yproject.pet.core.domain.user.enums.ApprovalStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
@@ -11,16 +12,16 @@ class UserTest {
     @Test
     void pending_to_approved() {
         final var pendingUser = randomUser(ApprovalStatus.PENDING);
-        final var approvedUser = pendingUser.approve();
-        assertEquals(ApprovalStatus.APPROVED, approvedUser.approvalStatus());
-        assertNotNull(approvedUser.approvedAt());
+        pendingUser.approve();
+        assertEquals(ApprovalStatus.APPROVED, pendingUser.getApprovalStatus());
+        assertNotNull(pendingUser.getApprovedAt());
     }
 
     @Test
     void pending_to_rejected() {
         final var pendingUser = randomUser(ApprovalStatus.PENDING);
-        final var approvedUser = pendingUser.reject();
-        assertEquals(ApprovalStatus.REJECTED, approvedUser.approvalStatus());
+        pendingUser.reject();
+        assertEquals(ApprovalStatus.REJECTED, pendingUser.getApprovalStatus());
     }
 
     @Test

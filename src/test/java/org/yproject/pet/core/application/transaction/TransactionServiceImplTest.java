@@ -6,8 +6,8 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.yproject.pet.core.domain.transaction.Currency;
-import org.yproject.pet.core.domain.transaction.Transaction;
+import org.yproject.pet.core.domain.transaction.enums.Currency;
+import org.yproject.pet.core.domain.transaction.entities.Transaction;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.util.RandomUtils;
 import org.yproject.pet.core.util.TransactionRandomUtils;
@@ -39,6 +39,7 @@ class TransactionServiceImplTest {
         final var amount = randomDouble();
         final var currency = randomFrom(Currency.values()).name();
         final var createTime = randomInstant().toEpochMilli();
+        final var categoryId = randomShortString();
 
         final var id = randomShortString();
         final var transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
@@ -47,17 +48,17 @@ class TransactionServiceImplTest {
         when(transactionStorage.save(any()))
                 .thenReturn(id);
 
-        final var result = underTest.create(userId, description, amount, currency, createTime);
+        final var result = underTest.create(userId, new CreateTransactionDTO(categoryId, description, amount, currency, createTime));
 
         verify(transactionStorage).save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(id, Transaction::id)
-                .returns(description, Transaction::description)
-                .returns(amount, Transaction::amount)
-                .returns(currency, transaction -> transaction.currency().name())
-                .returns(userId, Transaction::creatorUserId)
-                .returns(createTime, transaction -> transaction.createTime().toEpochMilli());
+                .returns(id, Transaction::getId)
+                .returns(description, Transaction::getDescription)
+                .returns(amount, Transaction::getAmount)
+                .returns(currency, transaction -> transaction.getCurrency().name())
+                .returns(userId, Transaction::getCreatorUserId)
+                .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
         assertThat(result).isEqualTo(id);
 
     }
@@ -70,7 +71,7 @@ class TransactionServiceImplTest {
         final var amount = randomDouble();
         final var currency = randomFrom(Currency.values()).name();
         final var createTime = randomInstant().toEpochMilli();
-
+        final var categoryId = randomShortString();
         final var oldTransaction = randomTransaction();
 
         ArgumentCaptor<Transaction> transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
@@ -79,17 +80,17 @@ class TransactionServiceImplTest {
         when(transactionStorage.save(any()))
                 .thenReturn(userId);
 
-        underTest.modify(userId, modifyId, description, amount, currency, createTime);
+        underTest.modify(userId, modifyId, new ModifyTransactionDTO(categoryId, description, amount, currency, createTime));
 
         then(transactionStorage).should().save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(oldTransaction.id(), Transaction::id)
-                .returns(description, Transaction::description)
-                .returns(amount, Transaction::amount)
-                .returns(currency, transaction -> transaction.currency().name())
-                .returns(oldTransaction.creatorUserId(), Transaction::creatorUserId)
-                .returns(createTime, transaction -> transaction.createTime().toEpochMilli());
+                .returns(oldTransaction.getId(), Transaction::getId)
+                .returns(description, Transaction::getDescription)
+                .returns(amount, Transaction::getAmount)
+                .returns(currency, transaction -> transaction.getCurrency().name())
+                .returns(oldTransaction.getCreatorUserId(), Transaction::getCreatorUserId)
+                .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
     }
 
     @Test
@@ -100,12 +101,13 @@ class TransactionServiceImplTest {
         final var amount = randomDouble();
         final var currency = randomFrom(Currency.values()).name();
         final var createTime = randomInstant().toEpochMilli();
+        final var categoryId = randomShortString();
 
         when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
         assertThrows(TransactionService.TransactionNotExisted.class,
-                () -> underTest.modify(userId, modifyId, description, amount, currency, createTime));
+                () -> underTest.modify(userId, modifyId, new ModifyTransactionDTO(categoryId, description, amount, currency, createTime)));
 
         then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
         then(transactionStorage).should(never()).save(any());
@@ -147,10 +149,10 @@ class TransactionServiceImplTest {
         then(transactionStorage).should().retrieveOneByIdAndUserId(transactionId, userId);
         assertThat(result)
                 .returns(transactionId, RetrieveTransactionDTO::id)
-                .returns(transaction.description(), RetrieveTransactionDTO::description)
-                .returns(transaction.amount(), RetrieveTransactionDTO::amount)
-                .returns(transaction.currency(), RetrieveTransactionDTO::currency)
-                .returns(transaction.createTime(), RetrieveTransactionDTO::createTime);
+                .returns(transaction.getDescription(), RetrieveTransactionDTO::description)
+                .returns(transaction.getAmount(), RetrieveTransactionDTO::amount)
+                .returns(transaction.getCurrency(), RetrieveTransactionDTO::currency)
+                .returns(transaction.getCreateTime(), RetrieveTransactionDTO::createTime);
     }
 
     @Test

@@ -1,13 +1,13 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.yproject.pet.core.application.transaction.CreateTransactionDTO;
+import org.yproject.pet.core.application.transaction.ModifyTransactionDTO;
 import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.core.application.transaction.TransactionService;
 import org.yproject.pet.core.infrastructure.web.security.RequestUser;
@@ -44,17 +44,17 @@ class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(
-            @RequestBody @Valid CreateTransactionRequest req,
+            @RequestBody CreateTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         String id = transactionService.create(
                 user.getId(),
                 new CreateTransactionDTO(
+                        req.categoryId(),
                         req.description(),
                         req.amount(),
                         req.currency(),
-                        req.createTime(),
-                        req.categoryId()
+                        req.createTime()
                 )
         );
         return new CreateTransactionResponse(id);
@@ -64,16 +64,20 @@ class TransactionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
             @PathVariable String transactionId,
-            @RequestBody @Valid ModifyTransactionRequest req,
+            @RequestBody ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         transactionService.modify(
                 user.getId(),
                 transactionId,
-                req.description(),
-                req.amount(),
-                req.currency(),
-                req.createTime()
+                new ModifyTransactionDTO(
+                        req.categoryId(),
+                        req.description(),
+                        req.amount(),
+                        req.currency(),
+                        req.createTime()
+                )
+
         );
     }
 

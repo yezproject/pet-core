@@ -15,7 +15,7 @@ public class CategoryEntity {
     private String id;
 
     @Column
-    private String userId;
+    private String createUserId;
 
     @Column(nullable = false)
     private String name;

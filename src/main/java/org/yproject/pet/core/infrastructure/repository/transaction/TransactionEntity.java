@@ -1,16 +1,17 @@
 package org.yproject.pet.core.infrastructure.repository.transaction;
 
-import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.yproject.pet.core.infrastructure.repository.category.CategoryEntity;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import lombok.*;
+
+import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity(name = "transactions")
 public class TransactionEntity {
     @Id
@@ -26,15 +27,13 @@ public class TransactionEntity {
     private String currency;
 
     @Column(nullable = false)
-    private String creatorId;
+    private String creatorUserId;
 
     @Column(nullable = false)
-    private Long createTime;
+    private Instant createTime;
 
     @Column(nullable = false)
     private String type;
 
-    @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "category_id")
-    private CategoryEntity category;
+    private String categoryId;
 }

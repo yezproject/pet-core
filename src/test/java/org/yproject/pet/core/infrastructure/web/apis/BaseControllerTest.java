@@ -10,7 +10,6 @@ import org.yproject.pet.core.application.user.UserStorage;
 import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 import org.yproject.pet.core.infrastructure.web.security.SecurityConfig;
 
-
 @Import(SecurityConfig.class)
 public abstract class BaseControllerTest {
     @Autowired

@@ -18,7 +18,7 @@ record UserInfoServiceImpl(
         if (optionalUser.isEmpty()) throw new UsernameNotFoundException("User not found");
         else {
             final var user = optionalUser.get();
-            final var userTokenSet = openApiTokenStorage.findByUserId(user.id());
+            final var userTokenSet = openApiTokenStorage.findByUserId(user.getId().value());
             return new UserInfo(user, userTokenSet);
         }
     }

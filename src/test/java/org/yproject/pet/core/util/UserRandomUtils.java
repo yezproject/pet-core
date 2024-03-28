@@ -1,12 +1,15 @@
 package org.yproject.pet.core.util;
 
-import org.yproject.pet.core.domain.user.ApprovalStatus;
-import org.yproject.pet.core.domain.user.Role;
-import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.domain.user.entities.UserBuilder;
+import org.yproject.pet.core.domain.user.enums.ApprovalStatus;
+import org.yproject.pet.core.domain.user.enums.Role;
+import org.yproject.pet.core.domain.user.entities.User;
+import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.time.Instant;
 
 import static org.yproject.pet.core.util.RandomUtils.*;
+import static org.yproject.pet.core.util.RandomUtils.randomShortString;
 
 public class UserRandomUtils {
 
@@ -16,16 +19,15 @@ public class UserRandomUtils {
         if (approvalStatus == ApprovalStatus.APPROVED) {
             approvalAt = randomInstant();
         }
-        return new User(
-                randomShortString(),
-                randomShortString(),
-                randomShortString(),
-                randomLongString(),
-                randomUserRole(),
-                approvalStatus,
-                randomInstant(),
-                approvalAt
-        );
+        return new UserBuilder(new UserId(randomShortString()))
+                .email(randomShortString())
+                .fullName(randomShortString())
+                .password(randomShortString())
+                .role(randomUserRole())
+                .approvalStatus(approvalStatus)
+                .createAt(randomInstant())
+                .approvedAt(approvalAt)
+                .build();
     }
 
     public static Role randomUserRole() {
@@ -41,15 +43,14 @@ public class UserRandomUtils {
         if (approvalStatus == ApprovalStatus.APPROVED) {
             approvalAt = randomInstant();
         }
-        return new User(
-                randomShortString(),
-                randomShortString(),
-                randomShortString(),
-                randomLongString(),
-                randomUserRole(),
-                approvalStatus,
-                randomInstant(),
-                approvalAt
-        );
+        return new UserBuilder(new UserId(randomShortString()))
+                .email(randomShortString())
+                .fullName(randomShortString())
+                .password(randomShortString())
+                .role(randomUserRole())
+                .approvalStatus(approvalStatus)
+                .createAt(randomInstant())
+                .approvedAt(approvalAt)
+                .build();
     }
 }

@@ -21,7 +21,7 @@ import org.yproject.pet.core.infrastructure.web.filter.JwtAuthenticationFilter;
 @Configuration
 @EnableWebSecurity
 @RequiredArgsConstructor
-class SecurityConfig {
+public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(
             final HttpSecurity http,

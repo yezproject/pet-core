@@ -2,9 +2,11 @@ package org.yproject.pet.core.infrastructure.repository.user;
 
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.user.UserStorage;
-import org.yproject.pet.core.domain.user.ApprovalStatus;
-import org.yproject.pet.core.domain.user.Role;
-import org.yproject.pet.core.domain.user.User;
+import org.yproject.pet.core.domain.user.entities.User;
+import org.yproject.pet.core.domain.user.entities.UserBuilder;
+import org.yproject.pet.core.domain.user.enums.ApprovalStatus;
+import org.yproject.pet.core.domain.user.enums.Role;
+import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.util.List;
 import java.util.Optional;
@@ -15,28 +17,27 @@ record UserSpringDataStorage(
 ) implements UserStorage {
     private static UserEntity toEntity(final User domain) {
         return new UserEntity(
-                domain.id(),
-                domain.email(),
-                domain.password(),
-                domain.fullName(),
-                domain.role().name(),
-                domain.approvalStatus().name(),
-                domain.createAt(),
-                domain.approvedAt()
+                domain.getId().value(),
+                domain.getEmail(),
+                domain.getPassword(),
+                domain.getFullName(),
+                domain.getRole().name(),
+                domain.getApprovalStatus().name(),
+                domain.getCreateAt(),
+                domain.getApprovedAt()
         );
     }
 
     private static User fromEntity(final UserEntity entity) {
-        return new User(
-                entity.getId(),
-                entity.getEmail(),
-                entity.getFullName(),
-                entity.getPassword(),
-                Role.valueOf(entity.getRole()),
-                ApprovalStatus.valueOf(entity.getStatus()),
-                entity.getCreateAt(),
-                entity.getApprovedAt()
-        );
+        return new UserBuilder(new UserId(entity.getId()))
+                .email(entity.getEmail())
+                .fullName(entity.getFullName())
+                .password(entity.getPassword())
+                .role(Role.valueOf(entity.getRole()))
+                .approvalStatus(ApprovalStatus.valueOf(entity.getStatus()))
+                .createAt(entity.getCreateAt())
+                .approvedAt(entity.getApprovedAt())
+                .build();
     }
 
     @Override

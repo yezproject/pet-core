@@ -2,7 +2,9 @@ package org.yproject.pet.core.application.open_api_token;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.core.domain.open_api_token.OpenApiToken;
+import org.yproject.pet.core.domain.api_token.entities.ApiTokenBuilder;
+import org.yproject.pet.core.domain.api_token.value_objects.ApiTokenId;
+import org.yproject.pet.core.domain.user.value_objects.UserId;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
@@ -17,21 +19,21 @@ class OpenApiTokenServiceImpl implements OpenApiTokenService {
 
     @Override
     public OpenApiTokenIdWithTokenDto create(String userId, String email, String name) {
-        final var id = idGenerator.get();
-        openApiTokenStorage.store(new OpenApiToken(
-                id,
-                userId,
-                name
-        ));
-        final var oneTimeToken = jwtService.generateToken(email, id);
-        return new OpenApiTokenIdWithTokenDto(id, oneTimeToken);
+        final var apiTokenId = idGenerator.get();
+        openApiTokenStorage.store(new ApiTokenBuilder(new ApiTokenId(apiTokenId))
+                .userId(new UserId(userId))
+                .name(name)
+                .build()
+        );
+        final var oneTimeToken = jwtService.generateToken(email, apiTokenId);
+        return new OpenApiTokenIdWithTokenDto(apiTokenId, oneTimeToken);
     }
 
     @Override
     public List<OpenApiTokenIdWithNameDto> retrieveAllByUserId(String userId) {
         return openApiTokenStorage.findByUserId(userId)
                 .stream()
-                .map(domain -> new OpenApiTokenIdWithNameDto(domain.id(), domain.name()))
+                .map(domain -> new OpenApiTokenIdWithNameDto(domain.getId().toString(), domain.getName()))
                 .toList();
     }
 

@@ -1,7 +1,7 @@
 package org.yproject.pet.core.application.transaction;
 
-import org.yproject.pet.core.domain.transaction.Currency;
-import org.yproject.pet.core.domain.transaction.Transaction;
+import org.yproject.pet.core.domain.transaction.entities.Transaction;
+import org.yproject.pet.core.domain.transaction.enums.Currency;
 
 import java.time.Instant;
 
@@ -15,12 +15,11 @@ public record RetrieveTransactionDTO(
 
     public static RetrieveTransactionDTO fromDomain(Transaction domain) {
         return new RetrieveTransactionDTO(
-                domain.id(),
-                domain.description(),
-                domain.amount(),
-                domain.currency(),
-                domain.createTime()
+                domain.getId().value(),
+                domain.getDescription(),
+                domain.getAmount(),
+                domain.getCurrency(),
+                domain.getCreateTime()
         );
     }
-
 }

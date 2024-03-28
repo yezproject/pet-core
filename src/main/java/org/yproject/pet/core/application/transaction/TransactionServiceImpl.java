@@ -2,8 +2,12 @@ package org.yproject.pet.core.application.transaction;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.core.domain.transaction.Currency;
-import org.yproject.pet.core.domain.transaction.Transaction;
+import org.yproject.pet.core.domain.category.value_objects.CategoryId;
+import org.yproject.pet.core.domain.transaction.entities.Transaction;
+import org.yproject.pet.core.domain.transaction.entities.TransactionBuilder;
+import org.yproject.pet.core.domain.transaction.enums.Currency;
+import org.yproject.pet.core.domain.transaction.value_objects.TransactionId;
+import org.yproject.pet.core.domain.user.value_objects.UserId;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 
 import java.time.Instant;
@@ -17,15 +21,16 @@ class TransactionServiceImpl implements TransactionService {
 
     @Override
     public String create(String userId, CreateTransactionDTO createTransactionDTO) {
-        return transactionStorage.save(new Transaction(
-                idGenerator.get(),
-                createTransactionDTO.categoryId(),
-                createTransactionDTO.description(),
-                createTransactionDTO.amount(),
-                Currency.valueOf(createTransactionDTO.currency()),
-                userId,
-                Instant.ofEpochMilli(createTransactionDTO.createTime())
-        ));
+        final var newTransactionId = idGenerator.get();
+        final var newTransaction = new TransactionBuilder(new TransactionId(newTransactionId))
+                .creatorUserId(new UserId(userId))
+                .categoryId(new CategoryId(createTransactionDTO.categoryId()))
+                .description(createTransactionDTO.description())
+                .amount(createTransactionDTO.amount())
+                .currency(Currency.valueOf(createTransactionDTO.currency()))
+                .createTime(Instant.ofEpochMilli(createTransactionDTO.createTime()))
+                .build();
+        return transactionStorage.save(newTransaction);
     }
 
     @Override
@@ -38,17 +43,13 @@ class TransactionServiceImpl implements TransactionService {
         if (transactionOptional.isEmpty()) {
             throw new TransactionNotExisted();
         }
-        Transaction oldTransaction = transactionOptional.get();
-        Transaction modifedTransaction = new Transaction(
-                oldTransaction.id(),
-                modifyTransactionDTO.categoryId(),
-                modifyTransactionDTO.description(),
-                modifyTransactionDTO.amount(),
-                Currency.valueOf(modifyTransactionDTO.currency()),
-                oldTransaction.creatorUserId(),
-                Instant.ofEpochMilli(modifyTransactionDTO.createTime())
-        );
-        transactionStorage.save(modifedTransaction);
+        Transaction transaction = transactionOptional.get();
+        transaction.modifyCategoryId(new CategoryId(modifyTransactionDTO.categoryId()));
+        transaction.modifyAmount(modifyTransactionDTO.amount());
+        transaction.modifyDescription(modifyTransactionDTO.description());
+        transaction.modifyCurrency(Currency.valueOf(modifyTransactionDTO.currency()));
+        transaction.modifyCreateTime(Instant.ofEpochMilli(modifyTransactionDTO.createTime()));
+        transactionStorage.save(transaction);
     }
 
     @Override
