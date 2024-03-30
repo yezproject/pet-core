@@ -71,7 +71,7 @@ class JoinServiceImplTest {
         verify(userStorage).store(userCaptor.capture());
 
         assertThat(userCaptor.getValue())
-                .returns(newUserId, User::getId)
+                .returns(newUserId, user -> user.getId().value())
                 .returns(encodedPassword, User::getPassword)
                 .returns(dto.fullName(), User::getFullName)
                 .returns(dto.email(), User::getEmail);

@@ -53,11 +53,11 @@ class TransactionServiceImplTest {
         verify(transactionStorage).save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(id, Transaction::getId)
+                .returns(id, transaction -> transaction.getId().value())
                 .returns(description, Transaction::getDescription)
                 .returns(amount, Transaction::getAmount)
                 .returns(currency, transaction -> transaction.getCurrency().name())
-                .returns(userId, Transaction::getCreatorUserId)
+                .returns(userId, transaction -> transaction.getCreatorUserId().value())
                 .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
         assertThat(result).isEqualTo(id);
 
@@ -85,11 +85,11 @@ class TransactionServiceImplTest {
         then(transactionStorage).should().save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(oldTransaction.getId(), Transaction::getId)
+                .returns(oldTransaction.getId().value(), transaction -> transaction.getId().value())
                 .returns(description, Transaction::getDescription)
                 .returns(amount, Transaction::getAmount)
                 .returns(currency, transaction -> transaction.getCurrency().name())
-                .returns(oldTransaction.getCreatorUserId(), Transaction::getCreatorUserId)
+                .returns(oldTransaction.getCreatorUserId().value(), transaction -> transaction.getCreatorUserId().value())
                 .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
     }
 

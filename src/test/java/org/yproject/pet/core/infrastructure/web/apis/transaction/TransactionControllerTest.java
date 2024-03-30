@@ -11,26 +11,28 @@ import org.yproject.pet.core.application.transaction.CreateTransactionDTO;
 import org.yproject.pet.core.application.transaction.ModifyTransactionDTO;
 import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.core.application.transaction.TransactionService;
+import org.yproject.pet.core.domain.api_token.entities.ApiToken;
 import org.yproject.pet.core.domain.transaction.enums.Currency;
 import org.yproject.pet.core.domain.user.entities.User;
-import org.yproject.pet.core.domain.api_token.entities.ApiToken;
 import org.yproject.pet.core.infrastructure.web.apis.BaseControllerTest;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
 import org.yproject.pet.core.util.TransactionRandomUtils;
 
+import java.math.BigDecimal;
 import java.util.Collections;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.hamcrest.Matchers.comparesEqualTo;
+import static org.hamcrest.Matchers.is;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.yproject.pet.core.util.FloatUtils.delta;
 import static org.yproject.pet.core.util.RandomUtils.*;
 import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 
@@ -65,7 +67,7 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", is(transactionDTO.id())))
                 .andExpect(jsonPath("$.description", is(transactionDTO.description())))
-                .andExpect(jsonPath("$.amount", closeTo(transactionDTO.amount(), delta)))
+                .andExpect(jsonPath("$.amount", comparesEqualTo(BigDecimal.valueOf(transactionDTO.amount()))))
                 .andExpect(jsonPath("$.currency.name", is(transactionDTO.currency().name())))
                 .andExpect(jsonPath("$.currency.symbol", is(transactionDTO.currency().getSymbol())))
                 .andExpect(jsonPath("$.createTime", is(transactionDTO.createTime().toEpochMilli())));
@@ -91,9 +93,9 @@ class TransactionControllerTest extends BaseControllerTest {
         this.mockMvc.perform(get("/api/transactions")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(transactions.get(0).getId())))
+                .andExpect(jsonPath("$[0].id", is(transactions.get(0).getId().value())))
                 .andExpect(jsonPath("$[0].description", is(transactions.get(0).getDescription())))
-                .andExpect(jsonPath("$[0].amount", closeTo(transactions.get(0).getAmount(), delta)))
+                .andExpect(jsonPath("$[0].amount", comparesEqualTo(BigDecimal.valueOf(transactions.get(0).getAmount()))))
                 .andExpect(jsonPath("$[0].currency.name", is(transactions.get(0).getCurrency().name())))
                 .andExpect(jsonPath("$[0].currency.symbol", is(transactions.get(0).getCurrency().getSymbol())))
                 .andExpect(jsonPath("$[0].createTime", is(transactions.get(0).getCreateTime().toEpochMilli())));

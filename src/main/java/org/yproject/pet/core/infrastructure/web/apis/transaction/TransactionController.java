@@ -1,6 +1,7 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -44,7 +45,7 @@ class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(
-            @RequestBody CreateTransactionRequest req,
+            @RequestBody @Valid CreateTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         String id = transactionService.create(
@@ -64,7 +65,7 @@ class TransactionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
             @PathVariable String transactionId,
-            @RequestBody ModifyTransactionRequest req,
+            @RequestBody @Valid ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         transactionService.modify(
