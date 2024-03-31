@@ -3,8 +3,6 @@ package org.yproject.pet.core.application.category;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.domain.category.entities.CategoryBuilder;
-import org.yproject.pet.core.domain.category.value_objects.CategoryId;
-import org.yproject.pet.core.domain.user.value_objects.UserId;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 
 import java.util.List;
@@ -25,8 +23,8 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public String create(String userId, String name) {
         final var categoryId = idGenerator.get();
-        final var category = new CategoryBuilder(new CategoryId(categoryId))
-                .createUserId(new UserId(userId))
+        final var category = new CategoryBuilder(categoryId)
+                .createUserId(userId)
                 .name(name)
                 .build();
         return categoryStorage.save(category);

@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.category.CategoryStorage;
 import org.yproject.pet.core.domain.category.entities.Category;
 import org.yproject.pet.core.domain.category.entities.CategoryBuilder;
-import org.yproject.pet.core.domain.category.value_objects.CategoryId;
-import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.util.HashSet;
 import java.util.List;
@@ -24,8 +22,8 @@ public record CategorySpringDataStorage(
     }
 
     private static Category fromEntity(CategoryEntity entity) {
-        return new CategoryBuilder(new CategoryId(entity.getId()))
-                .createUserId(new UserId(entity.getCreateUserId()))
+        return new CategoryBuilder(entity.getId())
+                .createUserId(entity.getCreateUserId())
                 .name(entity.getName())
                 .build();
     }

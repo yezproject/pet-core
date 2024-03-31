@@ -3,8 +3,6 @@ package org.yproject.pet.core.application.open_api_token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.domain.api_token.entities.ApiTokenBuilder;
-import org.yproject.pet.core.domain.api_token.value_objects.ApiTokenId;
-import org.yproject.pet.core.domain.user.value_objects.UserId;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
@@ -20,8 +18,8 @@ class OpenApiTokenServiceImpl implements OpenApiTokenService {
     @Override
     public OpenApiTokenIdWithTokenDto create(String userId, String email, String name) {
         final var apiTokenId = idGenerator.get();
-        openApiTokenStorage.store(new ApiTokenBuilder(new ApiTokenId(apiTokenId))
-                .userId(new UserId(userId))
+        openApiTokenStorage.store(new ApiTokenBuilder(apiTokenId)
+                .userId(userId)
                 .name(name)
                 .build()
         );

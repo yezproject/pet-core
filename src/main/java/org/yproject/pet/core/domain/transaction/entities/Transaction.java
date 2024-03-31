@@ -27,7 +27,7 @@ public class Transaction extends AggregateRoot<TransactionId> {
 
     Transaction(TransactionBuilder builder) {
         super(builder.transactionId);
-        categoryId = Objects.requireNonNull(builder.categoryId);
+        categoryId = builder.categoryId;
         description = descriptionValidated(builder.description);
         amount = amountValidated(builder.amount);
         creatorUserId = Objects.requireNonNull(builder.creatorUserId);

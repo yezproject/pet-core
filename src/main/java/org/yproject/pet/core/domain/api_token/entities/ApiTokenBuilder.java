@@ -1,17 +1,19 @@
 package org.yproject.pet.core.domain.api_token.entities;
 
-import lombok.RequiredArgsConstructor;
 import org.yproject.pet.core.domain.api_token.value_objects.ApiTokenId;
 import org.yproject.pet.core.domain.user.value_objects.UserId;
 
-@RequiredArgsConstructor
 public class ApiTokenBuilder {
     final ApiTokenId apiTokenId;
     UserId userId;
     String name;
 
-    public ApiTokenBuilder userId(UserId userId) {
-        this.userId = userId;
+    public ApiTokenBuilder(String apiTokenId) {
+        this.apiTokenId = new ApiTokenId(apiTokenId);
+    }
+
+    public ApiTokenBuilder userId(String userId) {
+        this.userId = new UserId(userId);
         return this;
     }
 

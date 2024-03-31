@@ -29,11 +29,11 @@ public final class RandomUtils {
     }
 
     public static String randomShortString() {
-        return RandomStringUtils.random(10);
+        return RandomStringUtils.randomAlphanumeric(10);
     }
 
     public static String randomLongString() {
-        return RandomStringUtils.random(30);
+        return RandomStringUtils.randomAlphanumeric(30);
     }
 
     public static Instant randomInstant() {

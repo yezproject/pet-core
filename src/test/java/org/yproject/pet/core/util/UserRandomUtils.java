@@ -19,7 +19,7 @@ public class UserRandomUtils {
         if (approvalStatus == ApprovalStatus.APPROVED) {
             approvalAt = randomInstant();
         }
-        return new UserBuilder(new UserId(randomShortString()))
+        return new UserBuilder(randomShortString())
                 .email(randomShortString())
                 .fullName(randomShortString())
                 .password(randomShortString())
@@ -43,7 +43,7 @@ public class UserRandomUtils {
         if (approvalStatus == ApprovalStatus.APPROVED) {
             approvalAt = randomInstant();
         }
-        return new UserBuilder(new UserId(randomShortString()))
+        return new UserBuilder(randomShortString())
                 .email(randomShortString())
                 .fullName(randomShortString())
                 .password(randomShortString())

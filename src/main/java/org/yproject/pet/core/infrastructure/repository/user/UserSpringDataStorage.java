@@ -6,7 +6,6 @@ import org.yproject.pet.core.domain.user.entities.User;
 import org.yproject.pet.core.domain.user.entities.UserBuilder;
 import org.yproject.pet.core.domain.user.enums.ApprovalStatus;
 import org.yproject.pet.core.domain.user.enums.Role;
-import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ record UserSpringDataStorage(
     }
 
     private static User fromEntity(final UserEntity entity) {
-        return new UserBuilder(new UserId(entity.getId()))
+        return new UserBuilder(entity.getId())
                 .email(entity.getEmail())
                 .fullName(entity.getFullName())
                 .password(entity.getPassword())

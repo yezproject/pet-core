@@ -1,5 +1,6 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -19,19 +20,18 @@ import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
 import org.yproject.pet.core.util.TransactionRandomUtils;
 
-import java.math.BigDecimal;
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.comparesEqualTo;
-import static org.hamcrest.Matchers.is;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yproject.pet.core.util.RandomUtils.*;
 import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
@@ -62,15 +62,22 @@ class TransactionControllerTest extends BaseControllerTest {
         final var transactionDTO = RetrieveTransactionDTO.fromDomain(transaction);
         when(this.transactionService.retrieve(anyString(), anyString())).thenReturn(transactionDTO);
 
-        this.mockMvc.perform(get("/api/transactions/" + transactionId)
+        final var result = this.mockMvc.perform(get("/api/transactions/" + transactionId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(transactionDTO.id())))
-                .andExpect(jsonPath("$.description", is(transactionDTO.description())))
-                .andExpect(jsonPath("$.amount", comparesEqualTo(BigDecimal.valueOf(transactionDTO.amount()))))
-                .andExpect(jsonPath("$.currency.name", is(transactionDTO.currency().name())))
-                .andExpect(jsonPath("$.currency.symbol", is(transactionDTO.currency().getSymbol())))
-                .andExpect(jsonPath("$.createTime", is(transactionDTO.createTime().toEpochMilli())));
+                .andReturn();
+        final var response = this.objectMapper.readValue(
+                result.getResponse().getContentAsByteArray(),
+                RetrieveTransactionResponse.class
+        );
+
+        assertThat(response)
+                .returns(transactionDTO.id(), RetrieveTransactionResponse::id)
+                .returns(transactionDTO.description(), RetrieveTransactionResponse::description)
+                .returns(transactionDTO.amount(), RetrieveTransactionResponse::amount)
+                .returns(transactionDTO.currency().name(), res -> res.currency().name())
+                .returns(transactionDTO.currency().symbol(), res -> res.currency().symbol())
+                .returns(transactionDTO.createTime().toEpochMilli(), RetrieveTransactionResponse::createTime);
     }
 
     @Test
@@ -90,15 +97,25 @@ class TransactionControllerTest extends BaseControllerTest {
         final var transactionDTOs = transactions.stream().map(RetrieveTransactionDTO::fromDomain).toList();
         when(this.transactionService.retrieveAll(any())).thenReturn(transactionDTOs);
 
-        this.mockMvc.perform(get("/api/transactions")
+        final var result = this.mockMvc.perform(get("/api/transactions")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(transactions.get(0).getId().value())))
-                .andExpect(jsonPath("$[0].description", is(transactions.get(0).getDescription())))
-                .andExpect(jsonPath("$[0].amount", comparesEqualTo(BigDecimal.valueOf(transactions.get(0).getAmount()))))
-                .andExpect(jsonPath("$[0].currency.name", is(transactions.get(0).getCurrency().name())))
-                .andExpect(jsonPath("$[0].currency.symbol", is(transactions.get(0).getCurrency().getSymbol())))
-                .andExpect(jsonPath("$[0].createTime", is(transactions.get(0).getCreateTime().toEpochMilli())));
+                .andReturn();
+        List<RetrieveTransactionResponse> responses = this.objectMapper.readValue(
+                result.getResponse().getContentAsByteArray(),
+                new TypeReference<List<RetrieveTransactionResponse>>() {
+                }
+        );
+
+        IntStream.range(0, responses.size())
+                .forEach(index -> assertThat(responses.get(index))
+                        .returns(transactionDTOs.get(index).id(), RetrieveTransactionResponse::id)
+                        .returns(transactionDTOs.get(index).description(), RetrieveTransactionResponse::description)
+                        .returns(transactionDTOs.get(index).amount(), RetrieveTransactionResponse::amount)
+                        .returns(transactionDTOs.get(index).currency().name(), res -> res.currency().name())
+                        .returns(transactionDTOs.get(index).currency().symbol(), res -> res.currency().symbol())
+                        .returns(transactionDTOs.get(index).createTime().toEpochMilli(), RetrieveTransactionResponse::createTime)
+                );
     }
 
     @Test

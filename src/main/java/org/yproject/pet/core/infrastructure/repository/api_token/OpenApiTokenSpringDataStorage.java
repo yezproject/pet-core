@@ -4,8 +4,6 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.core.application.open_api_token.OpenApiTokenStorage;
 import org.yproject.pet.core.domain.api_token.entities.ApiToken;
 import org.yproject.pet.core.domain.api_token.entities.ApiTokenBuilder;
-import org.yproject.pet.core.domain.api_token.value_objects.ApiTokenId;
-import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -24,8 +22,8 @@ record OpenApiTokenSpringDataStorage(
     }
 
     private static ApiToken fromEntity(final ApiTokenEntity entity) {
-        return new ApiTokenBuilder(new ApiTokenId(entity.getId()))
-                .userId(new UserId(entity.getUserId()))
+        return new ApiTokenBuilder(entity.getId())
+                .userId(entity.getUserId())
                 .name(entity.getName()).build();
     }
 

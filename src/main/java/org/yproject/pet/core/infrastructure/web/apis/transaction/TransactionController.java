@@ -29,7 +29,7 @@ class TransactionController {
             @RequestUser UserInfo user
     ) {
         RetrieveTransactionDTO transactionDto = transactionService.retrieve(user.getId(), transactionId);
-        return RetrieveTransactionResponse.toResponse(transactionDto);
+        return RetrieveTransactionResponse.fromDTO(transactionDto);
     }
 
     @GetMapping
@@ -38,7 +38,7 @@ class TransactionController {
     ) {
         List<RetrieveTransactionDTO> transactions = transactionService.retrieveAll(user.getId());
         return transactions.stream()
-                .map(RetrieveTransactionResponse::toResponse)
+                .map(RetrieveTransactionResponse::fromDTO)
                 .toList();
     }
 

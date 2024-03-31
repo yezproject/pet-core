@@ -5,7 +5,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.core.domain.user.entities.UserBuilder;
 import org.yproject.pet.core.domain.user.enums.Role;
-import org.yproject.pet.core.domain.user.value_objects.UserId;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.infrastructure.web.jwt.JwtService;
 
@@ -34,7 +33,7 @@ class JoinServiceImpl implements JoinService {
         if (existingUserOptional.isPresent()) throw new UserExistedException();
         final var id = idGenerator.get();
         final var encodedPassword = passwordEncoder.encode(signUpApplicationDto.password());
-        final var newUser = new UserBuilder(new UserId(id))
+        final var newUser = new UserBuilder(id)
                 .email(signUpApplicationDto.email())
                 .fullName(signUpApplicationDto.fullName())
                 .password(encodedPassword)

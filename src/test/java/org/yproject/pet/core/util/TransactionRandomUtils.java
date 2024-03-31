@@ -8,6 +8,8 @@ import org.yproject.pet.core.domain.transaction.value_objects.TransactionId;
 import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.time.Instant;
+import java.util.Arrays;
+import java.util.List;
 
 import static org.yproject.pet.core.util.RandomUtils.*;
 
@@ -18,9 +20,9 @@ public class TransactionRandomUtils {
     }
 
     public static Transaction randomTransaction() {
-        return new TransactionBuilder(new TransactionId(randomShortString()))
-                .creatorUserId(new UserId(randomShortString()))
-                .categoryId(new CategoryId(randomShortString()))
+        return new TransactionBuilder(randomShortString())
+                .creatorUserId(randomShortString())
+                .categoryId(randomCategoryId())
                 .description(randomShortString())
                 .amount(randomDouble())
                 .currency(randomCurrency())
@@ -29,13 +31,17 @@ public class TransactionRandomUtils {
     }
 
     public static Transaction randomTransaction(String transactionId) {
-        return new TransactionBuilder(new TransactionId(transactionId))
-                .creatorUserId(new UserId(randomShortString()))
-                .categoryId(new CategoryId(randomShortString()))
+        return new TransactionBuilder(transactionId)
+                .creatorUserId(randomShortString())
+                .categoryId(randomCategoryId())
                 .description(randomShortString())
                 .amount(randomDouble())
                 .currency(randomCurrency())
                 .createTime(randomInstant())
                 .build();
+    }
+
+    private static String randomCategoryId() {
+        return randomFrom(new String[]{null, randomShortString()});
     }
 }

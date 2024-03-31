@@ -1,14 +1,13 @@
 package org.yproject.pet.core.domain.transaction.entities;
 
-import lombok.RequiredArgsConstructor;
 import org.yproject.pet.core.domain.category.value_objects.CategoryId;
 import org.yproject.pet.core.domain.transaction.enums.Currency;
 import org.yproject.pet.core.domain.transaction.value_objects.TransactionId;
 import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.time.Instant;
+import java.util.Optional;
 
-@RequiredArgsConstructor
 public final class TransactionBuilder {
     final TransactionId transactionId;
     UserId creatorUserId;
@@ -18,8 +17,12 @@ public final class TransactionBuilder {
     Currency currency;
     Instant createTime;
 
-    public TransactionBuilder categoryId(CategoryId categoryId) {
-        this.categoryId = categoryId;
+    public TransactionBuilder(String transactionId) {
+        this.transactionId = new TransactionId(transactionId);
+    }
+
+    public TransactionBuilder categoryId(String categoryId) {
+        this.categoryId = Optional.ofNullable(categoryId).map(CategoryId::new).orElse(null);
         return this;
     }
 
@@ -38,8 +41,8 @@ public final class TransactionBuilder {
         return this;
     }
 
-    public TransactionBuilder creatorUserId(UserId creatorUserId) {
-        this.creatorUserId = creatorUserId;
+    public TransactionBuilder creatorUserId(String creatorUserId) {
+        this.creatorUserId = new UserId(creatorUserId);
         return this;
     }
 

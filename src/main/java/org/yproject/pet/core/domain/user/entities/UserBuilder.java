@@ -1,13 +1,11 @@
 package org.yproject.pet.core.domain.user.entities;
 
-import lombok.RequiredArgsConstructor;
 import org.yproject.pet.core.domain.user.enums.ApprovalStatus;
 import org.yproject.pet.core.domain.user.enums.Role;
 import org.yproject.pet.core.domain.user.value_objects.UserId;
 
 import java.time.Instant;
 
-@RequiredArgsConstructor
 public class UserBuilder {
     final UserId userId;
     String email;
@@ -17,6 +15,10 @@ public class UserBuilder {
     ApprovalStatus approvalStatus;
     Instant createAt;
     Instant approvedAt;
+
+    public UserBuilder(String userId) {
+        this.userId = new UserId(userId);
+    }
 
     public UserBuilder email(String email) {
         this.email = email;

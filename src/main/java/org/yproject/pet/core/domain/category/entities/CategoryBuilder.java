@@ -1,17 +1,19 @@
 package org.yproject.pet.core.domain.category.entities;
 
-import lombok.RequiredArgsConstructor;
 import org.yproject.pet.core.domain.category.value_objects.CategoryId;
 import org.yproject.pet.core.domain.user.value_objects.UserId;
 
-@RequiredArgsConstructor
 public class CategoryBuilder {
     final CategoryId categoryId;
     UserId createUserId;
     String name;
 
-    public CategoryBuilder createUserId(UserId createUserId) {
-        this.createUserId = createUserId;
+    public CategoryBuilder(String categoryId) {
+        this.categoryId = new CategoryId(categoryId);
+    }
+
+    public CategoryBuilder createUserId(String createUserId) {
+        this.createUserId = new UserId(createUserId);
         return this;
     }
 
