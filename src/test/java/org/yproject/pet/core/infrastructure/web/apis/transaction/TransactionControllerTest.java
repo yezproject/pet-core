@@ -13,12 +13,12 @@ import org.yproject.pet.core.application.transaction.ModifyTransactionDTO;
 import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.core.application.transaction.TransactionService;
 import org.yproject.pet.core.domain.api_token.entities.ApiToken;
+import org.yproject.pet.core.domain.transaction.TransactionRandomUtils;
 import org.yproject.pet.core.domain.transaction.enums.Currency;
 import org.yproject.pet.core.domain.user.entities.User;
 import org.yproject.pet.core.infrastructure.web.apis.BaseControllerTest;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
-import org.yproject.pet.core.util.TransactionRandomUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -73,6 +73,7 @@ class TransactionControllerTest extends BaseControllerTest {
 
         assertThat(response)
                 .returns(transactionDTO.id(), RetrieveTransactionResponse::id)
+                .returns(transactionDTO.categoryId(), RetrieveTransactionResponse::categoryId)
                 .returns(transactionDTO.description(), RetrieveTransactionResponse::description)
                 .returns(transactionDTO.amount(), RetrieveTransactionResponse::amount)
                 .returns(transactionDTO.currency().name(), res -> res.currency().name())
@@ -101,7 +102,7 @@ class TransactionControllerTest extends BaseControllerTest {
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
                 .andReturn();
-        List<RetrieveTransactionResponse> responses = this.objectMapper.readValue(
+        final var responses = this.objectMapper.readValue(
                 result.getResponse().getContentAsByteArray(),
                 new TypeReference<List<RetrieveTransactionResponse>>() {
                 }
@@ -110,6 +111,7 @@ class TransactionControllerTest extends BaseControllerTest {
         IntStream.range(0, responses.size())
                 .forEach(index -> assertThat(responses.get(index))
                         .returns(transactionDTOs.get(index).id(), RetrieveTransactionResponse::id)
+                        .returns(transactionDTOs.get(index).categoryId(), RetrieveTransactionResponse::categoryId)
                         .returns(transactionDTOs.get(index).description(), RetrieveTransactionResponse::description)
                         .returns(transactionDTOs.get(index).amount(), RetrieveTransactionResponse::amount)
                         .returns(transactionDTOs.get(index).currency().name(), res -> res.currency().name())
@@ -123,7 +125,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var requestBody = new CreateTransactionRequest(
                 randomShortString(),
                 randomShortString(),
-                randomDouble(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
@@ -173,7 +175,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
                 randomShortString(),
-                randomDouble(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
@@ -203,7 +205,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
                 randomShortString(),
-                randomDouble(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
@@ -224,7 +226,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
                 randomShortString(),
-                randomDouble(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
@@ -241,7 +243,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
                 "",
-                randomDouble(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );

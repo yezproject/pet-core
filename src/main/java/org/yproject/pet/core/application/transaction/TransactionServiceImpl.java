@@ -42,7 +42,9 @@ class TransactionServiceImpl implements TransactionService {
             throw new TransactionNotExisted();
         }
         Transaction transaction = transactionOptional.get();
-        transaction.modifyCategoryId(new CategoryId(modifyTransactionDTO.categoryId()));
+        if (modifyTransactionDTO.categoryId() != null) {
+            transaction.modifyCategoryId(new CategoryId(modifyTransactionDTO.categoryId()));
+        }
         transaction.modifyAmount(modifyTransactionDTO.amount());
         transaction.modifyDescription(modifyTransactionDTO.description());
         transaction.modifyCurrency(Currency.valueOf(modifyTransactionDTO.currency()));

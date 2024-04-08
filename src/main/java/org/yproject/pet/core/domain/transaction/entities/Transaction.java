@@ -17,6 +17,7 @@ import java.util.Optional;
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public class Transaction extends AggregateRoot<TransactionId> {
+    private static final int DESCRIPTION_MAX_LENGTH = 100;
     private final UserId creatorUserId;
     private CategoryId categoryId;
     private String description;
@@ -46,24 +47,19 @@ public class Transaction extends AggregateRoot<TransactionId> {
 
     public void modifyAmount(Double amount) {
         this.amount = amountValidated(amount);
+        transactionClassify();
     }
 
     public void modifyCurrency(Currency currency) {
-        this.currency = currency;
+        this.currency = Objects.requireNonNull(currency);
     }
 
     public void modifyCreateTime(Instant createTime) {
-        if (createTime != null) {
-            this.createTime = createTime;
-        }
+        this.createTime = Objects.requireNonNull(createTime);
     }
 
     private void transactionClassify() {
-        if (amount < 0) {
-            type = TransactionType.EXPENSE;
-        } else {
-            type = TransactionType.INCOME;
-        }
+        type = amount < 0 ? TransactionType.EXPENSE : TransactionType.INCOME;
     }
 
     private Double amountValidated(final Double amount) {
@@ -74,8 +70,9 @@ public class Transaction extends AggregateRoot<TransactionId> {
 
     private String descriptionValidated(final String description) {
         Objects.requireNonNull(description);
-        if (description.isBlank() || description.length() > 100) {
-            throw new DomainCreateException("Description must be from 0 to 100 characters");
+        if (description.isBlank() || description.length() > DESCRIPTION_MAX_LENGTH) {
+            throw new DomainCreateException("Description must be from 0 to %d characters"
+                    .formatted(DESCRIPTION_MAX_LENGTH));
         }
         return description;
     }

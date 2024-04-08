@@ -1,9 +1,11 @@
 package org.yproject.pet.core.domain.user.value_objects;
 
+import org.springframework.lang.NonNull;
+
 import java.util.Objects;
 
 public record UserId(
-        String value
+        @NonNull String value
 ) {
     public UserId {
         Objects.requireNonNull(value);

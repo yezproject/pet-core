@@ -7,7 +7,7 @@ import org.yproject.pet.core.domain.user.enums.ApprovalStatus;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 
-class UserTest {
+class UserDomainTest {
 
     @Test
     void pending_to_approved() {
