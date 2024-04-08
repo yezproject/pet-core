@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Component
-public record CategorySpringDataStorage(
+record CategorySpringDataStorage(
         CategoryRepository repository
 ) implements CategoryStorage {
     private static CategoryEntity toEntity(Category domain) {
@@ -35,18 +35,18 @@ public record CategorySpringDataStorage(
 
     @Override
     public Optional<Category> retrieveOne(String userId, String categoryId) {
-        return repository.findByUserIdAndId(userId, categoryId)
+        return repository.findByCreateUserIdAndId(userId, categoryId)
                 .map(CategorySpringDataStorage::fromEntity);
     }
 
     @Override
     public void deleteAll(String userId, List<String> categoryIds) {
-        repository.deleteAllByUserIdAndIdIn(userId, new HashSet<>(categoryIds));
+        repository.deleteAllByCreateUserIdAndIdIn(userId, new HashSet<>(categoryIds));
     }
 
     @Override
     public List<Category> retrieveAll(String userId) {
-        return repository.findAllByUserId(userId).stream()
+        return repository.findAllByCreateUserId(userId).stream()
                 .map(CategorySpringDataStorage::fromEntity)
                 .toList();
     }

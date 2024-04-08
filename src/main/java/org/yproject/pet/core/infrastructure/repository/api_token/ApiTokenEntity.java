@@ -13,7 +13,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Builder
 @Entity(name = "api_tokens")
-public class ApiTokenEntity {
+class ApiTokenEntity {
     @Id
     private String id;
 

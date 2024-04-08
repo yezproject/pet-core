@@ -13,7 +13,7 @@ import java.time.Instant;
 @Setter
 @Builder
 @Entity(name = "transactions")
-public class TransactionEntity {
+class TransactionEntity {
     @Id
     private String id;
 
