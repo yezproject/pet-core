@@ -1,6 +1,6 @@
 package org.yproject.pet.core.application.transaction;
 
-import org.yproject.pet.core.domain.transaction.Transaction;
+import org.yproject.pet.core.domain.transaction.entities.Transaction;
 
 import java.util.List;
 import java.util.Optional;

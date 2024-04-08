@@ -6,11 +6,12 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.yproject.pet.core.domain.transaction.Currency;
-import org.yproject.pet.core.domain.transaction.Transaction;
+import org.yproject.pet.core.domain.category.value_objects.CategoryId;
+import org.yproject.pet.core.domain.transaction.TransactionRandomUtils;
+import org.yproject.pet.core.domain.transaction.entities.Transaction;
+import org.yproject.pet.core.domain.transaction.enums.Currency;
 import org.yproject.pet.core.infrastructure.generator.identity.IdGenerator;
 import org.yproject.pet.core.util.RandomUtils;
-import org.yproject.pet.core.util.TransactionRandomUtils;
 
 import java.util.Optional;
 
@@ -20,8 +21,8 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
+import static org.yproject.pet.core.domain.transaction.TransactionRandomUtils.randomTransaction;
 import static org.yproject.pet.core.util.RandomUtils.*;
-import static org.yproject.pet.core.util.TransactionRandomUtils.randomTransaction;
 
 @ExtendWith(MockitoExtension.class)
 class TransactionServiceImplTest {
@@ -36,9 +37,10 @@ class TransactionServiceImplTest {
     void create() {
         final var userId = randomShortString();
         final var description = randomShortString();
-        final var amount = randomDouble();
+        final var amount = randomPositiveDouble();
         final var currency = randomFrom(Currency.values()).name();
         final var createTime = randomInstant().toEpochMilli();
+        final var categoryId = randomNullableShortString();
 
         final var id = randomShortString();
         final var transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
@@ -47,17 +49,19 @@ class TransactionServiceImplTest {
         when(transactionStorage.save(any()))
                 .thenReturn(id);
 
-        final var result = underTest.create(userId, description, amount, currency, createTime);
+        final var result = underTest.create(userId, new CreateTransactionDTO(categoryId, description, amount, currency, createTime));
 
         verify(transactionStorage).save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(id, Transaction::id)
-                .returns(description, Transaction::description)
-                .returns(amount, Transaction::amount)
-                .returns(currency, transaction -> transaction.currency().name())
-                .returns(userId, Transaction::creatorUserId)
-                .returns(createTime, transaction -> transaction.createTime().toEpochMilli());
+                .returns(id, transaction -> transaction.getId().value())
+                .returns(categoryId, transaction -> Optional.ofNullable(transaction.getCategoryId())
+                        .map(CategoryId::value).orElse(null))
+                .returns(description, Transaction::getDescription)
+                .returns(amount, Transaction::getAmount)
+                .returns(currency, transaction -> transaction.getCurrency().name())
+                .returns(userId, transaction -> transaction.getCreatorUserId().value())
+                .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
         assertThat(result).isEqualTo(id);
 
     }
@@ -67,10 +71,10 @@ class TransactionServiceImplTest {
         final var modifyId = randomShortString();
         final var userId = randomShortString();
         final var description = randomShortString();
-        final var amount = randomDouble();
+        final var amount = randomPositiveDouble();
         final var currency = randomFrom(Currency.values()).name();
         final var createTime = randomInstant().toEpochMilli();
-
+        final var categoryId = randomNullableShortString();
         final var oldTransaction = randomTransaction();
 
         ArgumentCaptor<Transaction> transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
@@ -79,17 +83,18 @@ class TransactionServiceImplTest {
         when(transactionStorage.save(any()))
                 .thenReturn(userId);
 
-        underTest.modify(userId, modifyId, description, amount, currency, createTime);
+        underTest.modify(userId, modifyId, new ModifyTransactionDTO(categoryId, description, amount, currency, createTime));
 
         then(transactionStorage).should().save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(oldTransaction.id(), Transaction::id)
-                .returns(description, Transaction::description)
-                .returns(amount, Transaction::amount)
-                .returns(currency, transaction -> transaction.currency().name())
-                .returns(oldTransaction.creatorUserId(), Transaction::creatorUserId)
-                .returns(createTime, transaction -> transaction.createTime().toEpochMilli());
+                .returns(oldTransaction.getId().value(), transaction -> transaction.getId().value())
+                .returns(oldTransaction.getCategoryId(), Transaction::getCategoryId)
+                .returns(description, Transaction::getDescription)
+                .returns(amount, Transaction::getAmount)
+                .returns(currency, transaction -> transaction.getCurrency().name())
+                .returns(oldTransaction.getCreatorUserId().value(), transaction -> transaction.getCreatorUserId().value())
+                .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
     }
 
     @Test
@@ -97,15 +102,16 @@ class TransactionServiceImplTest {
         final var modifyId = randomShortString();
         final var userId = randomShortString();
         final var description = randomShortString();
-        final var amount = randomDouble();
+        final var amount = randomPositiveDouble();
         final var currency = randomFrom(Currency.values()).name();
         final var createTime = randomInstant().toEpochMilli();
+        final var categoryId = randomShortString();
 
         when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
         assertThrows(TransactionService.TransactionNotExisted.class,
-                () -> underTest.modify(userId, modifyId, description, amount, currency, createTime));
+                () -> underTest.modify(userId, modifyId, new ModifyTransactionDTO(categoryId, description, amount, currency, createTime)));
 
         then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
         then(transactionStorage).should(never()).save(any());
@@ -146,11 +152,14 @@ class TransactionServiceImplTest {
 
         then(transactionStorage).should().retrieveOneByIdAndUserId(transactionId, userId);
         assertThat(result)
-                .returns(transactionId, RetrieveTransactionDto::id)
-                .returns(transaction.description(), RetrieveTransactionDto::description)
-                .returns(transaction.amount(), RetrieveTransactionDto::amount)
-                .returns(transaction.currency(), RetrieveTransactionDto::currency)
-                .returns(transaction.createTime(), RetrieveTransactionDto::createTime);
+                .returns(transactionId, RetrieveTransactionDTO::id)
+                .returns(Optional.ofNullable(transaction.getCategoryId())
+                        .map(CategoryId::value).orElse(null), RetrieveTransactionDTO::categoryId)
+                .returns(transaction.getDescription(), RetrieveTransactionDTO::description)
+                .returns(transaction.getAmount(), RetrieveTransactionDTO::amount)
+                .returns(transaction.getCurrency().name(), dto -> dto.currency().name())
+                .returns(transaction.getCurrency().getSymbol(), dto -> dto.currency().symbol())
+                .returns(transaction.getCreateTime(), RetrieveTransactionDTO::createTime);
     }
 
     @Test

@@ -8,7 +8,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.yproject.pet.core.domain.exception.DomainException;
+import org.yproject.pet.core.domain.common.error.DomainException;
 import org.yproject.pet.core.infrastructure.web.exception.BadRequestException;
 import org.yproject.pet.core.infrastructure.web.exception.GlobalResourceAccessPermissionException;
 

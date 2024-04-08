@@ -6,7 +6,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
-import org.yproject.pet.core.application.join.JoinService;
+import org.yproject.pet.core.application.user.JoinService;
 import org.yproject.pet.core.infrastructure.web.apis.BaseControllerTest;
 
 import static org.mockito.ArgumentMatchers.any;

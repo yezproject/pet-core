@@ -3,15 +3,15 @@ package org.yproject.pet.core.infrastructure.repository.transaction;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
+
+import java.time.Instant;
 
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 @Entity(name = "transactions")
 class TransactionEntity {
     @Id
@@ -27,12 +27,13 @@ class TransactionEntity {
     private String currency;
 
     @Column(nullable = false)
-    private String creatorId;
+    private String creatorUserId;
 
     @Column(nullable = false)
-    private Long createTime;
+    private Instant createTime;
 
     @Column(nullable = false)
     private String type;
 
+    private String categoryId;
 }

@@ -7,7 +7,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
+import org.yproject.pet.core.application.transaction.CreateTransactionDTO;
+import org.yproject.pet.core.application.transaction.ModifyTransactionDTO;
+import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.core.application.transaction.TransactionService;
 import org.yproject.pet.core.infrastructure.web.security.RequestUser;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
@@ -26,17 +28,17 @@ class TransactionController {
             @PathVariable String transactionId,
             @RequestUser UserInfo user
     ) {
-        RetrieveTransactionDto transactionDto = transactionService.retrieve(user.getId(), transactionId);
-        return RetrieveTransactionResponse.toResponse(transactionDto);
+        RetrieveTransactionDTO transactionDto = transactionService.retrieve(user.getId(), transactionId);
+        return RetrieveTransactionResponse.fromDTO(transactionDto);
     }
 
     @GetMapping
     List<RetrieveTransactionResponse> retrieveAll(
             @RequestUser UserInfo user
     ) {
-        List<RetrieveTransactionDto> transactions = transactionService.retrieveAll(user.getId());
+        List<RetrieveTransactionDTO> transactions = transactionService.retrieveAll(user.getId());
         return transactions.stream()
-                .map(RetrieveTransactionResponse::toResponse)
+                .map(RetrieveTransactionResponse::fromDTO)
                 .toList();
     }
 
@@ -48,10 +50,13 @@ class TransactionController {
     ) {
         String id = transactionService.create(
                 user.getId(),
-                req.description(),
-                req.amount(),
-                req.currency(),
-                req.createTime()
+                new CreateTransactionDTO(
+                        req.categoryId(),
+                        req.description(),
+                        req.amount(),
+                        req.currency(),
+                        req.createTime()
+                )
         );
         return new CreateTransactionResponse(id);
     }
@@ -66,10 +71,14 @@ class TransactionController {
         transactionService.modify(
                 user.getId(),
                 transactionId,
-                req.description(),
-                req.amount(),
-                req.currency(),
-                req.createTime()
+                new ModifyTransactionDTO(
+                        req.categoryId(),
+                        req.description(),
+                        req.amount(),
+                        req.currency(),
+                        req.createTime()
+                )
+
         );
     }
 

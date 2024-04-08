@@ -1,5 +1,6 @@
 package org.yproject.pet.core.infrastructure.web.apis.transaction;
 
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -7,28 +8,31 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.yproject.pet.core.application.transaction.RetrieveTransactionDto;
+import org.yproject.pet.core.application.transaction.CreateTransactionDTO;
+import org.yproject.pet.core.application.transaction.ModifyTransactionDTO;
+import org.yproject.pet.core.application.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.core.application.transaction.TransactionService;
-import org.yproject.pet.core.domain.transaction.Currency;
-import org.yproject.pet.core.domain.user.User;
-import org.yproject.pet.core.domain.user_token.UserToken;
+import org.yproject.pet.core.domain.api_token.entities.ApiToken;
+import org.yproject.pet.core.domain.transaction.TransactionRandomUtils;
+import org.yproject.pet.core.domain.transaction.enums.Currency;
+import org.yproject.pet.core.domain.user.entities.User;
 import org.yproject.pet.core.infrastructure.web.apis.BaseControllerTest;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 import org.yproject.pet.core.util.RandomUtils;
-import org.yproject.pet.core.util.TransactionRandomUtils;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Set;
+import java.util.stream.IntStream;
 
-import static org.hamcrest.Matchers.*;
-import static org.mockito.ArgumentMatchers.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.yproject.pet.core.util.FloatUtils.delta;
 import static org.yproject.pet.core.util.RandomUtils.*;
 import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 
@@ -36,7 +40,7 @@ import static org.yproject.pet.core.util.UserRandomUtils.randomUser;
 class TransactionControllerTest extends BaseControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
     private final User mockUser = randomUser();
-    private final Set<UserToken> mockTokenSet = Collections.emptySet();
+    private final Set<ApiToken> mockTokenSet = Collections.emptySet();
 
     @MockBean
     TransactionService transactionService;
@@ -55,18 +59,26 @@ class TransactionControllerTest extends BaseControllerTest {
     void retrieve_return_200() throws Exception {
         final var transactionId = randomShortString();
         final var transaction = TransactionRandomUtils.randomTransaction();
-        final var transactionDTO = RetrieveTransactionDto.fromDomain(transaction);
+        final var transactionDTO = RetrieveTransactionDTO.fromDomain(transaction);
         when(this.transactionService.retrieve(anyString(), anyString())).thenReturn(transactionDTO);
 
-        this.mockMvc.perform(get("/api/transactions/" + transactionId)
+        final var result = this.mockMvc.perform(get("/api/transactions/" + transactionId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id", is(transactionDTO.id())))
-                .andExpect(jsonPath("$.description", is(transactionDTO.description())))
-                .andExpect(jsonPath("$.amount", closeTo(transactionDTO.amount(), delta)))
-                .andExpect(jsonPath("$.currency.name", is(transactionDTO.currency().name())))
-                .andExpect(jsonPath("$.currency.symbol", is(transactionDTO.currency().getSymbol())))
-                .andExpect(jsonPath("$.createTime", is(transactionDTO.createTime().toEpochMilli())));
+                .andReturn();
+        final var response = this.objectMapper.readValue(
+                result.getResponse().getContentAsByteArray(),
+                RetrieveTransactionResponse.class
+        );
+
+        assertThat(response)
+                .returns(transactionDTO.id(), RetrieveTransactionResponse::id)
+                .returns(transactionDTO.categoryId(), RetrieveTransactionResponse::categoryId)
+                .returns(transactionDTO.description(), RetrieveTransactionResponse::description)
+                .returns(transactionDTO.amount(), RetrieveTransactionResponse::amount)
+                .returns(transactionDTO.currency().name(), res -> res.currency().name())
+                .returns(transactionDTO.currency().symbol(), res -> res.currency().symbol())
+                .returns(transactionDTO.createTime().toEpochMilli(), RetrieveTransactionResponse::createTime);
     }
 
     @Test
@@ -83,31 +95,43 @@ class TransactionControllerTest extends BaseControllerTest {
     @Test
     void retrieveAll_return_200() throws Exception {
         final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
-        final var transactionDTOs = transactions.stream().map(RetrieveTransactionDto::fromDomain).toList();
+        final var transactionDTOs = transactions.stream().map(RetrieveTransactionDTO::fromDomain).toList();
         when(this.transactionService.retrieveAll(any())).thenReturn(transactionDTOs);
 
-        this.mockMvc.perform(get("/api/transactions")
+        final var result = this.mockMvc.perform(get("/api/transactions")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$[0].id", is(transactions.get(0).id())))
-                .andExpect(jsonPath("$[0].description", is(transactions.get(0).description())))
-                .andExpect(jsonPath("$[0].amount", closeTo(transactions.get(0).amount(), delta)))
-                .andExpect(jsonPath("$[0].currency.name", is(transactions.get(0).currency().name())))
-                .andExpect(jsonPath("$[0].currency.symbol", is(transactions.get(0).currency().getSymbol())))
-                .andExpect(jsonPath("$[0].createTime", is(transactions.get(0).createTime().toEpochMilli())));
+                .andReturn();
+        final var responses = this.objectMapper.readValue(
+                result.getResponse().getContentAsByteArray(),
+                new TypeReference<List<RetrieveTransactionResponse>>() {
+                }
+        );
+
+        IntStream.range(0, responses.size())
+                .forEach(index -> assertThat(responses.get(index))
+                        .returns(transactionDTOs.get(index).id(), RetrieveTransactionResponse::id)
+                        .returns(transactionDTOs.get(index).categoryId(), RetrieveTransactionResponse::categoryId)
+                        .returns(transactionDTOs.get(index).description(), RetrieveTransactionResponse::description)
+                        .returns(transactionDTOs.get(index).amount(), RetrieveTransactionResponse::amount)
+                        .returns(transactionDTOs.get(index).currency().name(), res -> res.currency().name())
+                        .returns(transactionDTOs.get(index).currency().symbol(), res -> res.currency().symbol())
+                        .returns(transactionDTOs.get(index).createTime().toEpochMilli(), RetrieveTransactionResponse::createTime)
+                );
     }
 
     @Test
     void create_return_201() throws Exception {
         final var requestBody = new CreateTransactionRequest(
                 randomShortString(),
-                randomDouble(),
+                randomShortString(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
 
         final var randomId = randomShortString();
-        when(transactionService.create(anyString(), anyString(), anyDouble(), anyString(), anyLong()))
+        when(transactionService.create(anyString(), any()))
                 .thenReturn(randomId);
 
         this.mockMvc.perform(post("/api/transactions")
@@ -117,16 +141,21 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isCreated());
 
         then(transactionService).should().create(
-                mockUser.id(),
-                requestBody.description(),
-                requestBody.amount(),
-                requestBody.currency(),
-                requestBody.createTime());
+                mockUser.getId().value(),
+                new CreateTransactionDTO(
+                        requestBody.categoryId(),
+                        requestBody.description(),
+                        requestBody.amount(),
+                        requestBody.currency(),
+                        requestBody.createTime()
+                )
+        );
     }
 
     @Test
     void create_return_400() throws Exception {
         final var requestBody = new CreateTransactionRequest(
+                randomShortString(),
                 randomShortString(),
                 null,
                 randomFrom(Currency.values()).name(),
@@ -145,7 +174,8 @@ class TransactionControllerTest extends BaseControllerTest {
     void modify_return_204() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
-                randomDouble(),
+                randomShortString(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
@@ -158,26 +188,31 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isNoContent());
 
         then(this.transactionService).should().modify(
-                mockUser.id(),
+                mockUser.getId().value(),
                 requestModifyTransactionId,
-                requestBody.description(),
-                requestBody.amount(),
-                requestBody.currency(),
-                requestBody.createTime());
+                new ModifyTransactionDTO(
+                        requestBody.categoryId(),
+                        requestBody.description(),
+                        requestBody.amount(),
+                        requestBody.currency(),
+                        requestBody.createTime()
+                )
+        );
     }
 
     @Test
     void modify_return_404() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
-                randomDouble(),
+                randomShortString(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
         final var requestModifyTransactionId = randomShortString();
 
         doThrow(TransactionService.TransactionNotExisted.class).when(this.transactionService)
-                .modify(anyString(), anyString(), anyString(), anyDouble(), anyString(), anyLong());
+                .modify(anyString(), anyString(), any());
 
         this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -190,7 +225,8 @@ class TransactionControllerTest extends BaseControllerTest {
     void modify_missing_transaction_id_return_404() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
-                randomDouble(),
+                randomShortString(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );
@@ -205,8 +241,9 @@ class TransactionControllerTest extends BaseControllerTest {
     @Test
     void modify_return_400() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
+                randomShortString(),
                 "",
-                randomDouble(),
+                randomPositiveDouble(),
                 randomFrom(Currency.values()).name(),
                 randomInstant().toEpochMilli()
         );

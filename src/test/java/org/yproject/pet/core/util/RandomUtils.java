@@ -29,11 +29,15 @@ public final class RandomUtils {
     }
 
     public static String randomShortString() {
-        return RandomStringUtils.random(10);
+        return RandomStringUtils.randomAlphanumeric(10);
+    }
+
+    public static String randomNullableShortString() {
+        return randomFrom(new String[]{null, RandomStringUtils.randomAlphanumeric(10)});
     }
 
     public static String randomLongString() {
-        return RandomStringUtils.random(30);
+        return RandomStringUtils.randomAlphanumeric(30);
     }
 
     public static Instant randomInstant() {
@@ -48,8 +52,12 @@ public final class RandomUtils {
         return Instant.ofEpochSecond(random);
     }
 
-    public static double randomDouble() {
+    public static double randomPositiveDouble() {
         return random().nextDouble();
+    }
+
+    public static double randomNegativeDouble() {
+        return -random().nextDouble();
     }
 
 }

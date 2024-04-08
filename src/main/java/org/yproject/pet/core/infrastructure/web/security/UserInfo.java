@@ -3,8 +3,8 @@ package org.yproject.pet.core.infrastructure.web.security;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.yproject.pet.core.domain.user.User;
-import org.yproject.pet.core.domain.user_token.UserToken;
+import org.yproject.pet.core.domain.user.entities.User;
+import org.yproject.pet.core.domain.api_token.entities.ApiToken;
 
 import java.io.Serial;
 import java.util.Collection;
@@ -13,7 +13,7 @@ import java.util.Set;
 
 public record UserInfo(
         User user,
-        Set<UserToken> userTokenSet
+        Set<ApiToken> apiTokenSet
 ) implements UserDetails {
 
     @Serial
@@ -21,25 +21,25 @@ public record UserInfo(
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return List.of(new SimpleGrantedAuthority(user.role().name()));
+        return List.of(new SimpleGrantedAuthority(user.getRole().name()));
     }
 
     public String getId() {
-        return user.id();
+        return user.getId().value();
     }
 
     public String getEmail() {
-        return user.email();
+        return user.getEmail();
     }
 
     @Override
     public String getPassword() {
-        return user.password();
+        return user.getPassword();
     }
 
     @Override
     public String getUsername() {
-        return user.email();
+        return user.getEmail();
     }
 
     @Override

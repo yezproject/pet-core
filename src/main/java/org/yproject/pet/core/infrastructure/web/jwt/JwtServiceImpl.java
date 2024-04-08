@@ -6,7 +6,8 @@ import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.core.domain.user_token.UserToken;
+import org.yproject.pet.core.domain.api_token.entities.ApiToken;
+import org.yproject.pet.core.domain.api_token.value_objects.ApiTokenId;
 import org.yproject.pet.core.infrastructure.web.security.UserInfo;
 
 import java.security.Key;
@@ -44,7 +45,10 @@ public record JwtServiceImpl(
     @Override
     public boolean isTokenValid(String token, UserInfo userInfo) {
         final var email = userInfo.getEmail();
-        final var tokenIds = userInfo.userTokenSet().stream().map(UserToken::id).collect(Collectors.toSet());
+        final var tokenIds = userInfo.apiTokenSet().stream()
+                .map(ApiToken::getId)
+                .map(ApiTokenId::toString)
+                .collect(Collectors.toSet());
         return isEmailValid(token, email) && !isTokenExpired(token) && isTokenIdValid(token, tokenIds);
     }
 
