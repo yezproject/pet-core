@@ -46,18 +46,18 @@ record TransactionSpringDataStorage(
 
     @Override
     public Optional<Transaction> retrieveOneByIdAndUserId(String transactionId, String userId) {
-        return repository.findByIdAndCreatorId(transactionId, userId)
+        return repository.findByIdAndCreatorUserId(transactionId, userId)
                 .map(TransactionSpringDataStorage::fromEntity);
     }
 
     @Override
     public void deleteByIdsAndUserId(List<String> transactionIds, String userId) {
-        repository.deleteAllByIdInAndCreatorId(new HashSet<>(transactionIds), userId);
+        repository.deleteAllByIdInAndCreatorUserId(new HashSet<>(transactionIds), userId);
     }
 
     @Override
     public List<Transaction> retrieveAllByUserId(String userId) {
-        return repository.findAllByCreatorId(userId).stream()
+        return repository.findAllByCreatorUserId(userId).stream()
                 .map(TransactionSpringDataStorage::fromEntity)
                 .toList();
     }

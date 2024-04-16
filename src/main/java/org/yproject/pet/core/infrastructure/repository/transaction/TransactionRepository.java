@@ -8,9 +8,10 @@ import java.util.Set;
 
 interface TransactionRepository extends JpaRepository<TransactionEntity, String> {
 
-    Optional<TransactionEntity> findByIdAndCreatorId(String id, String creatorId);
+    Optional<TransactionEntity> findByIdAndCreatorUserId(String id, String creatorId);
 
-    void deleteAllByIdInAndCreatorId(Set<String> ids, String creatorId);
+    void deleteAllByIdInAndCreatorUserId(Set<String> ids, String creatorId);
 
-    List<TransactionEntity> findAllByCreatorId(String creatorId);
+    List<TransactionEntity> findAllByCreatorUserId(String creatorId);
 }
+

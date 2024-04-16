@@ -16,7 +16,7 @@ class CategoryServiceImpl implements CategoryService {
     @Override
     public List<CategoryDTO> retrieveAll(String userId) {
         return categoryStorage.retrieveAll(userId).stream()
-                .map(category -> new CategoryDTO(category.getId().value(), category.getName()))
+                .map(CategoryDTO::fromDomain)
                 .toList();
     }
 
