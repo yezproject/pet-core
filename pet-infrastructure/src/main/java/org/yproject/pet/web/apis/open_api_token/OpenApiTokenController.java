@@ -4,8 +4,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.yproject.pet.open_api_token.OpenApiTokenService;
-import org.yproject.pet.security.UserInfo;
 import org.yproject.pet.web.security.RequestUser;
+import org.yproject.pet.web.security.UserInfo;
 
 import java.util.List;
 

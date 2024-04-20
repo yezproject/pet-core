@@ -23,34 +23,4 @@ public class TransactionRandomUtils {
                 .build();
     }
 
-    public static Transaction randomTransaction(String transactionId) {
-        return new TransactionBuilder(transactionId)
-                .creatorUserId(randomShortString())
-                .categoryId(randomNullableShortString())
-                .description(randomShortString())
-                .amount(randomPositiveDouble())
-                .currency(randomCurrency())
-                .createTime(randomInstant())
-                .build();
-    }
-
-    public static TransactionBuilder randomTransactionBuilder() {
-        return new TransactionBuilder(randomShortString())
-                .creatorUserId(randomShortString())
-                .categoryId(randomNullableShortString())
-                .description(randomShortString())
-                .amount(randomPositiveDouble())
-                .currency(randomCurrency())
-                .createTime(randomInstant());
-    }
-
-    public static TransactionBuilder randomTransactionBuilder(String transactionId) {
-        return new TransactionBuilder(transactionId)
-                .creatorUserId(randomShortString())
-                .categoryId(randomNullableShortString())
-                .description(randomShortString())
-                .amount(randomPositiveDouble())
-                .currency(randomCurrency())
-                .createTime(randomInstant());
-    }
 }

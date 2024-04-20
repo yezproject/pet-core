@@ -10,19 +10,18 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.yproject.pet.RandomUtils;
 import org.yproject.pet.api_token.entities.ApiToken;
-import org.yproject.pet.security.UserInfo;
 import org.yproject.pet.transaction.CreateTransactionDTO;
 import org.yproject.pet.transaction.ModifyTransactionDTO;
 import org.yproject.pet.transaction.RetrieveTransactionDTO;
 import org.yproject.pet.transaction.TransactionService;
 import org.yproject.pet.transaction.enums.Currency;
-import org.yproject.pet.user.entities.User;
 import org.yproject.pet.web.apis.BaseControllerTest;
-import org.yproject.pet.web.apis.utils.TransactionRandomUtils;
+import org.yproject.pet.web.security.UserInfo;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -34,12 +33,10 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yproject.pet.RandomUtils.*;
-import static org.yproject.pet.web.apis.utils.UserRandomUtils.randomUser;
 
 @WebMvcTest(value = TransactionController.class)
 class TransactionControllerTest extends BaseControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final User mockUser = randomUser();
     private final Set<ApiToken> mockTokenSet = Collections.emptySet();
 
     @MockBean
@@ -58,8 +55,7 @@ class TransactionControllerTest extends BaseControllerTest {
     @Test
     void retrieve_return_200() throws Exception {
         final var transactionId = randomShortString();
-        final var transaction = TransactionRandomUtils.randomTransaction();
-        final var transactionDTO = RetrieveTransactionDTO.fromDomain(transaction);
+        final var transactionDTO = randomRetrieveTransactionDTO().get();
         when(this.transactionService.retrieve(anyString(), anyString())).thenReturn(transactionDTO);
 
         final var result = this.mockMvc.perform(get("/api/transactions/" + transactionId)
@@ -94,8 +90,7 @@ class TransactionControllerTest extends BaseControllerTest {
 
     @Test
     void retrieveAll_return_200() throws Exception {
-        final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
-        final var transactionDTOs = transactions.stream().map(RetrieveTransactionDTO::fromDomain).toList();
+        final var transactionDTOs = randomShortList(randomRetrieveTransactionDTO());
         when(this.transactionService.retrieveAll(any())).thenReturn(transactionDTOs);
 
         final var result = this.mockMvc.perform(get("/api/transactions")
@@ -270,5 +265,19 @@ class TransactionControllerTest extends BaseControllerTest {
         this.mockMvc.perform(delete("/api/transactions?ids=")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isBadRequest());
+    }
+
+    private Supplier<RetrieveTransactionDTO> randomRetrieveTransactionDTO() {
+        return () -> new RetrieveTransactionDTO(
+                randomShortString(),
+                randomShortString(),
+                randomShortString(),
+                randomNegativeDouble(),
+                new RetrieveTransactionDTO.RetrieveTransactionCurrencyDTO(
+                        "VND",
+                        "₫"
+                ),
+                randomInstant()
+        );
     }
 }

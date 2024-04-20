@@ -7,6 +7,7 @@
         <version>1.0.0</version>
     </parent>
 
+    <groupId>org.yproject.pet-application</groupId>
     <artifactId>pet-application</artifactId>
     <packaging>jar</packaging>
 
@@ -18,11 +19,6 @@
     </properties>
 
     <dependencies>
-        <dependency>
-            <groupId>org.yproject</groupId>
-            <artifactId>pet-domain</artifactId>
-            <version>1.0.0</version>
-        </dependency>
         <dependency>
             <groupId>org.yproject</groupId>
             <artifactId>pet-test-utils</artifactId>
@@ -39,28 +35,22 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
-            <version>3.2.4</version>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.boot</groupId>
-            <artifactId>spring-boot-starter-security</artifactId>
-            <version>3.2.4</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-api</artifactId>
-            <version>0.11.5</version>
+            <version>0.12.3</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-impl</artifactId>
-            <version>0.11.5</version>
+            <version>0.12.5</version>
         </dependency>
         <dependency>
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt-jackson</artifactId>
-            <version>0.11.5</version>
+            <version>0.12.5</version>
         </dependency>
         <dependency>
             <groupId>org.mockito</groupId>
@@ -71,7 +61,12 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-validation</artifactId>
-            <version>3.2.4</version>
+        </dependency>
+        <dependency>
+            <groupId>org.yproject.pet-domain</groupId>
+            <artifactId>pet-domain</artifactId>
+            <version>1.0.0</version>
+            <scope>compile</scope>
         </dependency>
     </dependencies>
 

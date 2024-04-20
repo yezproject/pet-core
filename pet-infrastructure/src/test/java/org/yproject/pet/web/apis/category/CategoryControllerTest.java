@@ -11,14 +11,13 @@ import org.springframework.http.MediaType;
 import org.yproject.pet.api_token.entities.ApiToken;
 import org.yproject.pet.category.CategoryDTO;
 import org.yproject.pet.category.CategoryService;
-import org.yproject.pet.security.UserInfo;
-import org.yproject.pet.user.entities.User;
 import org.yproject.pet.web.apis.BaseControllerTest;
-import org.yproject.pet.web.apis.utils.CategoryRandomUtils;
+import org.yproject.pet.web.security.UserInfo;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -31,12 +30,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yproject.pet.RandomUtils.randomShortList;
 import static org.yproject.pet.RandomUtils.randomShortString;
-import static org.yproject.pet.web.apis.utils.UserRandomUtils.randomUser;
 
 @WebMvcTest(value = CategoryController.class)
 class CategoryControllerTest extends BaseControllerTest {
     private final ObjectMapper objectMapper = new ObjectMapper();
-    private final User mockUser = randomUser();
     private final Set<ApiToken> mockTokenSet = Collections.emptySet();
 
     @MockBean
@@ -54,8 +51,7 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @Test
     void retrieve_all_return_200() throws Exception {
-        final var categories = randomShortList(CategoryRandomUtils::randomCategory);
-        final var categoryDTOs = categories.stream().map(CategoryDTO::fromDomain).toList();
+        final var categoryDTOs = randomShortList(randomCategoryDTO());
         when(categoryService.retrieveAll(anyString())).thenReturn(categoryDTOs);
 
         final var result = this.mockMvc.perform(get("/api/categories")
@@ -142,6 +138,13 @@ class CategoryControllerTest extends BaseControllerTest {
         then(categoryService).should().delete(
                 mockUser.getId().value(),
                 deleteCategoryId
+        );
+    }
+
+    private Supplier<CategoryDTO> randomCategoryDTO() {
+        return () -> new CategoryDTO(
+                randomShortString(),
+                randomShortString()
         );
     }
 
