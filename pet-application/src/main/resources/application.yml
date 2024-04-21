@@ -1,4 +1,0 @@
-jwt:
-  algorithm: HS256
-  secret: ZWE0MWM1NTI1MjczNjM0YmJjNDhmYjU1YTg0N2E4YWU3ZWJkNjQ4ZDJiMmExYjVlMTVkMDUwYjU3NjU0ZDliYw==
-  expiration: 12

@@ -9,10 +9,10 @@
     <packaging>pom</packaging>
 
     <modules>
-        <module>pet-domain</module>
-        <module>pet-application</module>
-        <module>pet-infrastructure</module>
-        <module>pet-test-utils</module>
+        <module>pet_domain</module>
+        <module>pet_application</module>
+        <module>pet_infrastructure</module>
+        <module>pet_test_utils</module>
     </modules>
 
     <dependencyManagement>
@@ -21,7 +21,7 @@
                 <!-- Import dependency management from Spring Boot -->
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-dependencies</artifactId>
-                <version>3.2.0</version>
+                <version>3.2.4</version>
                 <type>pom</type>
                 <scope>import</scope>
             </dependency>

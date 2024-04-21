@@ -9,7 +9,7 @@
       <env name="PET_DATABASE_USER" value="admin" />
       <env name="SPRING_PROFILES_ACTIVE" value="local" />
     </envs>
-    <module name="pet-infrastructure" />
+    <module name="pet_infrastructure" />
     <option name="SPRING_BOOT_MAIN_CLASS" value="org.yproject.pet.PetApplication" />
     <method v="2">
       <option name="Make" enabled="true" />
