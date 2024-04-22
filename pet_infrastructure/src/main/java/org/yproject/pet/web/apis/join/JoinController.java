@@ -5,8 +5,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yproject.pet.user.JoinService;
-import org.yproject.pet.user.SignUpApplicationDto;
+import org.yproject.pet.user.driven.JoinService;
+import org.yproject.pet.user.driven.SignUpApplicationDto;
 
 @RestController
 @RequiredArgsConstructor

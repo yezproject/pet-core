@@ -1,4 +1,4 @@
-package org.yproject.pet.category;
+package org.yproject.pet.category.driving;
 
 import lombok.Builder;
 import lombok.Getter;

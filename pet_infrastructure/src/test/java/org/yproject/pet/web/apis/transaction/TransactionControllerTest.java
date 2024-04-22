@@ -9,11 +9,11 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.yproject.pet.RandomUtils;
-import org.yproject.pet.transaction.CreateTransactionDto;
-import org.yproject.pet.transaction.ModifyTransactionDto;
-import org.yproject.pet.transaction.RetrieveTransactionDto;
-import org.yproject.pet.transaction.TransactionService;
-import org.yproject.pet.user.AuthService;
+import org.yproject.pet.transaction.driven.CreateTransactionDto;
+import org.yproject.pet.transaction.driven.ModifyTransactionDto;
+import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
+import org.yproject.pet.transaction.driven.TransactionService;
+import org.yproject.pet.user.driven.AuthService;
 import org.yproject.pet.web.apis.BaseControllerTest;
 
 import java.util.List;

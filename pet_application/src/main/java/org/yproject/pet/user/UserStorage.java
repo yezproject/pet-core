@@ -2,6 +2,9 @@ package org.yproject.pet.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.yproject.pet.Storage;
+import org.yproject.pet.user.driving.SavedUserDto;
+import org.yproject.pet.user.driving.UserDao;
 import org.yproject.pet.user.entities.User;
 import org.yproject.pet.user.entities.UserBuilder;
 import org.yproject.pet.user.enums.ApprovalStatus;
@@ -11,7 +14,8 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class UserStorage {
+@Storage
+class UserStorage {
     private final UserDao userDAO;
 
     public Optional<User> findByEmail(String email) {

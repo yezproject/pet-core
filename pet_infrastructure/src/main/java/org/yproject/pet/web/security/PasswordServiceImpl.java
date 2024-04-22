@@ -3,7 +3,7 @@ package org.yproject.pet.web.security;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.user.PasswordService;
+import org.yproject.pet.user.driving.PasswordService;
 
 @Component
 @RequiredArgsConstructor

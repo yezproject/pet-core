@@ -6,9 +6,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
 import org.yproject.pet.jwt.JwtService;
-import org.yproject.pet.user.AuthInfo;
-import org.yproject.pet.user.AuthService;
-import org.yproject.pet.user.UserDao;
+import org.yproject.pet.user.driven.AuthInfo;
+import org.yproject.pet.user.driven.AuthService;
+import org.yproject.pet.user.driving.UserDao;
 import org.yproject.pet.web.security.SecurityConfig;
 
 import java.util.Collections;

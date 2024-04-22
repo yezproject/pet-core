@@ -7,10 +7,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.yproject.pet.transaction.CreateTransactionDto;
-import org.yproject.pet.transaction.ModifyTransactionDto;
-import org.yproject.pet.transaction.RetrieveTransactionDto;
-import org.yproject.pet.transaction.TransactionService;
+import org.yproject.pet.transaction.driven.CreateTransactionDto;
+import org.yproject.pet.transaction.driven.ModifyTransactionDto;
+import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
+import org.yproject.pet.transaction.driven.TransactionService;
 import org.yproject.pet.web.security.RequestUser;
 import org.yproject.pet.web.security.UserInfo;
 

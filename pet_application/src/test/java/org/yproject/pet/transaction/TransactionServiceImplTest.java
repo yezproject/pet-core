@@ -9,6 +9,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.yproject.pet.RandomUtils;
 import org.yproject.pet.category.value_objects.CategoryId;
 import org.yproject.pet.id.IdGenerator;
+import org.yproject.pet.transaction.driven.CreateTransactionDto;
+import org.yproject.pet.transaction.driven.ModifyTransactionDto;
+import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
+import org.yproject.pet.transaction.driven.TransactionService;
 import org.yproject.pet.transaction.entities.Transaction;
 import org.yproject.pet.transaction.enums.Currency;
 

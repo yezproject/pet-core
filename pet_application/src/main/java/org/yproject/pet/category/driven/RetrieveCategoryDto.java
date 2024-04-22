@@ -1,4 +1,4 @@
-package org.yproject.pet.category;
+package org.yproject.pet.category.driven;
 
 import org.yproject.pet.category.entities.Category;
 

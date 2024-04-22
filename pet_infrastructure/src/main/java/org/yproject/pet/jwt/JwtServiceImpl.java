@@ -81,7 +81,7 @@ public record JwtServiceImpl(
 
     private Claims extractAllClaims(String token) {
         return Jwts.parser()
-                .decryptWith(getSigningKey())
+                .verifyWith(getSigningKey())
                 .build()
                 .parseSignedClaims(token)
                 .getPayload();

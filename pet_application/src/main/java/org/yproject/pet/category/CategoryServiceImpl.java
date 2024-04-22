@@ -2,6 +2,8 @@ package org.yproject.pet.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.yproject.pet.category.driven.CategoryService;
+import org.yproject.pet.category.driven.RetrieveCategoryDto;
 import org.yproject.pet.category.entities.CategoryBuilder;
 import org.yproject.pet.id.IdGenerator;
 

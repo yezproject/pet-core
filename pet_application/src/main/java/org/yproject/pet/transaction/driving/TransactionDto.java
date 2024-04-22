@@ -1,4 +1,4 @@
-package org.yproject.pet.transaction;
+package org.yproject.pet.transaction.driving;
 
 import lombok.Builder;
 import lombok.Getter;

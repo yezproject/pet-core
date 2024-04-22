@@ -1,4 +1,4 @@
-package org.yproject.pet.user;
+package org.yproject.pet.user.driven;
 
 import java.util.Objects;
 

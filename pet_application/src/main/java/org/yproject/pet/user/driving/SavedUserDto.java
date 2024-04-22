@@ -1,4 +1,4 @@
-package org.yproject.pet.user;
+package org.yproject.pet.user.driving;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

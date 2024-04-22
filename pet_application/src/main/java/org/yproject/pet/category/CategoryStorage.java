@@ -2,6 +2,9 @@ package org.yproject.pet.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.yproject.pet.Storage;
+import org.yproject.pet.category.driving.CategoryDao;
+import org.yproject.pet.category.driving.CategoryDto;
 import org.yproject.pet.category.entities.Category;
 import org.yproject.pet.category.entities.CategoryBuilder;
 
@@ -10,7 +13,8 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class CategoryStorage {
+@Storage
+class CategoryStorage {
     private final CategoryDao dao;
 
     String save(Category category) {

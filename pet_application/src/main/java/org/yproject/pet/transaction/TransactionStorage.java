@@ -2,6 +2,9 @@ package org.yproject.pet.transaction;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.yproject.pet.Storage;
+import org.yproject.pet.transaction.driving.TransactionDao;
+import org.yproject.pet.transaction.driving.TransactionDto;
 import org.yproject.pet.transaction.entities.Transaction;
 import org.yproject.pet.transaction.entities.TransactionBuilder;
 import org.yproject.pet.transaction.enums.Currency;
@@ -11,7 +14,8 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class TransactionStorage {
+@Storage
+class TransactionStorage {
     private final TransactionDao dao;
 
     String save(Transaction domain) {

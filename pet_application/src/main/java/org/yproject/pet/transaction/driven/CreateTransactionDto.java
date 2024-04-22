@@ -1,4 +1,4 @@
-package org.yproject.pet.transaction;
+package org.yproject.pet.transaction.driven;
 
 public record CreateTransactionDto(
         String categoryId,

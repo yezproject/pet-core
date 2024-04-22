@@ -3,7 +3,7 @@ package org.yproject.pet.web.apis.open_api_token;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import org.yproject.pet.open_api_token.OpenApiTokenService;
+import org.yproject.pet.open_api_token.driven.OpenApiTokenService;
 import org.yproject.pet.web.security.RequestUser;
 import org.yproject.pet.web.security.UserInfo;
 

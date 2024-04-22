@@ -1,4 +1,4 @@
-package org.yproject.pet.category;
+package org.yproject.pet.category.driven;
 
 import java.util.List;
 

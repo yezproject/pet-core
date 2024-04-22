@@ -1,8 +1,11 @@
-package org.yproject.pet.transaction;
+package org.yproject.pet.transaction.driving;
+
+import org.yproject.pet.Dao;
 
 import java.util.List;
 import java.util.Optional;
 
+@Dao
 public interface TransactionDao {
 
     String save(TransactionDto domain);

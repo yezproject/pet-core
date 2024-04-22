@@ -8,6 +8,9 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.jwt.JwtService;
+import org.yproject.pet.user.driven.JoinService;
+import org.yproject.pet.user.driven.SignUpApplicationDto;
+import org.yproject.pet.user.driving.PasswordService;
 import org.yproject.pet.user.entities.User;
 
 import java.util.Optional;

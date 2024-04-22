@@ -1,8 +1,8 @@
 package org.yproject.pet.repository.user;
 
 import org.springframework.stereotype.Component;
-import org.yproject.pet.user.SavedUserDto;
-import org.yproject.pet.user.UserDao;
+import org.yproject.pet.user.driving.SavedUserDto;
+import org.yproject.pet.user.driving.UserDao;
 
 import java.util.List;
 import java.util.Optional;

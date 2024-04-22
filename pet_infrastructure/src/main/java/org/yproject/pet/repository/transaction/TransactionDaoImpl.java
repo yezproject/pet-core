@@ -1,8 +1,8 @@
 package org.yproject.pet.repository.transaction;
 
 import org.springframework.stereotype.Component;
-import org.yproject.pet.transaction.TransactionDao;
-import org.yproject.pet.transaction.TransactionDto;
+import org.yproject.pet.transaction.driving.TransactionDao;
+import org.yproject.pet.transaction.driving.TransactionDto;
 
 import java.util.HashSet;
 import java.util.List;

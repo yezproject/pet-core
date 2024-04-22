@@ -8,9 +8,9 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.yproject.pet.category.CategoryService;
-import org.yproject.pet.category.RetrieveCategoryDto;
-import org.yproject.pet.user.AuthService;
+import org.yproject.pet.category.driven.CategoryService;
+import org.yproject.pet.category.driven.RetrieveCategoryDto;
+import org.yproject.pet.user.driven.AuthService;
 import org.yproject.pet.web.apis.BaseControllerTest;
 
 import java.util.List;

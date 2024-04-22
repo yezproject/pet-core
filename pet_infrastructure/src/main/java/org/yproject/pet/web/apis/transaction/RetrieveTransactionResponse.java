@@ -1,6 +1,6 @@
 package org.yproject.pet.web.apis.transaction;
 
-import org.yproject.pet.transaction.RetrieveTransactionDto;
+import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
 
 record RetrieveTransactionResponse(
         String id,

@@ -1,4 +1,4 @@
-package org.yproject.pet.transaction;
+package org.yproject.pet.transaction.driven;
 
 import org.yproject.pet.transaction.entities.Transaction;
 

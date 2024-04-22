@@ -1,8 +1,8 @@
 package org.yproject.pet.repository.category;
 
 import org.springframework.stereotype.Component;
-import org.yproject.pet.category.CategoryDao;
-import org.yproject.pet.category.CategoryDto;
+import org.yproject.pet.category.driving.CategoryDao;
+import org.yproject.pet.category.driving.CategoryDto;
 
 import java.util.HashSet;
 import java.util.List;
