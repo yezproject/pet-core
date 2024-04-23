@@ -1,8 +1,8 @@
 package org.yproject.pet.repository.api_token;
 
 import org.springframework.stereotype.Component;
-import org.yproject.pet.open_api_token.driving.ApiTokenDao;
-import org.yproject.pet.open_api_token.driving.ApiTokenDto;
+import org.yproject.pet.api_token.driving.ApiTokenDao;
+import org.yproject.pet.api_token.driving.ApiTokenDto;
 
 import java.util.Set;
 import java.util.stream.Collectors;

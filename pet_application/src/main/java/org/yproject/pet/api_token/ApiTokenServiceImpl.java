@@ -1,25 +1,25 @@
-package org.yproject.pet.open_api_token;
+package org.yproject.pet.api_token;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.yproject.pet.api_token.driven.ApiTokenIdWithNameDto;
+import org.yproject.pet.api_token.driven.ApiTokenIdWithTokenDto;
+import org.yproject.pet.api_token.driven.ApiTokenService;
 import org.yproject.pet.api_token.entities.ApiTokenBuilder;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.jwt.JwtService;
-import org.yproject.pet.open_api_token.driven.OpenApiTokenIdWithNameDto;
-import org.yproject.pet.open_api_token.driven.OpenApiTokenIdWithTokenDto;
-import org.yproject.pet.open_api_token.driven.OpenApiTokenService;
 
 import java.util.List;
 
 @Component
 @RequiredArgsConstructor
-class OpenApiTokenServiceImpl implements OpenApiTokenService {
+class ApiTokenServiceImpl implements ApiTokenService {
     private final IdGenerator idGenerator;
     private final JwtService jwtService;
     private final ApiTokenStorage apiTokenStorage;
 
     @Override
-    public OpenApiTokenIdWithTokenDto create(String userId, String email, String name) {
+    public ApiTokenIdWithTokenDto create(String userId, String email, String name) {
         final var apiTokenId = idGenerator.get();
         apiTokenStorage.store(new ApiTokenBuilder(apiTokenId)
                 .userId(userId)
@@ -27,14 +27,14 @@ class OpenApiTokenServiceImpl implements OpenApiTokenService {
                 .build()
         );
         final var oneTimeToken = jwtService.generateToken(email, apiTokenId);
-        return new OpenApiTokenIdWithTokenDto(apiTokenId, oneTimeToken);
+        return new ApiTokenIdWithTokenDto(apiTokenId, oneTimeToken);
     }
 
     @Override
-    public List<OpenApiTokenIdWithNameDto> retrieveAllByUserId(String userId) {
+    public List<ApiTokenIdWithNameDto> retrieveAllByUserId(String userId) {
         return apiTokenStorage.findByUserId(userId)
                 .stream()
-                .map(domain -> new OpenApiTokenIdWithNameDto(domain.getId().toString(), domain.getName()))
+                .map(domain -> new ApiTokenIdWithNameDto(domain.getId().toString(), domain.getName()))
                 .toList();
     }
 

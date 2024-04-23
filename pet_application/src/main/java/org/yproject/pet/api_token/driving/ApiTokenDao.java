@@ -1,4 +1,4 @@
-package org.yproject.pet.open_api_token.driving;
+package org.yproject.pet.api_token.driving;
 
 import org.yproject.pet.Dao;
 

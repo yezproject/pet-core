@@ -1,12 +1,12 @@
-package org.yproject.pet.open_api_token;
+package org.yproject.pet.api_token;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.yproject.pet.Storage;
+import org.yproject.pet.api_token.driving.ApiTokenDao;
+import org.yproject.pet.api_token.driving.ApiTokenDto;
 import org.yproject.pet.api_token.entities.ApiToken;
 import org.yproject.pet.api_token.entities.ApiTokenBuilder;
-import org.yproject.pet.open_api_token.driving.ApiTokenDao;
-import org.yproject.pet.open_api_token.driving.ApiTokenDto;
 
 import java.util.Set;
 import java.util.stream.Collectors;

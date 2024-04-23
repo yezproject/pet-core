@@ -1,8 +1,8 @@
-package org.yproject.pet.web.apis.open_api_token;
+package org.yproject.pet.web.apis.api_token;
 
 import jakarta.validation.constraints.NotBlank;
 
-record OpenApiTokenCreateRequest(
+record ApiTokenCreateRequest(
         @NotBlank String name
 ) {
 }
