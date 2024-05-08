@@ -31,4 +31,5 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           push: true
-          tags: pet-core:dev
+          tags: ghcr.io/yezproject/pet-core:dev
+
