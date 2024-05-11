@@ -32,4 +32,4 @@ jobs:
         with:
           push: true
           tags: ghcr.io/yezproject/pet-core:dev
-
+          provenance: false
