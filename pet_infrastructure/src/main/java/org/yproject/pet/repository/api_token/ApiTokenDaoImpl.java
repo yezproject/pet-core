@@ -37,7 +37,7 @@ record ApiTokenDaoImpl(
     private ApiTokenEntity toEntity(final ApiTokenDto domain) {
         return ApiTokenEntity.builder()
                 .id(domain.getId())
-                .userId(domain.getId())
+                .userId(domain.getUserId())
                 .name(domain.getName())
                 .build();
     }
