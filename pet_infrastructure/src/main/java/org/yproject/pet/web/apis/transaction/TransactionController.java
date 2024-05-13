@@ -1,8 +1,6 @@
 package org.yproject.pet.web.apis.transaction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -45,7 +43,7 @@ class TransactionController {
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(
-            @RequestBody @Valid CreateTransactionRequest req,
+            @RequestBody CreateTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         String id = transactionService.create(
@@ -65,7 +63,7 @@ class TransactionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
             @PathVariable("transactionId") String transactionId,
-            @RequestBody @Valid ModifyTransactionRequest req,
+            @RequestBody ModifyTransactionRequest req,
             @RequestUser UserInfo user
     ) {
         transactionService.modify(
@@ -85,9 +83,10 @@ class TransactionController {
     @DeleteMapping
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(
-            @RequestParam("ids") @NotEmpty List<String> ids,
+            @RequestParam("ids") List<String> ids,
             @RequestUser UserInfo user
     ) {
+        if (ids.isEmpty()) return;
         transactionService.delete(ids, user.id());
     }
 
