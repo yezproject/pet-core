@@ -51,7 +51,7 @@ class CategoryServiceImplTest {
         when(idGenerator.get()).thenReturn(categoryId);
         when(categoryStorage.save(any(Category.class))).thenReturn(categoryId);
 
-        final var result = underTest.create(category.getCreateUserId().value(), category.getName());
+        final var result = underTest.create(category.getCreateUserId(), category.getName());
 
         then(categoryStorage).should().save(category);
         assertThat(result).isEqualTo(categoryId);

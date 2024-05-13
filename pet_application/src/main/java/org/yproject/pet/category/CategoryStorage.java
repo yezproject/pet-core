@@ -38,8 +38,8 @@ class CategoryStorage {
 
     private CategoryDto fromDomain(Category domain) {
         return CategoryDto.builder()
-                .id(domain.getId().value())
-                .createUserId(domain.getCreateUserId().value())
+                .id(domain.getId())
+                .createUserId(domain.getCreateUserId())
                 .name(domain.getName())
                 .build();
     }

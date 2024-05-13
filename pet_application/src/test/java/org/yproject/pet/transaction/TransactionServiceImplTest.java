@@ -7,7 +7,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.yproject.pet.RandomUtils;
-import org.yproject.pet.category.value_objects.CategoryId;
+import org.yproject.pet.common.models.Entity;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.transaction.driven.CreateTransactionDto;
 import org.yproject.pet.transaction.driven.ModifyTransactionDto;
@@ -57,13 +57,12 @@ class TransactionServiceImplTest {
         verify(transactionStorage).save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(id, transaction -> transaction.getId().value())
-                .returns(categoryId, transaction -> Optional.ofNullable(transaction.getCategoryId())
-                        .map(CategoryId::value).orElse(null))
+                .returns(id, Entity::getId)
+                .returns(categoryId, Transaction::getCategoryId)
                 .returns(description, Transaction::getDescription)
                 .returns(amount, Transaction::getAmount)
                 .returns(currency, transaction -> transaction.getCurrency().name())
-                .returns(userId, transaction -> transaction.getCreatorUserId().value())
+                .returns(userId, Transaction::getCreatorUserId)
                 .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
         assertThat(result).isEqualTo(id);
 
@@ -91,12 +90,12 @@ class TransactionServiceImplTest {
         then(transactionStorage).should().save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
-                .returns(oldTransaction.getId().value(), transaction -> transaction.getId().value())
+                .returns(oldTransaction.getId(), Entity::getId)
                 .returns(oldTransaction.getCategoryId(), Transaction::getCategoryId)
                 .returns(description, Transaction::getDescription)
                 .returns(amount, Transaction::getAmount)
                 .returns(currency, transaction -> transaction.getCurrency().name())
-                .returns(oldTransaction.getCreatorUserId().value(), transaction -> transaction.getCreatorUserId().value())
+                .returns(oldTransaction.getCreatorUserId(), Transaction::getCreatorUserId)
                 .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
     }
 
@@ -156,8 +155,7 @@ class TransactionServiceImplTest {
         then(transactionStorage).should().retrieveOneByIdAndUserId(transactionId, userId);
         assertThat(result)
                 .returns(transactionId, RetrieveTransactionDto::id)
-                .returns(Optional.ofNullable(transaction.getCategoryId())
-                        .map(CategoryId::value).orElse(null), RetrieveTransactionDto::categoryId)
+                .returns(transaction.getCategoryId(), RetrieveTransactionDto::categoryId)
                 .returns(transaction.getDescription(), RetrieveTransactionDto::description)
                 .returns(transaction.getAmount(), RetrieveTransactionDto::amount)
                 .returns(transaction.getCurrency().name(), dto -> dto.currency().name())

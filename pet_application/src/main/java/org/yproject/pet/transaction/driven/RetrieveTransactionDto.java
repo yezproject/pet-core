@@ -15,8 +15,8 @@ public record RetrieveTransactionDto(
 
     public static RetrieveTransactionDto fromDomain(Transaction domain) {
         return new RetrieveTransactionDto(
-                domain.getId().value(),
-                domain.getCategoryId() != null ? domain.getCategoryId().value() : null,
+                domain.getId(),
+                domain.getCategoryId(),
                 domain.getDescription(),
                 domain.getAmount(),
                 new RetrieveTransactionCurrencyDTO(domain.getCurrency().name(), domain.getCurrency().getSymbol()),

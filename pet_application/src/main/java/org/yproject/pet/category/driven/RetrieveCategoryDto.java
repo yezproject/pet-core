@@ -7,6 +7,6 @@ public record RetrieveCategoryDto(
         String name
 ) {
     public static RetrieveCategoryDto fromDomain(Category category) {
-        return new RetrieveCategoryDto(category.getId().value(), category.getName());
+        return new RetrieveCategoryDto(category.getId(), category.getName());
     }
 }

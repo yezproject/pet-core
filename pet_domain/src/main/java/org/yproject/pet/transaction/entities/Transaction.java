@@ -37,8 +37,8 @@ public class Transaction extends AggregateRoot<TransactionId> {
         transactionClassify();
     }
 
-    public void modifyCategoryId(CategoryId categoryId) {
-        this.categoryId = Objects.requireNonNull(categoryId);
+    public void modifyCategoryId(String categoryId) {
+        this.categoryId = Optional.ofNullable(categoryId).map(CategoryId::new).orElse(null);
     }
 
     public void modifyDescription(String description) {
@@ -77,4 +77,15 @@ public class Transaction extends AggregateRoot<TransactionId> {
         return description;
     }
 
+    public String getCategoryId() {
+        return Optional.ofNullable(categoryId).map(CategoryId::value).orElse(null);
+    }
+
+    public String getCreatorUserId() {
+        return creatorUserId.value();
+    }
+
+    public double getAmount() {
+        return amount;
+    }
 }

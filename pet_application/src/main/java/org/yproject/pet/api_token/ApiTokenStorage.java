@@ -33,8 +33,8 @@ class ApiTokenStorage {
 
     ApiTokenDto fromDomain(ApiToken domain) {
         return ApiTokenDto.builder()
-                .id(domain.getId().toString())
-                .userId(domain.getUserId().toString())
+                .id(domain.getId())
+                .userId(domain.getUserId())
                 .name(domain.getName()).build();
     }
 

@@ -39,14 +39,14 @@ class TransactionStorage {
 
     private TransactionDto toDto(Transaction domain) {
         return TransactionDto.builder()
-                .id(domain.getId().value())
+                .id(domain.getId())
                 .description(domain.getDescription())
                 .amount(domain.getAmount())
                 .currency(domain.getCurrency().name())
-                .creatorUserId(domain.getCreatorUserId().value())
+                .creatorUserId(domain.getCreatorUserId())
                 .createTime(domain.getCreateTime())
                 .type(domain.getType().name())
-                .categoryId(domain.getCategoryId().value())
+                .categoryId(domain.getCategoryId())
                 .build();
     }
 

@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.yproject.pet.category.value_objects.CategoryId;
-import org.yproject.pet.user.value_objects.UserId;
 
 import java.util.stream.Stream;
 
@@ -34,8 +32,8 @@ class CategoryDomainTest {
                 .name(name)
                 .build();
 
-        assertEquals(new CategoryId(categoryId), category.getId());
-        assertEquals(new UserId(userId), category.getCreateUserId());
+        assertEquals(categoryId, category.getId());
+        assertEquals(userId, category.getCreateUserId());
         assertEquals(name, category.getName());
     }
 

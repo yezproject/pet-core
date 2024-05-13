@@ -32,4 +32,8 @@ public class Category extends AggregateRoot<CategoryId> {
     public void modifyName(String name) {
         this.name = nameValidated(name);
     }
+
+    public String getCreateUserId() {
+        return createUserId.value();
+    }
 }

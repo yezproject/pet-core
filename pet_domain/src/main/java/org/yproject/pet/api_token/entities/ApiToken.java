@@ -40,4 +40,8 @@ public class ApiToken extends AggregateRoot<ApiTokenId> {
     public void modifyName(String name) {
         this.name = nameValidated(name);
     }
+
+    public String getUserId() {
+        return userId.value();
+    }
 }

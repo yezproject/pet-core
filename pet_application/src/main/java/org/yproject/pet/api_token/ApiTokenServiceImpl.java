@@ -34,7 +34,7 @@ class ApiTokenServiceImpl implements ApiTokenService {
     public List<ApiTokenIdWithNameDto> retrieveAllByUserId(String userId) {
         return apiTokenStorage.findByUserId(userId)
                 .stream()
-                .map(domain -> new ApiTokenIdWithNameDto(domain.getId().toString(), domain.getName()))
+                .map(domain -> new ApiTokenIdWithNameDto(domain.getId(), domain.getName()))
                 .toList();
     }
 

@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.yproject.pet.common.models.Entity;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.jwt.JwtService;
 import org.yproject.pet.user.driven.JoinService;
@@ -73,7 +74,7 @@ class JoinServiceImplTest {
         verify(userStorage).store(userCaptor.capture());
 
         assertThat(userCaptor.getValue())
-                .returns(newUserId, user -> user.getId().value())
+                .returns(newUserId, Entity::getId)
                 .returns(encodedPassword, User::getPassword)
                 .returns(dto.fullName(), User::getFullName)
                 .returns(dto.email(), User::getEmail);

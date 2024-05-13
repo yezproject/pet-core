@@ -40,7 +40,7 @@ class UserStorage {
 
     private SavedUserDto toDto(final User domain) {
         return new SavedUserDto(
-                domain.getId().value(),
+                domain.getId(),
                 domain.getEmail(),
                 domain.getPassword(),
                 domain.getFullName(),

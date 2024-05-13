@@ -1,11 +1,8 @@
 package org.yproject.pet.common.models;
 
-import lombok.Getter;
-
 import java.util.Objects;
 
-@Getter
-public abstract class Entity<I> {
+public abstract class Entity<I extends EntityId> {
     final I id;
 
     Entity(I id) {
@@ -24,5 +21,9 @@ public abstract class Entity<I> {
     @Override
     public int hashCode() {
         return Objects.hash(id);
+    }
+
+    public String getId() {
+        return id.getId();
     }
 }

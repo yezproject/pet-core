@@ -20,10 +20,10 @@ record AuthServiceImpl(
         if (optionalUser.isEmpty()) throw new UserNotFoundException("User email: %s not found".formatted(email));
         else {
             final var user = optionalUser.get();
-            final var userTokenSet = apiTokenDao.findByUserId(user.getId().value())
+            final var userTokenSet = apiTokenDao.findByUserId(user.getId())
                     .stream().map(ApiTokenDto::getId)
                     .collect(Collectors.toSet());
-            return new AuthInfo(user.getId().toString(), user.getEmail(), userTokenSet);
+            return new AuthInfo(user.getId(), user.getEmail(), userTokenSet);
         }
     }
 }

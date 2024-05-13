@@ -2,7 +2,6 @@ package org.yproject.pet.transaction;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
-import org.yproject.pet.category.value_objects.CategoryId;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.transaction.driven.CreateTransactionDto;
 import org.yproject.pet.transaction.driven.ModifyTransactionDto;
@@ -46,9 +45,7 @@ class TransactionServiceImpl implements TransactionService {
             throw new TransactionNotExisted();
         }
         Transaction transaction = transactionOptional.get();
-        if (modifyTransactionDTO.categoryId() != null) {
-            transaction.modifyCategoryId(new CategoryId(modifyTransactionDTO.categoryId()));
-        }
+        transaction.modifyCategoryId(modifyTransactionDTO.categoryId());
         transaction.modifyAmount(modifyTransactionDTO.amount());
         transaction.modifyDescription(modifyTransactionDTO.description());
         transaction.modifyCurrency(Currency.valueOf(modifyTransactionDTO.currency()));

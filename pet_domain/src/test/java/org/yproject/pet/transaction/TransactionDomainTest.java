@@ -98,8 +98,8 @@ class TransactionDomainTest {
     }
 
     @Test
-    void modify_violate_categoryId_will_throw_exception() {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyCategoryId(null));
+    void modify_null_categoryId_will_not_throw_exception() {
+        assertDoesNotThrow(() -> RANDOM_TRANSACTION.modifyCategoryId(null));
     }
 
     @ParameterizedTest
