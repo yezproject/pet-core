@@ -24,9 +24,13 @@ class GlobalExceptionHandler implements AuthenticationEntryPoint {
         response.setStatus(HttpStatus.BAD_REQUEST.value());
     }
 
+    @ExceptionHandler(NullPointerException.class)
+    void internalError(HttpServletResponse response) {
+        response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         log.warn(authException.getMessage(), authException.fillInStackTrace());
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 }

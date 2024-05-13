@@ -3,7 +3,6 @@ package org.yproject.pet.transaction.value_objects;
 import java.util.Objects;
 
 public record TransactionId(
-        // TODO: Add @NonNull
         String value
 ) {
     public TransactionId {
