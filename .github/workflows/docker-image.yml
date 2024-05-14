@@ -33,3 +33,9 @@ jobs:
           push: true
           tags: ghcr.io/yezproject/pet-core:dev
           provenance: false
+      - 
+        name: Discord notify
+        uses: sarisia/actions-status-discord@v1
+        if: always()
+        with:
+          webhook: ${{ secrets.DISCORD_NOTIFY_WEBHOOK }}
