@@ -93,4 +93,9 @@ class TransactionController {
         return ResponseEntity.notFound().build();
     }
 
+    @ExceptionHandler(TransactionService.TransactionInvalidModify.class)
+    ResponseEntity<Void> transactionInvalidModifyHandler() {
+        return ResponseEntity.badRequest().build();
+    }
+
 }

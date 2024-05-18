@@ -3,10 +3,11 @@ package org.yproject.pet.transaction;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
+import org.mockito.Captor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import org.yproject.pet.RandomUtils;
+import org.yproject.pet.LogCaptureExtension;
 import org.yproject.pet.common.models.Entity;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.transaction.driven.CreateTransactionDto;
@@ -14,7 +15,9 @@ import org.yproject.pet.transaction.driven.ModifyTransactionDto;
 import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
 import org.yproject.pet.transaction.driven.TransactionService;
 
+import java.util.ArrayList;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertThrows;
@@ -23,9 +26,10 @@ import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.yproject.pet.RandomUtils.*;
+import static org.yproject.pet.transaction.TransactionRandomUtils.randomDeletedTransactionBuilder;
 import static org.yproject.pet.transaction.TransactionRandomUtils.randomTransaction;
 
-@ExtendWith(MockitoExtension.class)
+@ExtendWith({MockitoExtension.class, LogCaptureExtension.class})
 class TransactionServiceImplTest {
     @InjectMocks
     private TransactionServiceImpl underTest;
@@ -33,6 +37,8 @@ class TransactionServiceImplTest {
     private IdGenerator idGenerator;
     @Mock
     private TransactionStorage transactionStorage;
+    @Captor
+    private ArgumentCaptor<ArrayList<Transaction>> transactionsCaptor;
 
     @Test
     void create() {
@@ -45,8 +51,6 @@ class TransactionServiceImplTest {
         final var id = randomShortString();
         final var transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
         when(idGenerator.get())
-                .thenReturn(id);
-        when(transactionStorage.save(any()))
                 .thenReturn(id);
 
         final var result = underTest.create(new CreateTransactionDto(userId, categoryId, name, amount, transactionDate));
@@ -77,8 +81,6 @@ class TransactionServiceImplTest {
         ArgumentCaptor<Transaction> transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
         when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.of(oldTransaction));
-        when(transactionStorage.save(any()))
-                .thenReturn(userId);
 
         underTest.modify( new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate));
 
@@ -109,17 +111,44 @@ class TransactionServiceImplTest {
                 () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
 
         then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
-        then(transactionStorage).should(never()).save(any());
+        then(transactionStorage).should(never()).save(any(Transaction.class));
+    }
+
+    @Test
+    void modify_deleted_transaction_throw_invalid_exception() {
+        final var modifyId = randomShortString();
+        final var userId = randomShortString();
+        final var name = randomShortString();
+        final var amount = randomPositiveDouble();
+        final var transactionDate = randomInstant().toEpochMilli();
+        final var categoryId = randomShortString();
+        final var deletedTransaction = randomDeletedTransactionBuilder().build();
+
+        when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
+                .thenReturn(Optional.of(deletedTransaction));
+
+        assertThrows(TransactionService.TransactionInvalidModify.class,
+                () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
+
+        then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
+        then(transactionStorage).should(never()).save(any(Transaction.class));
     }
 
     @Test
     void delete() {
-        final var transactionIds = randomShortList(RandomUtils::randomShortString);
+        final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
+        final var transactionIds = transactions.stream().map(Entity::getId).collect(Collectors.toSet());
         final var userId = randomShortString();
+        when(transactionStorage.retrieveAllByIdsAndUserId(anySet(), anyString()))
+                .thenReturn(transactions);
 
         underTest.delete(transactionIds, userId);
 
-        then(transactionStorage).should().deleteByIdsAndUserId(transactionIds, userId);
+        then(transactionStorage).should().retrieveAllByIdsAndUserId(transactionIds, userId);
+        verify(transactionStorage).save(transactionsCaptor.capture());
+        final var isAllDeleteState = transactionsCaptor.getValue().stream()
+                .allMatch(Transaction::isDelete);
+        assertThat(isAllDeleteState).isTrue();
     }
 
     @Test

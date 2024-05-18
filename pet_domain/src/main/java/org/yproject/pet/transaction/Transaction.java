@@ -21,6 +21,7 @@ public final class Transaction extends AggregateRoot<String> {
     private Instant transactionDate;
     private Instant updateDate;
     private TransactionType type;
+    private DeleteInfo deleteInfo;
 
     Transaction(TransactionBuilder builder) {
         super(builder.transactionId);
@@ -32,44 +33,65 @@ public final class Transaction extends AggregateRoot<String> {
         currency = Optional.ofNullable(builder.currency).orElse(DEFAULT_CURRENCY);
         createDate = Optional.ofNullable(builder.createDate).orElse(Instant.now());
         updateDate = Optional.ofNullable(builder.updateDate).orElse(Instant.now());
+        if (builder.deleteDate != null && builder.deleteReason != null) {
+            deleteInfo = new DeleteInfo(builder.deleteDate, builder.deleteReason);
+        }
         transactionClassify();
     }
 
     public void modifyCategoryId(String categoryId) {
+        preModify();
         this.categoryId = categoryId;
+        postModify();
     }
 
     public void modifyName(String name) {
+        preModify();
         this.name = nameValidated(name);
-        postModifyAction();
+        postModify();
     }
 
     public void modifyAmount(Double amount) {
-        this.amount = amountValidated(amount);
-        transactionClassify();
-        postModifyAction();
+        modify(() -> {
+            this.amount = amountValidated(amount);
+            transactionClassify();
+        });
     }
 
     public void modifyCurrency(Currency currency) {
-        this.currency = Objects.requireNonNull(currency);
-        postModifyAction();
+        modify(() -> this.currency = Objects.requireNonNull(currency));
     }
 
     public void modifyTransactionDate(Instant transactionDate) {
-        this.transactionDate = Objects.requireNonNull(transactionDate);
-        postModifyAction();
+        modify(() -> this.transactionDate = Objects.requireNonNull(transactionDate));
     }
 
     private void transactionClassify() {
         type = amount < 0 ? TransactionType.EXPENSE : TransactionType.INCOME;
     }
 
-    private void postModifyAction() {
+    private void postModify() {
         this.updateDate = Instant.now();
     }
 
-    private Double amountValidated(final Double amount) {
-        Objects.requireNonNull(amount);
+    private void preModify() {
+        if (this.isDelete()) throw new DomainException("Transaction already be deleted");
+    }
+
+    private void modify(Runnable modification) {
+        preModify();
+        modification.run();
+        postModify();
+    }
+
+    public void delete(String deleteReason) {
+        deleteInfo = new DeleteInfo(
+                Instant.now(),
+                deleteReason
+        );
+    }
+
+    private Double amountValidated(final double amount) {
         if (amount == 0) throw new DomainException("Transaction amount must not be zero");
         return amount;
     }
@@ -83,39 +105,45 @@ public final class Transaction extends AggregateRoot<String> {
         return name;
     }
 
-    public String getCategoryId() {
-        return categoryId;
-    }
+    /* Getter */
 
     public String getCreatorUserId() {
         return creatorUserId;
     }
 
-    public double getAmount() {
-        return amount;
+    public Instant getCreateDate() {
+        return createDate;
     }
 
-    public TransactionType getType() {
-        return type;
-    }
-
-    public Instant getUpdateDate() {
-        return updateDate;
-    }
-
-    public Instant getTransactionDate() {
-        return transactionDate;
-    }
-
-    public Currency getCurrency() {
-        return currency;
+    public String getCategoryId() {
+        return categoryId;
     }
 
     public String getName() {
         return name;
     }
 
-    public Instant getCreateDate() {
-        return createDate;
+    public double getAmount() {
+        return amount;
+    }
+
+    public Currency getCurrency() {
+        return currency;
+    }
+
+    public Instant getTransactionDate() {
+        return transactionDate;
+    }
+
+    public Instant getUpdateDate() {
+        return updateDate;
+    }
+
+    public TransactionType getType() {
+        return type;
+    }
+
+    public boolean isDelete() {
+        return deleteInfo != null;
     }
 }

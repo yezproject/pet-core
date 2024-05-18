@@ -12,6 +12,8 @@ public final class TransactionBuilder {
     Instant transactionDate;
     Instant createDate;
     Instant updateDate;
+    Instant deleteDate;
+    String deleteReason;
 
     public TransactionBuilder(String transactionId) {
         this.transactionId = transactionId;
@@ -54,6 +56,16 @@ public final class TransactionBuilder {
 
     public TransactionBuilder createDate(Instant createDate) {
         this.createDate = createDate;
+        return this;
+    }
+
+    public TransactionBuilder deleteDate(Instant deleteDate) {
+        this.deleteDate = deleteDate;
+        return this;
+    }
+
+    public TransactionBuilder deleteReason(String deleteReason) {
+        this.deleteReason = deleteReason;
         return this;
     }
 

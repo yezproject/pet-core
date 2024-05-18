@@ -4,9 +4,7 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.transaction.driving.TransactionDao;
 import org.yproject.pet.transaction.driving.TransactionDto;
 
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Component
 record TransactionDaoImpl(
@@ -42,14 +40,27 @@ record TransactionDaoImpl(
     }
 
     @Override
-    public String save(TransactionDto dto) {
-        return repository.save(toEntity(dto)).getId();
+    public void save(TransactionDto dto) {
+        repository.save(toEntity(dto));
+    }
+
+    @Override
+    public void saveAll(Collection<TransactionDto> transactions) {
+        repository.saveAll(transactions.stream().map(TransactionDaoImpl::toEntity).toList());
     }
 
     @Override
     public Optional<TransactionDto> retrieveOneByIdAndUserId(String transactionId, String userId) {
         return repository.findByIdAndCreatorUserId(transactionId, userId)
                 .map(TransactionDaoImpl::fromEntity);
+    }
+
+    @Override
+    public List<TransactionDto> retrieveAllByIdsAndUserId(Set<String> transactionIds, String userId) {
+        return repository.findAllByIdInAndCreatorUserId(transactionIds, userId)
+                .stream()
+                .map(TransactionDaoImpl::fromEntity)
+                .toList();
     }
 
     @Override

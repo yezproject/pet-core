@@ -209,6 +209,26 @@ class TransactionControllerTest extends BaseControllerTest {
     }
 
     @Test
+    void modify_return_400() throws Exception {
+        final var requestBody = new ModifyTransactionRequest(
+                randomShortString(),
+                randomShortString(),
+                randomPositiveDouble(),
+                randomInstant().toEpochMilli()
+        );
+        final var requestModifyTransactionId = randomShortString();
+
+        doThrow(TransactionService.TransactionInvalidModify.class).when(this.transactionService)
+                .modify(any());
+
+        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(objectMapper.writeValueAsBytes(requestBody))
+                        .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
     void modify_missing_transaction_id_return_404() throws Exception {
         final var requestBody = new ModifyTransactionRequest(
                 randomShortString(),
