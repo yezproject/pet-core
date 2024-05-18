@@ -7,8 +7,6 @@ import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.NullAndEmptySource;
 import org.junit.jupiter.params.provider.NullSource;
 import org.junit.jupiter.params.provider.ValueSource;
-import org.yproject.pet.transaction.entities.Transaction;
-import org.yproject.pet.transaction.enums.TransactionType;
 
 import java.util.stream.Stream;
 
@@ -21,7 +19,7 @@ class TransactionDomainTest {
     private static final Transaction RANDOM_TRANSACTION = randomTransactionBuilder().build();
     private static final String BLANK_STRING = "  ";
     private static final String OVER_100_CHARACTERS_STRING = RandomStringUtils.randomAlphanumeric(101);
-    private static Stream<String> invalidDescriptions() {
+    private static Stream<String> invalidNames() {
         return Stream.of(BLANK_STRING, OVER_100_CHARACTERS_STRING);
     }
 
@@ -42,11 +40,11 @@ class TransactionDomainTest {
     }
 
     @Test
-    void create_null_createTime_invoke_default() {
+    void create_null_transactionDate_invoke_default() {
         final var transaction = randomTransactionBuilder()
-                .createTime(null)
+                .transactionDate(null)
                 .build();
-        assertNotNull(transaction.getCreateTime());
+        assertNotNull(transaction.getTransactionDate());
     }
 
     @Test
@@ -55,18 +53,18 @@ class TransactionDomainTest {
     }
 
     @Test
-    void create_null_description_will_throw_exception() {
+    void create_null_name_will_throw_exception() {
         assertThrows(Exception.class, () -> randomTransactionBuilder()
-                .description(null)
+                .name(null)
                 .build());
     }
 
     @ParameterizedTest
     @NullAndEmptySource
-    @MethodSource("invalidDescriptions")
-    void create_empty_description_will_throw_exception(String invalidDescription) {
+    @MethodSource("invalidNames")
+    void create_empty_name_will_throw_exception(String invalidName) {
         assertThrows(Exception.class, () -> randomTransactionBuilder()
-                .description(invalidDescription)
+                .name(invalidName)
                 .build());
     }
 
@@ -104,9 +102,9 @@ class TransactionDomainTest {
 
     @ParameterizedTest
     @NullAndEmptySource
-    @MethodSource("invalidDescriptions")
-    void modify_violate_description_will_throw_exception(String invalidDescription) {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyDescription(invalidDescription));
+    @MethodSource("invalidNames")
+    void modify_violate_name_will_throw_exception(String invalidName) {
+        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyName(invalidName));
     }
 
     @ParameterizedTest
@@ -122,8 +120,8 @@ class TransactionDomainTest {
     }
 
     @Test
-    void modify_violate_createTime_will_throw_exception() {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyCreateTime(null));
+    void modify_violate_transactionDate_will_throw_exception() {
+        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyTransactionDate(null));
     }
 
 }

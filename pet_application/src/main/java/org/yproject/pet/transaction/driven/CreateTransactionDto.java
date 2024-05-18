@@ -1,10 +1,10 @@
 package org.yproject.pet.transaction.driven;
 
 public record CreateTransactionDto(
+        String userId,
         String categoryId,
-        String description,
+        String name,
         Double amount,
-        String currency,
-        Long createTime
+        Long transactionDate
 ) {
 }

@@ -1,13 +1,9 @@
-package org.yproject.pet.user.entities;
-
-import org.yproject.pet.user.enums.ApprovalStatus;
-import org.yproject.pet.user.enums.Role;
-import org.yproject.pet.user.value_objects.UserId;
+package org.yproject.pet.user;
 
 import java.time.Instant;
 
 public class UserBuilder {
-    final UserId userId;
+    final String userId;
     String email;
     String fullName;
     String password;
@@ -17,7 +13,7 @@ public class UserBuilder {
     Instant approvedAt;
 
     public UserBuilder(String userId) {
-        this.userId = new UserId(userId);
+        this.userId = userId;
     }
 
     public UserBuilder email(String email) {

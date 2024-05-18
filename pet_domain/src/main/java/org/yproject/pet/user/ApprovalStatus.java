@@ -1,4 +1,4 @@
-package org.yproject.pet.user.enums;
+package org.yproject.pet.user;
 
 public enum ApprovalStatus {
     APPROVED,

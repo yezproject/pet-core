@@ -5,8 +5,6 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.Storage;
 import org.yproject.pet.category.driving.CategoryDao;
 import org.yproject.pet.category.driving.CategoryDto;
-import org.yproject.pet.category.entities.Category;
-import org.yproject.pet.category.entities.CategoryBuilder;
 
 import java.util.List;
 import java.util.Optional;

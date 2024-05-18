@@ -1,6 +1,6 @@
 package org.yproject.pet.category.driven;
 
-import org.yproject.pet.category.entities.Category;
+import org.yproject.pet.category.Category;
 
 public record RetrieveCategoryDto(
         String id,

@@ -1,24 +1,29 @@
-package org.yproject.pet.api_token.entities;
+package org.yproject.pet.api_token;
 
-import org.yproject.pet.api_token.value_objects.ApiTokenId;
-import org.yproject.pet.user.value_objects.UserId;
+import java.time.Instant;
 
 public class ApiTokenBuilder {
-    final ApiTokenId apiTokenId;
-    UserId userId;
+    final String apiTokenId;
+    String userId;
     String name;
+    Instant createDate;
 
     public ApiTokenBuilder(String apiTokenId) {
-        this.apiTokenId = new ApiTokenId(apiTokenId);
+        this.apiTokenId = apiTokenId;
     }
 
     public ApiTokenBuilder userId(String userId) {
-        this.userId = new UserId(userId);
+        this.userId = userId;
         return this;
     }
 
     public ApiTokenBuilder name(String name) {
         this.name = name;
+        return this;
+    }
+
+    public ApiTokenBuilder createDate(Instant createDate) {
+        this.createDate = createDate;
         return this;
     }
 

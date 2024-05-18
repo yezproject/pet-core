@@ -1,9 +1,5 @@
 package org.yproject.pet.transaction;
 
-import org.yproject.pet.transaction.entities.Transaction;
-import org.yproject.pet.transaction.entities.TransactionBuilder;
-import org.yproject.pet.transaction.enums.Currency;
-
 import static org.yproject.pet.RandomUtils.*;
 
 public class TransactionRandomUtils {
@@ -16,10 +12,10 @@ public class TransactionRandomUtils {
         return new TransactionBuilder(randomShortString())
                 .creatorUserId(randomShortString())
                 .categoryId(randomNullableShortString())
-                .description(randomShortString())
+                .name(randomShortString())
                 .amount(randomPositiveDouble())
                 .currency(randomCurrency())
-                .createTime(randomInstant())
+                .transactionDate(randomInstant())
                 .build();
     }
 
@@ -27,10 +23,10 @@ public class TransactionRandomUtils {
         return new TransactionBuilder(transactionId)
                 .creatorUserId(randomShortString())
                 .categoryId(randomNullableShortString())
-                .description(randomShortString())
+                .name(randomShortString())
                 .amount(randomPositiveDouble())
                 .currency(randomCurrency())
-                .createTime(randomInstant())
+                .transactionDate(randomInstant())
                 .build();
     }
 
@@ -38,19 +34,19 @@ public class TransactionRandomUtils {
         return new TransactionBuilder(randomShortString())
                 .creatorUserId(randomShortString())
                 .categoryId(randomNullableShortString())
-                .description(randomShortString())
+                .name(randomShortString())
                 .amount(randomPositiveDouble())
                 .currency(randomCurrency())
-                .createTime(randomInstant());
+                .transactionDate(randomInstant());
     }
 
     public static TransactionBuilder randomTransactionBuilder(String transactionId) {
         return new TransactionBuilder(transactionId)
                 .creatorUserId(randomShortString())
                 .categoryId(randomNullableShortString())
-                .description(randomShortString())
+                .name(randomShortString())
                 .amount(randomPositiveDouble())
                 .currency(randomCurrency())
-                .createTime(randomInstant());
+                .transactionDate(randomInstant());
     }
 }

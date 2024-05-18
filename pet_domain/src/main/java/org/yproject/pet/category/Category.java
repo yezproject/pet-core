@@ -1,18 +1,14 @@
-package org.yproject.pet.category.entities;
+package org.yproject.pet.category;
 
 import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import org.yproject.pet.category.value_objects.CategoryId;
 import org.yproject.pet.common.error.DomainException;
 import org.yproject.pet.common.models.AggregateRoot;
-import org.yproject.pet.user.value_objects.UserId;
 
 import java.util.Objects;
 
-@Getter
 @EqualsAndHashCode(callSuper = true)
-public class Category extends AggregateRoot<CategoryId> {
-    UserId createUserId;
+public final class Category extends AggregateRoot<String> {
+    String createUserId;
     String name;
 
     Category(CategoryBuilder builder) {
@@ -34,6 +30,10 @@ public class Category extends AggregateRoot<CategoryId> {
     }
 
     public String getCreateUserId() {
-        return createUserId.value();
+        return createUserId;
+    }
+
+    public String getName() {
+        return name;
     }
 }

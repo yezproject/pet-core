@@ -5,7 +5,6 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.api_token.driven.ApiTokenIdWithNameDto;
 import org.yproject.pet.api_token.driven.ApiTokenIdWithTokenDto;
 import org.yproject.pet.api_token.driven.ApiTokenService;
-import org.yproject.pet.api_token.entities.ApiTokenBuilder;
 import org.yproject.pet.id.IdGenerator;
 import org.yproject.pet.jwt.JwtService;
 

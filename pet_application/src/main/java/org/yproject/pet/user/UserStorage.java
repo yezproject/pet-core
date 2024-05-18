@@ -5,10 +5,6 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.Storage;
 import org.yproject.pet.user.driving.SavedUserDto;
 import org.yproject.pet.user.driving.UserDao;
-import org.yproject.pet.user.entities.User;
-import org.yproject.pet.user.entities.UserBuilder;
-import org.yproject.pet.user.enums.ApprovalStatus;
-import org.yproject.pet.user.enums.Role;
 
 import java.util.Optional;
 

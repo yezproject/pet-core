@@ -2,9 +2,9 @@ package org.yproject.pet.web.apis.transaction;
 
 record CreateTransactionRequest(
         String categoryId,
-        String description,
+        String name,
         Double amount,
         String currency,
-        Long createTime
+        Long transactionDate
 ) {
 }

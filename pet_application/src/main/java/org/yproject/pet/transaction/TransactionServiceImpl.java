@@ -7,9 +7,6 @@ import org.yproject.pet.transaction.driven.CreateTransactionDto;
 import org.yproject.pet.transaction.driven.ModifyTransactionDto;
 import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
 import org.yproject.pet.transaction.driven.TransactionService;
-import org.yproject.pet.transaction.entities.Transaction;
-import org.yproject.pet.transaction.entities.TransactionBuilder;
-import org.yproject.pet.transaction.enums.Currency;
 
 import java.time.Instant;
 import java.util.List;
@@ -21,35 +18,31 @@ class TransactionServiceImpl implements TransactionService {
     private final TransactionStorage transactionStorage;
 
     @Override
-    public String create(String userId, CreateTransactionDto createTransactionDTO) {
+    public String create(CreateTransactionDto dto) {
         final var newTransactionId = idGenerator.get();
         final var newTransaction = new TransactionBuilder(newTransactionId)
-                .creatorUserId(userId)
-                .categoryId(createTransactionDTO.categoryId())
-                .description(createTransactionDTO.description())
-                .amount(createTransactionDTO.amount())
-                .currency(Currency.valueOf(createTransactionDTO.currency()))
-                .createTime(Instant.ofEpochMilli(createTransactionDTO.createTime()))
+                .creatorUserId(dto.userId())
+                .categoryId(dto.categoryId())
+                .name(dto.name())
+                .amount(dto.amount())
+                .transactionDate(Instant.ofEpochMilli(dto.transactionDate()))
                 .build();
         return transactionStorage.save(newTransaction);
     }
 
     @Override
     public void modify(
-            final String userId,
-            final String transactionId,
-            final ModifyTransactionDto modifyTransactionDTO
+            final ModifyTransactionDto dto
     ) {
-        final var transactionOptional = transactionStorage.retrieveOneByIdAndUserId(transactionId, userId);
+        final var transactionOptional = transactionStorage.retrieveOneByIdAndUserId(dto.transactionId(), dto.userId());
         if (transactionOptional.isEmpty()) {
             throw new TransactionNotExisted();
         }
         Transaction transaction = transactionOptional.get();
-        transaction.modifyCategoryId(modifyTransactionDTO.categoryId());
-        transaction.modifyAmount(modifyTransactionDTO.amount());
-        transaction.modifyDescription(modifyTransactionDTO.description());
-        transaction.modifyCurrency(Currency.valueOf(modifyTransactionDTO.currency()));
-        transaction.modifyCreateTime(Instant.ofEpochMilli(modifyTransactionDTO.createTime()));
+        transaction.modifyCategoryId(dto.categoryId());
+        transaction.modifyAmount(dto.amount());
+        transaction.modifyName(dto.name());
+        transaction.modifyTransactionDate(Instant.ofEpochMilli(dto.transactionDate()));
         transactionStorage.save(transaction);
     }
 

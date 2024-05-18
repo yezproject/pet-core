@@ -1,10 +1,6 @@
 package org.yproject.pet.user;
 
 import org.yproject.pet.RandomUtils;
-import org.yproject.pet.user.entities.User;
-import org.yproject.pet.user.entities.UserBuilder;
-import org.yproject.pet.user.enums.ApprovalStatus;
-import org.yproject.pet.user.enums.Role;
 
 import java.time.Instant;
 

@@ -47,13 +47,12 @@ class TransactionController {
             @RequestUser UserInfo user
     ) {
         String id = transactionService.create(
-                user.id(),
                 new CreateTransactionDto(
+                        user.id(),
                         req.categoryId(),
-                        req.description(),
+                        req.name(),
                         req.amount(),
-                        req.currency(),
-                        req.createTime()
+                        req.transactionDate()
                 )
         );
         return new CreateTransactionResponse(id);
@@ -67,14 +66,13 @@ class TransactionController {
             @RequestUser UserInfo user
     ) {
         transactionService.modify(
-                user.id(),
-                transactionId,
                 new ModifyTransactionDto(
+                        user.id(),
+                        transactionId,
                         req.categoryId(),
-                        req.description(),
+                        req.name(),
                         req.amount(),
-                        req.currency(),
-                        req.createTime()
+                        req.transactionDate()
                 )
 
         );

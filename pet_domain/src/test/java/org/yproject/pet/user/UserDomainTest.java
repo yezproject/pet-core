@@ -2,7 +2,6 @@ package org.yproject.pet.user;
 
 import org.junit.jupiter.api.Test;
 import org.yproject.pet.common.error.DomainException;
-import org.yproject.pet.user.enums.ApprovalStatus;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.yproject.pet.user.UserRandomUtils.randomUser;

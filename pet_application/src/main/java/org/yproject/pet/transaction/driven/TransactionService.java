@@ -6,9 +6,9 @@ public interface TransactionService {
     final class TransactionNotExisted extends RuntimeException {
     }
 
-    String create(String userId, CreateTransactionDto createTransactionDTO);
+    String create(CreateTransactionDto createTransactionDTO);
 
-    void modify(String userId, String transactionId, ModifyTransactionDto modifyTransactionDTO);
+    void modify(ModifyTransactionDto modifyTransactionDTO);
 
     void delete(List<String> transactionIds, String userId);
 

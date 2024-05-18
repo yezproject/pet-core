@@ -1,28 +1,27 @@
-package org.yproject.pet.api_token.entities;
+package org.yproject.pet.api_token;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import org.yproject.pet.api_token.value_objects.ApiTokenId;
 import org.yproject.pet.common.error.DomainException;
 import org.yproject.pet.common.models.AggregateRoot;
-import org.yproject.pet.user.value_objects.UserId;
 
 import java.time.Instant;
+import java.util.Objects;
 import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class ApiToken extends AggregateRoot<ApiTokenId> {
-    private final UserId userId;
-    private final Instant createTime;
+public final class ApiToken extends AggregateRoot<String> {
+    public static final int API_TOKEN_NAME_MAX_LENGTH = 100;
+    private final String userId;
+    private final Instant createDate;
     private String name;
 
     ApiToken(ApiTokenBuilder builder) {
         super(builder.apiTokenId);
-        this.userId = Optional.ofNullable(builder.userId)
-                .orElseThrow(() -> new DomainException("user id is null"));
+        this.userId = Objects.requireNonNull(builder.userId);
         this.name = nameValidated(builder.name);
-        this.createTime = Instant.now();
+        this.createDate = Optional.ofNullable(builder.createDate).orElse(Instant.now());
     }
 
     private String nameValidated(String name) {
@@ -30,7 +29,7 @@ public class ApiToken extends AggregateRoot<ApiTokenId> {
             throw new DomainException("name is null");
         } else if (name.isBlank()) {
             throw new DomainException("name is blank");
-        } else if (name.length() > 100) {
+        } else if (name.length() > API_TOKEN_NAME_MAX_LENGTH) {
             throw new DomainException("name is greater than 100 characters");
         } else {
             return name;
@@ -42,6 +41,6 @@ public class ApiToken extends AggregateRoot<ApiTokenId> {
     }
 
     public String getUserId() {
-        return userId.value();
+        return userId;
     }
 }

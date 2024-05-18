@@ -1,19 +1,18 @@
 package org.yproject.pet.transaction.driving;
 
-import lombok.Builder;
-import lombok.Getter;
 
 import java.time.Instant;
 
-@Getter
-@Builder
-public class TransactionDto {
-    String id;
-    String description;
-    Double amount;
-    String currency;
-    String creatorUserId;
-    Instant createTime;
-    String type;
-    String categoryId;
+public record TransactionDto(
+        String id,
+        String name,
+        Double amount,
+        String currency,
+        String creatorUserId,
+        Instant transactionDate,
+        Instant createDate,
+        Instant updateDate,
+        String type,
+        String categoryId
+) {
 }

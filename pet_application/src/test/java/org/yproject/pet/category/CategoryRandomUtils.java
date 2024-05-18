@@ -1,8 +1,5 @@
 package org.yproject.pet.category;
 
-import org.yproject.pet.category.entities.Category;
-import org.yproject.pet.category.entities.CategoryBuilder;
-
 import static org.yproject.pet.RandomUtils.randomShortString;
 
 public class CategoryRandomUtils {

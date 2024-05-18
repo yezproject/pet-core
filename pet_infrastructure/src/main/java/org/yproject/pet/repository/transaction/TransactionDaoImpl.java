@@ -15,28 +15,30 @@ record TransactionDaoImpl(
 
     private static TransactionEntity toEntity(TransactionDto dto) {
         return TransactionEntity.builder()
-                .id(dto.getId())
-                .description(dto.getDescription())
-                .amount(dto.getAmount())
-                .currency(dto.getCurrency())
-                .creatorUserId(dto.getCreatorUserId())
-                .createTime(dto.getCreateTime())
-                .type(dto.getType())
-                .categoryId(dto.getCategoryId())
+                .id(dto.id())
+                .name(dto.name())
+                .amount(dto.amount())
+                .currency(dto.currency())
+                .creatorUserId(dto.creatorUserId())
+                .transactionDate(dto.transactionDate())
+                .type(dto.type())
+                .categoryId(dto.categoryId())
                 .build();
     }
 
     private static TransactionDto fromEntity(TransactionEntity entity) {
-        return TransactionDto.builder()
-                .id(entity.getId())
-                .description(entity.getDescription())
-                .amount(entity.getAmount())
-                .currency(entity.getCurrency())
-                .creatorUserId(entity.getCreatorUserId())
-                .createTime(entity.getCreateTime())
-                .type(entity.getType())
-                .categoryId(entity.getCategoryId())
-                .build();
+        return new TransactionDto(
+                entity.getId(),
+                entity.getName(),
+                entity.getAmount(),
+                entity.getCurrency(),
+                entity.getCreatorUserId(),
+                entity.getTransactionDate(),
+                entity.getCreateDate(),
+                entity.getUpdateDate(),
+                entity.getType(),
+                entity.getCategoryId()
+        );
     }
 
     @Override

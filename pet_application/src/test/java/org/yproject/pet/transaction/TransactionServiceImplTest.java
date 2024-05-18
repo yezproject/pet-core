@@ -13,8 +13,6 @@ import org.yproject.pet.transaction.driven.CreateTransactionDto;
 import org.yproject.pet.transaction.driven.ModifyTransactionDto;
 import org.yproject.pet.transaction.driven.RetrieveTransactionDto;
 import org.yproject.pet.transaction.driven.TransactionService;
-import org.yproject.pet.transaction.entities.Transaction;
-import org.yproject.pet.transaction.enums.Currency;
 
 import java.util.Optional;
 
@@ -39,10 +37,9 @@ class TransactionServiceImplTest {
     @Test
     void create() {
         final var userId = randomShortString();
-        final var description = randomShortString();
+        final var name = randomShortString();
         final var amount = randomPositiveDouble();
-        final var currency = randomFrom(Currency.values()).name();
-        final var createTime = randomInstant().toEpochMilli();
+        final var transactionDate = randomInstant().toEpochMilli();
         final var categoryId = randomNullableShortString();
 
         final var id = randomShortString();
@@ -52,18 +49,17 @@ class TransactionServiceImplTest {
         when(transactionStorage.save(any()))
                 .thenReturn(id);
 
-        final var result = underTest.create(userId, new CreateTransactionDto(categoryId, description, amount, currency, createTime));
+        final var result = underTest.create(new CreateTransactionDto(userId, categoryId, name, amount, transactionDate));
 
         verify(transactionStorage).save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
                 .returns(id, Entity::getId)
                 .returns(categoryId, Transaction::getCategoryId)
-                .returns(description, Transaction::getDescription)
+                .returns(name, Transaction::getName)
                 .returns(amount, Transaction::getAmount)
-                .returns(currency, transaction -> transaction.getCurrency().name())
                 .returns(userId, Transaction::getCreatorUserId)
-                .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
+                .returns(transactionDate, transaction -> transaction.getTransactionDate().toEpochMilli());
         assertThat(result).isEqualTo(id);
 
     }
@@ -72,10 +68,9 @@ class TransactionServiceImplTest {
     void modify() {
         final var modifyId = randomShortString();
         final var userId = randomShortString();
-        final var description = randomShortString();
+        final var name = randomShortString();
         final var amount = randomPositiveDouble();
-        final var currency = randomFrom(Currency.values()).name();
-        final var createTime = randomInstant().toEpochMilli();
+        final var transactionDate = randomInstant().toEpochMilli();
         final var categoryId = randomNullableShortString();
         final var oldTransaction = randomTransaction();
 
@@ -85,35 +80,33 @@ class TransactionServiceImplTest {
         when(transactionStorage.save(any()))
                 .thenReturn(userId);
 
-        underTest.modify(userId, modifyId, new ModifyTransactionDto(categoryId, description, amount, currency, createTime));
+        underTest.modify( new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate));
 
         then(transactionStorage).should().save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
                 .returns(oldTransaction.getId(), Entity::getId)
                 .returns(oldTransaction.getCategoryId(), Transaction::getCategoryId)
-                .returns(description, Transaction::getDescription)
+                .returns(name, Transaction::getName)
                 .returns(amount, Transaction::getAmount)
-                .returns(currency, transaction -> transaction.getCurrency().name())
                 .returns(oldTransaction.getCreatorUserId(), Transaction::getCreatorUserId)
-                .returns(createTime, transaction -> transaction.getCreateTime().toEpochMilli());
+                .returns(transactionDate, transaction -> transaction.getTransactionDate().toEpochMilli());
     }
 
     @Test
     void modify_throw_not_existed_exception() {
         final var modifyId = randomShortString();
         final var userId = randomShortString();
-        final var description = randomShortString();
+        final var name = randomShortString();
         final var amount = randomPositiveDouble();
-        final var currency = randomFrom(Currency.values()).name();
-        final var createTime = randomInstant().toEpochMilli();
+        final var transactionDate = randomInstant().toEpochMilli();
         final var categoryId = randomShortString();
 
         when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
         assertThrows(TransactionService.TransactionNotExisted.class,
-                () -> underTest.modify(userId, modifyId, new ModifyTransactionDto(categoryId, description, amount, currency, createTime)));
+                () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
 
         then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
         then(transactionStorage).should(never()).save(any());
@@ -156,11 +149,11 @@ class TransactionServiceImplTest {
         assertThat(result)
                 .returns(transactionId, RetrieveTransactionDto::id)
                 .returns(transaction.getCategoryId(), RetrieveTransactionDto::categoryId)
-                .returns(transaction.getDescription(), RetrieveTransactionDto::description)
+                .returns(transaction.getName(), RetrieveTransactionDto::name)
                 .returns(transaction.getAmount(), RetrieveTransactionDto::amount)
                 .returns(transaction.getCurrency().name(), dto -> dto.currency().name())
                 .returns(transaction.getCurrency().getSymbol(), dto -> dto.currency().symbol())
-                .returns(transaction.getCreateTime(), RetrieveTransactionDto::createTime);
+                .returns(transaction.getTransactionDate(), RetrieveTransactionDto::transactionDate);
     }
 
     @Test

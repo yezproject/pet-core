@@ -7,8 +7,6 @@ import org.yproject.pet.jwt.JwtService;
 import org.yproject.pet.user.driven.JoinService;
 import org.yproject.pet.user.driven.SignUpApplicationDto;
 import org.yproject.pet.user.driving.PasswordService;
-import org.yproject.pet.user.entities.UserBuilder;
-import org.yproject.pet.user.enums.Role;
 
 @Component
 @RequiredArgsConstructor

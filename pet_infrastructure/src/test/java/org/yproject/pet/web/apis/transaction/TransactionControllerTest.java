@@ -66,11 +66,11 @@ class TransactionControllerTest extends BaseControllerTest {
         assertThat(response)
                 .returns(transactionDTO.id(), RetrieveTransactionResponse::id)
                 .returns(transactionDTO.categoryId(), RetrieveTransactionResponse::categoryId)
-                .returns(transactionDTO.description(), RetrieveTransactionResponse::description)
+                .returns(transactionDTO.name(), RetrieveTransactionResponse::name)
                 .returns(transactionDTO.amount(), RetrieveTransactionResponse::amount)
                 .returns(transactionDTO.currency().name(), res -> res.currency().name())
                 .returns(transactionDTO.currency().symbol(), res -> res.currency().symbol())
-                .returns(transactionDTO.createTime().toEpochMilli(), RetrieveTransactionResponse::createTime);
+                .returns(transactionDTO.transactionDate().toEpochMilli(), RetrieveTransactionResponse::transactionDate);
     }
 
     @Test
@@ -103,11 +103,11 @@ class TransactionControllerTest extends BaseControllerTest {
                 .forEach(index -> assertThat(responses.get(index))
                         .returns(transactionDTOs.get(index).id(), RetrieveTransactionResponse::id)
                         .returns(transactionDTOs.get(index).categoryId(), RetrieveTransactionResponse::categoryId)
-                        .returns(transactionDTOs.get(index).description(), RetrieveTransactionResponse::description)
+                        .returns(transactionDTOs.get(index).name(), RetrieveTransactionResponse::name)
                         .returns(transactionDTOs.get(index).amount(), RetrieveTransactionResponse::amount)
                         .returns(transactionDTOs.get(index).currency().name(), res -> res.currency().name())
                         .returns(transactionDTOs.get(index).currency().symbol(), res -> res.currency().symbol())
-                        .returns(transactionDTOs.get(index).createTime().toEpochMilli(), RetrieveTransactionResponse::createTime)
+                        .returns(transactionDTOs.get(index).transactionDate().toEpochMilli(), RetrieveTransactionResponse::transactionDate)
                 );
     }
 
@@ -122,7 +122,7 @@ class TransactionControllerTest extends BaseControllerTest {
         );
 
         final var randomId = randomShortString();
-        when(transactionService.create(anyString(), any()))
+        when(transactionService.create(any()))
                 .thenReturn(randomId);
 
         this.mockMvc.perform(post("/api/transactions")
@@ -132,13 +132,12 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isCreated());
 
         then(transactionService).should().create(
-                mockUser.userId(),
                 new CreateTransactionDto(
+                        mockUser.userId(),
                         requestBody.categoryId(),
-                        requestBody.description(),
+                        requestBody.name(),
                         requestBody.amount(),
-                        requestBody.currency(),
-                        requestBody.createTime()
+                        requestBody.transactionDate()
                 )
         );
     }
@@ -167,7 +166,6 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomShortString(),
                 randomShortString(),
                 randomPositiveDouble(),
-                randomCurrency(),
                 randomInstant().toEpochMilli()
         );
         final var requestModifyTransactionId = randomShortString();
@@ -179,14 +177,13 @@ class TransactionControllerTest extends BaseControllerTest {
                 .andExpect(status().isNoContent());
 
         then(this.transactionService).should().modify(
-                mockUser.userId(),
-                requestModifyTransactionId,
                 new ModifyTransactionDto(
+                        mockUser.userId(),
+                        requestModifyTransactionId,
                         requestBody.categoryId(),
-                        requestBody.description(),
+                        requestBody.name(),
                         requestBody.amount(),
-                        requestBody.currency(),
-                        requestBody.createTime()
+                        requestBody.transactionDate()
                 )
         );
     }
@@ -197,13 +194,12 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomShortString(),
                 randomShortString(),
                 randomPositiveDouble(),
-                randomCurrency(),
                 randomInstant().toEpochMilli()
         );
         final var requestModifyTransactionId = randomShortString();
 
         doThrow(TransactionService.TransactionNotExisted.class).when(this.transactionService)
-                .modify(anyString(), anyString(), any());
+                .modify(any());
 
         this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
@@ -218,7 +214,6 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomShortString(),
                 randomShortString(),
                 randomPositiveDouble(),
-                randomCurrency(),
                 randomInstant().toEpochMilli()
         );
 

@@ -5,9 +5,6 @@ import org.springframework.stereotype.Component;
 import org.yproject.pet.Storage;
 import org.yproject.pet.transaction.driving.TransactionDao;
 import org.yproject.pet.transaction.driving.TransactionDto;
-import org.yproject.pet.transaction.entities.Transaction;
-import org.yproject.pet.transaction.entities.TransactionBuilder;
-import org.yproject.pet.transaction.enums.Currency;
 
 import java.util.List;
 import java.util.Optional;
@@ -38,26 +35,30 @@ class TransactionStorage {
     }
 
     private TransactionDto toDto(Transaction domain) {
-        return TransactionDto.builder()
-                .id(domain.getId())
-                .description(domain.getDescription())
-                .amount(domain.getAmount())
-                .currency(domain.getCurrency().name())
-                .creatorUserId(domain.getCreatorUserId())
-                .createTime(domain.getCreateTime())
-                .type(domain.getType().name())
-                .categoryId(domain.getCategoryId())
-                .build();
+        return new TransactionDto(
+                domain.getId(),
+                domain.getName(),
+                domain.getAmount(),
+                domain.getCurrency().name(),
+                domain.getCreatorUserId(),
+                domain.getTransactionDate(),
+                domain.getCreateDate(),
+                domain.getUpdateDate(),
+                domain.getType().name(),
+                domain.getCategoryId()
+        );
     }
 
     private Transaction toDomain(TransactionDto dto) {
-        return new TransactionBuilder(dto.getId())
-                .creatorUserId(dto.getCreatorUserId())
-                .categoryId(dto.getCategoryId())
-                .description(dto.getDescription())
-                .amount(dto.getAmount())
-                .currency(Currency.valueOf(dto.getCurrency()))
-                .createTime(dto.getCreateTime())
+        return new TransactionBuilder(dto.id())
+                .creatorUserId(dto.creatorUserId())
+                .categoryId(dto.categoryId())
+                .name(dto.name())
+                .amount(dto.amount())
+                .currency(Currency.valueOf(dto.currency()))
+                .transactionDate(dto.transactionDate())
+                .createDate(dto.createDate())
+                .updateDate(dto.updateDate())
                 .build();
     }
 }

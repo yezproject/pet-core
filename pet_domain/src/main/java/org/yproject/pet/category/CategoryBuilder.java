@@ -1,19 +1,16 @@
-package org.yproject.pet.category.entities;
-
-import org.yproject.pet.category.value_objects.CategoryId;
-import org.yproject.pet.user.value_objects.UserId;
+package org.yproject.pet.category;
 
 public class CategoryBuilder {
-    final CategoryId categoryId;
-    UserId createUserId;
+    final String categoryId;
+    String createUserId;
     String name;
 
     public CategoryBuilder(String categoryId) {
-        this.categoryId = new CategoryId(categoryId);
+        this.categoryId = categoryId;
     }
 
     public CategoryBuilder createUserId(String createUserId) {
-        this.createUserId = new UserId(createUserId);
+        this.createUserId = createUserId;
         return this;
     }
 

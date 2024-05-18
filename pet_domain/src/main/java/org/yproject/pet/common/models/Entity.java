@@ -2,7 +2,7 @@ package org.yproject.pet.common.models;
 
 import java.util.Objects;
 
-public abstract class Entity<I extends EntityId> {
+public abstract class Entity<I> implements EntityIdGetter<I> {
     final I id;
 
     Entity(I id) {
@@ -23,7 +23,7 @@ public abstract class Entity<I extends EntityId> {
         return Objects.hash(id);
     }
 
-    public String getId() {
-        return id.getId();
+    public I getId() {
+        return id;
     }
 }

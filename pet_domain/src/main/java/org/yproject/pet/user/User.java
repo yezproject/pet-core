@@ -1,19 +1,16 @@
-package org.yproject.pet.user.entities;
+package org.yproject.pet.user;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import org.yproject.pet.common.error.DomainException;
 import org.yproject.pet.common.models.AggregateRoot;
-import org.yproject.pet.user.enums.ApprovalStatus;
-import org.yproject.pet.user.enums.Role;
-import org.yproject.pet.user.value_objects.UserId;
 
 import java.time.Instant;
 import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
-public class User extends AggregateRoot<UserId> {
+public class User extends AggregateRoot<String> {
     String email;
     String fullName;
     String password;
