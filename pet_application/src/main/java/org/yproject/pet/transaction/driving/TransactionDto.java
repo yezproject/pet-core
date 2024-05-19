@@ -13,6 +13,11 @@ public record TransactionDto(
         Instant createDate,
         Instant updateDate,
         String type,
-        String categoryId
+        String categoryId,
+        boolean isDelete,
+
+        String deleteId,
+        Instant deleteDate,
+        String deleteReason
 ) {
 }

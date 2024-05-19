@@ -3,20 +3,19 @@ package org.yproject.pet.transaction;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.MethodSource;
-import org.junit.jupiter.params.provider.NullAndEmptySource;
-import org.junit.jupiter.params.provider.NullSource;
-import org.junit.jupiter.params.provider.ValueSource;
+import org.junit.jupiter.params.provider.*;
 
+import java.time.Instant;
 import java.util.stream.Stream;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.*;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.yproject.pet.RandomUtils.randomNegativeDouble;
-import static org.yproject.pet.RandomUtils.randomPositiveDouble;
+import static org.yproject.pet.RandomUtils.*;
 import static org.yproject.pet.transaction.TransactionRandomUtils.randomTransactionBuilder;
 
 class TransactionDomainTest {
-    private static final Transaction RANDOM_TRANSACTION = randomTransactionBuilder().build();
+    private static final TransactionBuilder RANDOM_TRANSACTION_BUILDER = randomTransactionBuilder();
     private static final String BLANK_STRING = "  ";
     private static final String OVER_100_CHARACTERS_STRING = RandomStringUtils.randomAlphanumeric(101);
     private static Stream<String> invalidNames() {
@@ -45,6 +44,35 @@ class TransactionDomainTest {
                 .transactionDate(null)
                 .build();
         assertNotNull(transaction.getTransactionDate());
+    }
+
+    @Test
+    void transaction_must_exist_create_update() {
+        final var transaction = RANDOM_TRANSACTION_BUILDER
+                .createDate(null)
+                .updateDate(null)
+                .build();
+
+        assertNotNull(transaction.getCreateDate());
+        assertNotNull(transaction.getUpdateDate());
+    }
+
+    @Test
+    void deleted_transaction_must_have_delete_info() {
+        final var transaction = RANDOM_TRANSACTION_BUILDER
+                .deleteDate(null)
+                .deleteReason(null)
+                .build();
+        final var beforeDelete = Instant.now();
+        final var reasonToDelete = randomShortString();
+        transaction.delete(reasonToDelete);
+        final var afterDelete = Instant.now();
+
+        assertThat(transaction.getDeleteInfo().date(), is(allOf(
+                greaterThanOrEqualTo(beforeDelete),
+                lessThanOrEqualTo(afterDelete)
+        )));
+        assertEquals(transaction.getDeleteInfo().reason(), reasonToDelete);
     }
 
     @Test
@@ -97,31 +125,39 @@ class TransactionDomainTest {
 
     @Test
     void modify_null_categoryId_will_not_throw_exception() {
-        assertDoesNotThrow(() -> RANDOM_TRANSACTION.modifyCategoryId(null));
+        assertDoesNotThrow(() -> RANDOM_TRANSACTION_BUILDER.build().modifyCategoryId(null));
     }
 
     @ParameterizedTest
     @NullAndEmptySource
     @MethodSource("invalidNames")
     void modify_violate_name_will_throw_exception(String invalidName) {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyName(invalidName));
+        assertThrows(Exception.class, () -> RANDOM_TRANSACTION_BUILDER.build().modifyName(invalidName));
     }
 
     @ParameterizedTest
     @ValueSource(doubles = {0d})
     @NullSource
     void modify_violate_amount_will_throw_exception(Double invalidSource) {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyAmount(invalidSource));
+        assertThrows(Exception.class, () -> RANDOM_TRANSACTION_BUILDER.build().modifyAmount(invalidSource));
+    }
+
+    @ParameterizedTest
+    @EnumSource(ModifyFunctionHandler.class)
+    void modify_on_deleted_transaction_throw_exception(ModifyFunctionHandler modifyFunctionHandler) {
+        final var deletedTransaction = RANDOM_TRANSACTION_BUILDER.build();
+        deletedTransaction.delete("");
+        assertThrows(Exception.class, () -> modifyFunctionHandler.modify(deletedTransaction));
     }
 
     @Test
     void modify_violate_currency_will_throw_exception() {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyCurrency(null));
+        assertThrows(Exception.class, () -> RANDOM_TRANSACTION_BUILDER.build().modifyCurrency(null));
     }
 
     @Test
     void modify_violate_transactionDate_will_throw_exception() {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION.modifyTransactionDate(null));
+        assertThrows(Exception.class, () -> RANDOM_TRANSACTION_BUILDER.build().modifyTransactionDate(null));
     }
 
 }

@@ -1,6 +1,7 @@
 package org.yproject.pet.transaction;
 
 import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import org.yproject.pet.common.error.DomainException;
 import org.yproject.pet.common.models.AggregateRoot;
 
@@ -9,19 +10,20 @@ import java.util.Objects;
 import java.util.Optional;
 
 @EqualsAndHashCode(callSuper = true)
-public final class Transaction extends AggregateRoot<String> {
+public final class Transaction extends AggregateRoot<String> implements Deletable {
     private static final int NAME_MAX_LENGTH = 100;
     private static final Currency DEFAULT_CURRENCY = Currency.VND;
-    private final String creatorUserId;
-    private final Instant createDate;
-    private String categoryId;
-    private String name;
-    private double amount;
-    private Currency currency;
-    private Instant transactionDate;
-    private Instant updateDate;
-    private TransactionType type;
-    private DeleteInfo deleteInfo;
+
+    private final @Getter String creatorUserId;
+    private final @Getter Instant createDate;
+    private @Getter String categoryId;
+    private @Getter String name;
+    private @Getter double amount;
+    private @Getter Currency currency;
+    private @Getter Instant transactionDate;
+    private @Getter Instant updateDate;
+    private @Getter TransactionType type;
+    private @Getter DeleteInfo deleteInfo;
 
     Transaction(TransactionBuilder builder) {
         super(builder.transactionId);
@@ -34,7 +36,7 @@ public final class Transaction extends AggregateRoot<String> {
         createDate = Optional.ofNullable(builder.createDate).orElse(Instant.now());
         updateDate = Optional.ofNullable(builder.updateDate).orElse(Instant.now());
         if (builder.deleteDate != null && builder.deleteReason != null) {
-            deleteInfo = new DeleteInfo(builder.deleteDate, builder.deleteReason);
+            deleteInfo = new DeleteInfo(builder.deleteId, builder.deleteDate, builder.deleteReason);
         }
         transactionClassify();
     }
@@ -84,13 +86,6 @@ public final class Transaction extends AggregateRoot<String> {
         postModify();
     }
 
-    public void delete(String deleteReason) {
-        deleteInfo = new DeleteInfo(
-                Instant.now(),
-                deleteReason
-        );
-    }
-
     private Double amountValidated(final double amount) {
         if (amount == 0) throw new DomainException("Transaction amount must not be zero");
         return amount;
@@ -105,44 +100,18 @@ public final class Transaction extends AggregateRoot<String> {
         return name;
     }
 
-    /* Getter */
-
-    public String getCreatorUserId() {
-        return creatorUserId;
+    @Override
+    public void delete(String deleteReason) {
+        if (deleteInfo == null) {
+            deleteInfo = new DeleteInfo(
+                    null,
+                    Instant.now(),
+                    deleteReason
+            );
+        }
     }
 
-    public Instant getCreateDate() {
-        return createDate;
-    }
-
-    public String getCategoryId() {
-        return categoryId;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public double getAmount() {
-        return amount;
-    }
-
-    public Currency getCurrency() {
-        return currency;
-    }
-
-    public Instant getTransactionDate() {
-        return transactionDate;
-    }
-
-    public Instant getUpdateDate() {
-        return updateDate;
-    }
-
-    public TransactionType getType() {
-        return type;
-    }
-
+    @Override
     public boolean isDelete() {
         return deleteInfo != null;
     }

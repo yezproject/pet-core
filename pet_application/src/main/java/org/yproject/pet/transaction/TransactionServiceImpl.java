@@ -14,6 +14,7 @@ import java.time.Instant;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
@@ -30,7 +31,7 @@ class TransactionServiceImpl implements TransactionService {
                 .categoryId(dto.categoryId())
                 .name(dto.name())
                 .amount(dto.amount())
-                .transactionDate(Instant.ofEpochMilli(dto.transactionDate()))
+                .transactionDate(Optional.ofNullable(dto.transactionDate()).map(Instant::ofEpochMilli).orElse(null))
                 .build();
         transactionStorage.save(newTransaction);
         return newTransactionId;
@@ -48,7 +49,7 @@ class TransactionServiceImpl implements TransactionService {
             transaction.modifyCategoryId(dto.categoryId());
             transaction.modifyAmount(dto.amount());
             transaction.modifyName(dto.name());
-            transaction.modifyTransactionDate(Instant.ofEpochMilli(dto.transactionDate()));
+            transaction.modifyTransactionDate(Optional.ofNullable(dto.transactionDate()).map(Instant::ofEpochMilli).orElse(null));
         } catch (DomainException e) {
             log.info("modify transaction id={} has been deleted", transaction.getId());
             throw new TransactionInvalidModify();

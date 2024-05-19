@@ -1,8 +1,6 @@
 package org.yproject.pet.repository.transaction;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -44,4 +42,10 @@ class TransactionEntity {
 
     @Column(nullable = false)
     private Instant updateDate;
+
+    @Column(nullable = false)
+    private boolean isDelete;
+
+    @OneToOne(cascade = CascadeType.ALL)
+    private DeleteInfoEntity deleteInfo;
 }

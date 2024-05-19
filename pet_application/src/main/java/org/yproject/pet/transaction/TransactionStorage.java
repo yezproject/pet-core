@@ -37,10 +37,6 @@ class TransactionStorage {
                 .toList();
     }
 
-    void deleteByIdsAndUserId(List<String> transactionIds, String userId) {
-        dao.deleteByIdsAndUserId(transactionIds, userId);
-    }
-
     List<Transaction> retrieveAllByUserId(String userId) {
         return dao.retrieveAllByUserId(userId)
                 .stream().map(this::toDomain)
@@ -58,7 +54,11 @@ class TransactionStorage {
                 domain.getCreateDate(),
                 domain.getUpdateDate(),
                 domain.getType().name(),
-                domain.getCategoryId()
+                domain.getCategoryId(),
+                domain.isDelete(),
+                Optional.ofNullable(domain.getDeleteInfo()).map(DeleteInfo::id).orElse(null),
+                Optional.ofNullable(domain.getDeleteInfo()).map(DeleteInfo::date).orElse(null),
+                Optional.ofNullable(domain.getDeleteInfo()).map(DeleteInfo::reason).orElse(null)
         );
     }
 
@@ -72,6 +72,9 @@ class TransactionStorage {
                 .transactionDate(dto.transactionDate())
                 .createDate(dto.createDate())
                 .updateDate(dto.updateDate())
+                .deleteId(dto.deleteId())
+                .deleteDate(dto.deleteDate())
+                .deleteReason(dto.deleteReason())
                 .build();
     }
 }

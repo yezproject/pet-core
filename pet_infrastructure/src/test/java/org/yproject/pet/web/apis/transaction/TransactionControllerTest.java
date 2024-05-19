@@ -28,7 +28,6 @@ import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.yproject.pet.RandomEnums.randomCurrency;
 import static org.yproject.pet.RandomUtils.*;
 
 @WebMvcTest(value = TransactionController.class)
@@ -117,7 +116,6 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomShortString(),
                 randomShortString(),
                 randomPositiveDouble(),
-                randomCurrency(),
                 randomInstant().toEpochMilli()
         );
 

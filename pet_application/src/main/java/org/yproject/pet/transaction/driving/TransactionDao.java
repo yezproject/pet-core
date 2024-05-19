@@ -18,7 +18,5 @@ public interface TransactionDao {
 
     List<TransactionDto> retrieveAllByIdsAndUserId(Set<String> transactionId, String userId);
 
-    void deleteByIdsAndUserId(List<String> transactionIds, String userId);
-
     List<TransactionDto> retrieveAllByUserId(String userId);
 }

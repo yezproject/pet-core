@@ -15,22 +15,25 @@ import org.yproject.pet.web.exception.GlobalResourceAccessPermissionException;
 @Slf4j
 class GlobalExceptionHandler implements AuthenticationEntryPoint {
     @ExceptionHandler(GlobalResourceAccessPermissionException.class)
-    void denyResourceAccess(HttpServletResponse response) {
+    void denyResourceAccess(HttpServletResponse response, GlobalResourceAccessPermissionException e) {
+        log.warn("GlobalResourceAccessPermissionException Occurred", e);
         response.setStatus(HttpStatus.NOT_FOUND.value());
     }
 
     @ExceptionHandler(BadRequestException.class)
-    void badRequestBody(HttpServletResponse response) {
+    void badRequestBody(HttpServletResponse response, BadRequestException e) {
+        log.warn("BadRequestException Occurred", e);
         response.setStatus(HttpStatus.BAD_REQUEST.value());
     }
 
     @ExceptionHandler(NullPointerException.class)
-    void internalError(HttpServletResponse response) {
+    void internalError(HttpServletResponse response, NullPointerException e) {
+        log.warn("NullPointerException Occurred", e);
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
     }
 
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
-        log.warn(authException.getMessage(), authException.fillInStackTrace());
+        log.warn("AuthenticationException Occurred");
     }
 }

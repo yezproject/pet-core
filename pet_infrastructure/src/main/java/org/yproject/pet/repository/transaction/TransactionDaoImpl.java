@@ -19,9 +19,18 @@ record TransactionDaoImpl(
                 .currency(dto.currency())
                 .creatorUserId(dto.creatorUserId())
                 .transactionDate(dto.transactionDate())
+                .createDate(dto.createDate())
+                .updateDate(dto.updateDate())
                 .type(dto.type())
                 .categoryId(dto.categoryId())
+                .isDelete(dto.isDelete())
+                .deleteInfo(dto.isDelete() ? toDeleteInfoEntity(dto) : null)
                 .build();
+    }
+
+    private static DeleteInfoEntity toDeleteInfoEntity(TransactionDto dto) {
+        final var id = Optional.ofNullable(dto.deleteId()).map(UUID::fromString).orElse(null);
+        return new DeleteInfoEntity(id, dto.deleteDate(), dto.deleteReason());
     }
 
     private static TransactionDto fromEntity(TransactionEntity entity) {
@@ -35,7 +44,11 @@ record TransactionDaoImpl(
                 entity.getCreateDate(),
                 entity.getUpdateDate(),
                 entity.getType(),
-                entity.getCategoryId()
+                entity.getCategoryId(),
+                entity.isDelete(),
+                entity.isDelete() ? entity.getDeleteInfo().getId().toString() : null,
+                entity.isDelete() ? entity.getDeleteInfo().getDate(): null,
+                entity.isDelete() ? entity.getDeleteInfo().getReason() : null
         );
     }
 
@@ -51,26 +64,22 @@ record TransactionDaoImpl(
 
     @Override
     public Optional<TransactionDto> retrieveOneByIdAndUserId(String transactionId, String userId) {
-        return repository.findByIdAndCreatorUserId(transactionId, userId)
+        return repository.findByIsDeleteFalseAndIdAndCreatorUserId(transactionId, userId)
                 .map(TransactionDaoImpl::fromEntity);
     }
 
     @Override
     public List<TransactionDto> retrieveAllByIdsAndUserId(Set<String> transactionIds, String userId) {
-        return repository.findAllByIdInAndCreatorUserId(transactionIds, userId)
+        return repository.findAllByIsDeleteFalseAndIdInAndCreatorUserId(transactionIds, userId)
                 .stream()
                 .map(TransactionDaoImpl::fromEntity)
                 .toList();
     }
 
     @Override
-    public void deleteByIdsAndUserId(List<String> transactionIds, String userId) {
-        repository.deleteAllByIdInAndCreatorUserId(new HashSet<>(transactionIds), userId);
-    }
-
-    @Override
     public List<TransactionDto> retrieveAllByUserId(String userId) {
-        return repository.findAllByCreatorUserId(userId).stream()
+        return repository.findAllByIsDeleteFalseAndCreatorUserId(userId)
+                .stream()
                 .map(TransactionDaoImpl::fromEntity)
                 .toList();
     }
