@@ -43,6 +43,12 @@ class TransactionStorage {
                 .toList();
     }
 
+    List<Transaction> retrieveAllByUserId(String userId, int limit) {
+        return dao.retrieveAllByUserId(userId, limit)
+                .stream().map(this::toDomain)
+                .toList();
+    }
+
     private TransactionDto toDto(Transaction domain) {
         return new TransactionDto(
                 domain.getId(),

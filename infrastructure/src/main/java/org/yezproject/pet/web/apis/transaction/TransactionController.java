@@ -40,6 +40,22 @@ class TransactionController {
                 .toList();
     }
 
+    @GetMapping(params = "limit")
+    List<RetrieveTransactionResponse> retrieveLast(
+            @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
+            @RequestUser UserInfo user
+    ) {
+        if (limit < 0) {
+            limit = 0;
+        } else if (limit > 100) {
+            limit = 100;
+        }
+        List<RetrieveTransactionDto> transactions = transactionService.retrieveLast(user.id(), limit);
+        return transactions.stream()
+                .map(RetrieveTransactionResponse::fromDTO)
+                .toList();
+    }
+
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(

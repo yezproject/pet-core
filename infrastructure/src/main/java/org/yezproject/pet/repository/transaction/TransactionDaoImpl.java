@@ -83,4 +83,12 @@ record TransactionDaoImpl(
                 .map(TransactionDaoImpl::fromEntity)
                 .toList();
     }
+
+    @Override
+    public List<TransactionDto> retrieveAllByUserId(String userId, int limit) {
+        return repository.findAllByIsDeleteFalseAndCreatorUserId(userId, limit)
+                .stream()
+                .map(TransactionDaoImpl::fromEntity)
+                .toList();
+    }
 }

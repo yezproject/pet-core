@@ -20,5 +20,7 @@ public interface TransactionService {
 
     List<RetrieveTransactionDto> retrieveAll(String userId);
 
+    List<RetrieveTransactionDto> retrieveLast(String userId, int limit);
+
     RetrieveTransactionDto retrieve(String userId, String transactionId);
 }

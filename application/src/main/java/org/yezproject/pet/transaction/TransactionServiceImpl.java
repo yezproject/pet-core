@@ -84,6 +84,13 @@ class TransactionServiceImpl implements TransactionService {
     }
 
     @Override
+    public List<RetrieveTransactionDto> retrieveLast(final String userId, final int limit) {
+        return transactionStorage.retrieveAllByUserId(userId, limit).stream()
+                .map(RetrieveTransactionDto::fromDomain)
+                .toList();
+    }
+
+    @Override
     public RetrieveTransactionDto retrieve(final String userId, final String transactionId) {
         final var transactionOptional = transactionStorage.retrieveOneByIdAndUserId(transactionId, userId);
         if (transactionOptional.isEmpty()) {

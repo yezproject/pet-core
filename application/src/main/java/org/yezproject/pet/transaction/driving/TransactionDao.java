@@ -19,4 +19,6 @@ public interface TransactionDao {
     List<TransactionDto> retrieveAllByIdsAndUserId(Set<String> transactionId, String userId);
 
     List<TransactionDto> retrieveAllByUserId(String userId);
+
+    List<TransactionDto> retrieveAllByUserId(String userId, int limit);
 }
