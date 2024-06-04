@@ -12,7 +12,6 @@ import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 import java.util.function.Function;
 
 @Component
@@ -31,15 +30,8 @@ public record JwtServiceImpl(
     }
 
     @Override
-    public String generateToken(String email, String tokenId) {
-        final var claims = new HashMap<String, Object>();
-        claims.put(Claims.ID, tokenId);
-        return generateToken(claims, email);
-    }
-
-    @Override
-    public boolean isTokenValid(String token, String email, Set<String> tokenIDs) {
-        return isEmailValid(token, email) && !isTokenExpired(token) && isTokenIdValid(token, tokenIDs);
+    public boolean isTokenValid(String token, String email) {
+        return isEmailValid(token, email) && !isTokenExpired(token);
     }
 
     private String generateToken(Map<String, Object> extractClaim, String email) {
@@ -67,12 +59,6 @@ public record JwtServiceImpl(
     private boolean isEmailValid(String token, String email) {
         final String extractedEmail = extractEmail(token);
         return extractedEmail.equals(email);
-    }
-
-    private boolean isTokenIdValid(String token, Set<String> tokenIds) {
-        final String extractedJwtId = extractClaim(token, Claims::getId);
-        if (extractedJwtId == null) return true;
-        else return tokenIds.contains(extractedJwtId);
     }
 
     private Date extractExpiration(String token) {

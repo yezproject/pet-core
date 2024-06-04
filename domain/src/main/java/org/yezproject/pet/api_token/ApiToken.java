@@ -5,23 +5,21 @@ import lombok.Getter;
 import org.yezproject.pet.common.error.DomainException;
 import org.yezproject.pet.common.models.AggregateRoot;
 
-import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 
 @Getter
 @EqualsAndHashCode(callSuper = true)
 public final class ApiToken extends AggregateRoot<String> {
     public static final int API_TOKEN_NAME_MAX_LENGTH = 100;
     private final String userId;
-    private final Instant createDate;
     private String name;
+    private final String token;
 
     ApiToken(ApiTokenBuilder builder) {
         super(builder.apiTokenId);
         this.userId = Objects.requireNonNull(builder.userId);
         this.name = nameValidated(builder.name);
-        this.createDate = Optional.ofNullable(builder.createDate).orElse(Instant.now());
+        this.token = Objects.requireNonNull(builder.token);
     }
 
     private String nameValidated(String name) {
@@ -34,10 +32,6 @@ public final class ApiToken extends AggregateRoot<String> {
         } else {
             return name;
         }
-    }
-
-    public void modifyName(String name) {
-        this.name = nameValidated(name);
     }
 
     public String getUserId() {

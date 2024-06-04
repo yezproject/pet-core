@@ -10,28 +10,28 @@ import java.util.*;
 
 @Component
 record TransactionRepositoryImpl(
-        org.yezproject.pet.repository.transaction.TransactionRepository repository
+        TransactionJpaRepository transactionJpaRepository
 ) implements TransactionRepository {
 
     @Override
     public void save(Transaction domain) {
-        repository.save(toEntity(domain));
+        transactionJpaRepository.save(toEntity(domain));
     }
 
     @Override
     public void save(Collection<Transaction> transactions) {
-        repository.saveAll(transactions.stream().map(this::toEntity).toList());
+        transactionJpaRepository.saveAll(transactions.stream().map(this::toEntity).toList());
     }
 
     @Override
     public Optional<Transaction> retrieveOneByIdAndUserId(String transactionId, String userId) {
-        return repository.findByIsDeleteFalseAndIdAndCreatorUserId(transactionId, userId)
+        return transactionJpaRepository.findByIsDeleteFalseAndIdAndCreatorUserId(transactionId, userId)
                 .map(this::toDomain);
     }
 
     @Override
     public List<Transaction> retrieveAllByIdsAndUserId(Set<String> transactionIds, String userId) {
-        return repository.findAllByIsDeleteFalseAndIdInAndCreatorUserId(transactionIds, userId)
+        return transactionJpaRepository.findAllByIsDeleteFalseAndIdInAndCreatorUserId(transactionIds, userId)
                 .stream()
                 .map(this::toDomain)
                 .toList();
@@ -39,7 +39,7 @@ record TransactionRepositoryImpl(
 
     @Override
     public List<Transaction> retrieveAllByUserId(String userId) {
-        return repository.findAllByIsDeleteFalseAndCreatorUserId(userId)
+        return transactionJpaRepository.findAllByIsDeleteFalseAndCreatorUserId(userId)
                 .stream()
                 .map(this::toDomain)
                 .toList();
@@ -47,7 +47,7 @@ record TransactionRepositoryImpl(
 
     @Override
     public List<Transaction> retrieveAllByUserId(String userId, int limit) {
-        return repository.findAllByIsDeleteFalseAndCreatorUserId(userId, limit)
+        return transactionJpaRepository.findAllByIsDeleteFalseAndCreatorUserId(userId, limit)
                 .stream()
                 .map(this::toDomain)
                 .toList();
@@ -80,9 +80,9 @@ record TransactionRepositoryImpl(
                 .transactionDate(entity.getTransactionDate())
                 .createDate(entity.getCreateDate())
                 .updateDate(entity.getUpdateDate())
-                .deleteId(Optional.of(entity.getDeleteInfo()).map(it -> it.getId().toString()).orElse(null))
-                .deleteDate(Optional.of(entity.getDeleteInfo()).map(DeleteInfoEntity::getDate).orElse(null))
-                .deleteReason(Optional.of(entity.getDeleteInfo()).map(DeleteInfoEntity::getReason).orElse(null))
+                .deleteId(Optional.ofNullable(entity.getDeleteInfo()).map(it -> it.getId().toString()).orElse(null))
+                .deleteDate(Optional.ofNullable(entity.getDeleteInfo()).map(DeleteInfoEntity::getDate).orElse(null))
+                .deleteReason(Optional.ofNullable(entity.getDeleteInfo()).map(DeleteInfoEntity::getReason).orElse(null))
                 .build();
     }
 

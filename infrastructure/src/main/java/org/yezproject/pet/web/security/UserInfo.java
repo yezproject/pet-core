@@ -7,12 +7,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import java.io.Serial;
 import java.util.Collection;
 import java.util.List;
-import java.util.Set;
 
 public record UserInfo(
         String id,
-        String email,
-        Set<String> tokens
+        String email
 ) implements UserDetails {
 
     @Serial

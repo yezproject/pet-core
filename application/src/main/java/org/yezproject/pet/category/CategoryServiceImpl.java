@@ -2,6 +2,7 @@ package org.yezproject.pet.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.annotation.Transactional;
 import org.yezproject.pet.category.driven.CategoryService;
 import org.yezproject.pet.category.driven.RetrieveCategoryDto;
 import org.yezproject.pet.category.driving.CategoryRepository;
@@ -44,6 +45,7 @@ class CategoryServiceImpl implements CategoryService {
     }
 
     @Override
+    @Transactional
     public void delete(String userId, String categoryId) {
         categoryRepository.deleteAll(userId, List.of(categoryId));
     }

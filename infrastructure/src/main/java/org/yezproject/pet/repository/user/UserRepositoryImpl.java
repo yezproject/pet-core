@@ -12,23 +12,23 @@ import java.util.Optional;
 
 @Component
 record UserRepositoryImpl(
-        UserJpaRepository repository
+        UserJpaRepository userJpaRepository
 ) implements UserRepository {
     @Override
     public Optional<User> findById(String id) {
-        return repository.findById(id)
+        return userJpaRepository.findById(id)
                 .map(this::toDomain);
     }
 
     @Override
     public Optional<User> findByEmail(String email) {
-        return repository.findByEmail(email)
+        return userJpaRepository.findByEmail(email)
                 .map(this::toDomain);
     }
 
     @Override
     public List<User> findAll() {
-        return repository.findAll()
+        return userJpaRepository.findAll()
                 .stream()
                 .map(this::toDomain)
                 .toList();
@@ -36,13 +36,13 @@ record UserRepositoryImpl(
 
     @Override
     public String store(User user) {
-        final var newUserEntity = repository.save(toEntity(user));
+        final var newUserEntity = userJpaRepository.save(toEntity(user));
         return newUserEntity.getId();
     }
 
     @Override
     public void deleteById(String id) {
-        repository.deleteById(id);
+        userJpaRepository.deleteById(id);
     }
 
     private UserEntity toEntity(final User dto) {

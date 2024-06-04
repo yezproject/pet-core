@@ -8,4 +8,6 @@ public interface AuthService {
     }
 
     AuthInfo loadUserByEmail(String email) throws UserNotFoundException;
+
+    AuthInfo loadUserById(String userId) throws UserNotFoundException;
 }

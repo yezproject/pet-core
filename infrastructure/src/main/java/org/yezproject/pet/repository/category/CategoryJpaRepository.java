@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-interface CategoryRepository extends JpaRepository<CategoryEntity, String> {
+interface CategoryJpaRepository extends JpaRepository<CategoryEntity, String> {
     Optional<CategoryEntity> findByCreateUserIdAndId(String userId, String categoryId);
 
     void deleteAllByCreateUserIdAndIdIn(String userId, Set<String> categoryId);

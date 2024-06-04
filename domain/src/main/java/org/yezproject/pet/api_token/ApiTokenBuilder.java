@@ -7,6 +7,7 @@ public class ApiTokenBuilder {
     String userId;
     String name;
     Instant createDate;
+    String token;
 
     public ApiTokenBuilder(String apiTokenId) {
         this.apiTokenId = apiTokenId;
@@ -14,6 +15,11 @@ public class ApiTokenBuilder {
 
     public ApiTokenBuilder userId(String userId) {
         this.userId = userId;
+        return this;
+    }
+
+    public ApiTokenBuilder token(String token) {
+        this.token = token;
         return this;
     }
 

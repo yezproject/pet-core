@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
-interface TransactionRepository extends JpaRepository<TransactionEntity, String> {
+interface TransactionJpaRepository extends JpaRepository<TransactionEntity, String> {
 
     Optional<TransactionEntity> findByIsDeleteFalseAndIdAndCreatorUserId(String id, String creatorUserId);
 

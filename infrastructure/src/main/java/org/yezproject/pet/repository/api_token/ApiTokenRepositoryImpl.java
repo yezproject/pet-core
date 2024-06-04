@@ -5,6 +5,7 @@ import org.yezproject.pet.api_token.ApiToken;
 import org.yezproject.pet.api_token.ApiTokenBuilder;
 import org.yezproject.pet.api_token.driving.ApiTokenRepository;
 
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -35,17 +36,25 @@ record ApiTokenRepositoryImpl(
         });
     }
 
-    ApiTokenEntity toEntity(ApiToken domain) {
+    @Override
+    public Optional<ApiToken> findByToken(String token) {
+        return repository.findByToken(token)
+                .map(this::toDomain);
+    }
+
+    private ApiTokenEntity toEntity(ApiToken domain) {
         return ApiTokenEntity.builder()
                 .id(domain.getId())
                 .userId(domain.getUserId())
+                .token(domain.getToken())
                 .name(domain.getName()).build();
     }
 
-    ApiToken toDomain(ApiTokenEntity entity) {
+    private ApiToken toDomain(ApiTokenEntity entity) {
         return new ApiTokenBuilder(entity.getId())
                 .userId(entity.getUserId())
                 .name(entity.getName())
+                .token(entity.getToken())
                 .build();
     }
 

@@ -5,13 +5,12 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
+import org.yezproject.pet.api_token.driven.ApiTokenService;
 import org.yezproject.pet.jwt.JwtService;
 import org.yezproject.pet.user.driven.AuthInfo;
 import org.yezproject.pet.user.driven.AuthService;
 import org.yezproject.pet.user.driving.UserRepository;
 import org.yezproject.pet.web.security.SecurityConfig;
-
-import java.util.Collections;
 
 import static org.yezproject.pet.RandomUtils.randomShortString;
 
@@ -29,6 +28,8 @@ public abstract class BaseControllerTest {
     public JwtService jwtService;
     @MockBean
     public AuthService authService;
+    @MockBean
+    public ApiTokenService apiTokenService;
 
     protected final AuthInfo mockUser = randomUser();
     protected final AuthInfo mockAdmin = randomAdmin();
@@ -36,16 +37,14 @@ public abstract class BaseControllerTest {
     private static AuthInfo randomUser() {
         return new AuthInfo(
                 randomShortString(),
-                randomShortString(),
-                Collections.emptySet()
+                randomShortString()
         );
     }
 
     private static AuthInfo randomAdmin() {
         return new AuthInfo(
                 randomShortString(),
-                randomShortString(),
-                Collections.emptySet()
+                randomShortString()
         );
     }
 }

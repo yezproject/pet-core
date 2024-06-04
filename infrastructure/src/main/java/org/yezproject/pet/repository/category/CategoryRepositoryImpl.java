@@ -11,28 +11,28 @@ import java.util.Optional;
 
 @Component
 record CategoryRepositoryImpl(
-        org.yezproject.pet.repository.category.CategoryRepository repository
+        CategoryJpaRepository categoryJpaRepository
 ) implements CategoryRepository {
 
     @Override
     public String save(Category category) {
-        return repository.save(toEntity(category)).getId();
+        return categoryJpaRepository.save(toEntity(category)).getId();
     }
 
     @Override
     public Optional<Category> retrieveOne(String userId, String categoryId) {
-        return repository.findByCreateUserIdAndId(userId, categoryId)
+        return categoryJpaRepository.findByCreateUserIdAndId(userId, categoryId)
                 .map(this::toDomain);
     }
 
     @Override
     public void deleteAll(String userId, List<String> categoryIds) {
-        repository.deleteAllByCreateUserIdAndIdIn(userId, new HashSet<>(categoryIds));
+        categoryJpaRepository.deleteAllByCreateUserIdAndIdIn(userId, new HashSet<>(categoryIds));
     }
 
     @Override
     public List<Category> retrieveAll(String userId) {
-        return repository.findAllByCreateUserId(userId).stream()
+        return categoryJpaRepository.findAllByCreateUserId(userId).stream()
                 .map(this::toDomain)
                 .toList();
     }

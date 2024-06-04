@@ -1,6 +1,5 @@
 package org.yezproject.pet.web.filter;
 
-import io.micrometer.common.util.StringUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -9,11 +8,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.yezproject.pet.jwt.JwtService;
+import org.yezproject.pet.api_token.driven.ApiTokenService;
+import org.yezproject.pet.user.driven.AuthService;
 import org.yezproject.pet.web.security.UserInfo;
 
 import java.io.IOException;
@@ -21,9 +20,9 @@ import java.util.Optional;
 
 @Component
 @RequiredArgsConstructor
-public class JwtAuthenticationFilter extends OncePerRequestFilter {
-    private final JwtService jwtService;
-    private final UserDetailsService authService;
+public class ApiTokenAuthenticationFilter extends OncePerRequestFilter {
+    private final AuthService authService;
+    private final ApiTokenService apiTokenService;
 
     private Optional<String> extractTokenFromRequest(HttpServletRequest request) {
         String bearerToken = request.getHeader("Authorization");
@@ -34,6 +33,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         return Optional.empty();
     }
 
+    private boolean isApiToken(String token) {
+        return token.startsWith("yzp_");
+    }
+
     @Override
     protected void doFilterInternal(
             @NonNull HttpServletRequest request,
@@ -41,12 +44,13 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull FilterChain filterChain) throws ServletException, IOException {
         final var tokenOptional = extractTokenFromRequest(request);
         if (SecurityContextHolder.getContext().getAuthentication() == null && tokenOptional.isPresent()) {
-            final var jwtToken = tokenOptional.get();
-            final var email = jwtService.extractEmail(jwtToken);
-            if (StringUtils.isNotEmpty(email)) {
-                final UserInfo userInfo;
-                userInfo = (UserInfo) authService.loadUserByUsername(email);
-                if (jwtService.isTokenValid(jwtToken, userInfo.email())) {
+            final var apiToken = tokenOptional.get();
+            if (isApiToken(apiToken)) {
+                try {
+                    final var userId = apiTokenService.verify(apiToken).userId();
+                    final UserInfo userInfo = Optional.of(authService.loadUserById(userId))
+                            .map(it -> new UserInfo(it.userId(), it.email()))
+                            .orElseThrow();
                     final var context = SecurityContextHolder.createEmptyContext();
                     final var authenticationToken = new UsernamePasswordAuthenticationToken(
                             userInfo,
@@ -55,7 +59,10 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
                     context.setAuthentication(authenticationToken);
                     SecurityContextHolder.setContext(context);
+                } catch (ApiTokenService.InvalidTokenException | AuthService.UserNotFoundException e) {
+                    throw new RuntimeException(e);
                 }
+
             }
         }
         filterChain.doFilter(request, response);

@@ -41,7 +41,7 @@ class TransactionControllerTest extends BaseControllerTest {
     void authSetup() throws AuthService.UserNotFoundException {
         when(this.jwtService.extractEmail(any()))
                 .thenReturn(randomShortString());
-        when(this.jwtService.isTokenValid(any(), any(), any()))
+        when(this.jwtService.isTokenValid(any(), any()))
                 .thenReturn(true);
         when(this.authService.loadUserByEmail(any()))
                 .thenReturn(this.mockUser);
