@@ -1,27 +1,28 @@
 package org.yezproject.pet.repository.category;
 
 import org.springframework.stereotype.Component;
-import org.yezproject.pet.category.driving.CategoryDao;
-import org.yezproject.pet.category.driving.CategoryDto;
+import org.yezproject.pet.category.Category;
+import org.yezproject.pet.category.CategoryBuilder;
+import org.yezproject.pet.category.driving.CategoryRepository;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 
 @Component
-record CategoryDaoImpl(
-        CategoryRepository repository
-) implements CategoryDao {
+record CategoryRepositoryImpl(
+        org.yezproject.pet.repository.category.CategoryRepository repository
+) implements CategoryRepository {
 
     @Override
-    public String save(CategoryDto category) {
+    public String save(Category category) {
         return repository.save(toEntity(category)).getId();
     }
 
     @Override
-    public Optional<CategoryDto> retrieveOne(String userId, String categoryId) {
+    public Optional<Category> retrieveOne(String userId, String categoryId) {
         return repository.findByCreateUserIdAndId(userId, categoryId)
-                .map(this::fromEntity);
+                .map(this::toDomain);
     }
 
     @Override
@@ -30,13 +31,13 @@ record CategoryDaoImpl(
     }
 
     @Override
-    public List<CategoryDto> retrieveAll(String userId) {
+    public List<Category> retrieveAll(String userId) {
         return repository.findAllByCreateUserId(userId).stream()
-                .map(this::fromEntity)
+                .map(this::toDomain)
                 .toList();
     }
 
-    private CategoryEntity toEntity(CategoryDto domain) {
+    private CategoryEntity toEntity(Category domain) {
         return CategoryEntity.builder()
                 .id(domain.getId())
                 .createUserId(domain.getCreateUserId())
@@ -44,9 +45,8 @@ record CategoryDaoImpl(
                 .build();
     }
 
-    private CategoryDto fromEntity(CategoryEntity entity) {
-        return CategoryDto.builder()
-                .id(entity.getId())
+    private Category toDomain(CategoryEntity entity) {
+        return new CategoryBuilder(entity.getId())
                 .createUserId(entity.getCreateUserId())
                 .name(entity.getName())
                 .build();

@@ -7,18 +7,19 @@ import org.yezproject.pet.jwt.JwtService;
 import org.yezproject.pet.user.driven.JoinService;
 import org.yezproject.pet.user.driven.SignUpApplicationDto;
 import org.yezproject.pet.user.driving.PasswordService;
+import org.yezproject.pet.user.driving.UserRepository;
 
 @Component
 @RequiredArgsConstructor
 class JoinServiceImpl implements JoinService {
-    private final UserStorage userStorage;
+    private final UserRepository userRepository;
     private final JwtService jwtService;
     private final PasswordService passwordService;
     private final IdGenerator idGenerator;
 
     @Override
     public String signIn(final String email, final String password) {
-        final var existingUserOptional = userStorage.findByEmail(email);
+        final var existingUserOptional = userRepository.findByEmail(email);
         if (existingUserOptional.isEmpty()) throw new UserNotFoundException();
 
         final var isPasswordValid = passwordService.matches(password, existingUserOptional.get().getPassword());
@@ -29,7 +30,7 @@ class JoinServiceImpl implements JoinService {
 
     @Override
     public String signup(final SignUpApplicationDto signUpApplicationDto) {
-        final var existingUserOptional = userStorage.findByEmail(signUpApplicationDto.email());
+        final var existingUserOptional = userRepository.findByEmail(signUpApplicationDto.email());
         if (existingUserOptional.isPresent()) throw new UserExistedException();
         final var id = idGenerator.get();
         final var encodedPassword = passwordService.encode(signUpApplicationDto.password());
@@ -41,6 +42,6 @@ class JoinServiceImpl implements JoinService {
                 .build();
         /* hardcode approve at time create */
         newUser.approve();
-        return userStorage.store(newUser);
+        return userRepository.store(newUser);
     }
 }

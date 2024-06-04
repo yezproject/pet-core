@@ -5,6 +5,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.yezproject.pet.category.driving.CategoryRepository;
 import org.yezproject.pet.id.IdGenerator;
 
 import java.util.Collections;
@@ -26,7 +27,7 @@ class CategoryServiceImplTest {
     private IdGenerator idGenerator;
 
     @Mock
-    private CategoryStorage categoryStorage;
+    private CategoryRepository categoryRepository;
 
     @InjectMocks
     private CategoryServiceImpl underTest;
@@ -35,11 +36,11 @@ class CategoryServiceImplTest {
     void retrieveAll() {
         final var userId = randomShortString();
         final var categories = randomShortList(CategoryRandomUtils::randomCategory);
-        when(categoryStorage.retrieveAll(anyString())).thenReturn(categories);
+        when(categoryRepository.retrieveAll(anyString())).thenReturn(categories);
 
         final var result = underTest.retrieveAll(userId);
 
-        then(categoryStorage).should().retrieveAll(userId);
+        then(categoryRepository).should().retrieveAll(userId);
         assertThat(result).hasSameSizeAs(categories);
     }
 
@@ -48,11 +49,11 @@ class CategoryServiceImplTest {
         final var categoryId = randomShortString();
         final var category = randomCategory(categoryId);
         when(idGenerator.get()).thenReturn(categoryId);
-        when(categoryStorage.save(any(Category.class))).thenReturn(categoryId);
+        when(categoryRepository.save(any(Category.class))).thenReturn(categoryId);
 
         final var result = underTest.create(category.getCreateUserId(), category.getName());
 
-        then(categoryStorage).should().save(category);
+        then(categoryRepository).should().save(category);
         assertThat(result).isEqualTo(categoryId);
     }
 
@@ -61,11 +62,11 @@ class CategoryServiceImplTest {
         final var userId = randomShortString();
         final var categoryId = randomShortString();
         final var category = randomCategory(categoryId);
-        when(categoryStorage.retrieveOne(anyString(), anyString())).thenReturn(Optional.of(category));
+        when(categoryRepository.retrieveOne(anyString(), anyString())).thenReturn(Optional.of(category));
 
         underTest.modify(userId, categoryId, "New Test Category");
 
-        then(categoryStorage).should().save(category);
+        then(categoryRepository).should().save(category);
         assertThat(category.getName()).isEqualTo("New Test Category");
     }
 
@@ -73,7 +74,7 @@ class CategoryServiceImplTest {
     void modify_throw_not_existed_exception() {
         final var userId = randomShortString();
         final var categoryId = randomShortString();
-        when(categoryStorage.retrieveOne(anyString(), anyString())).thenReturn(Optional.empty());
+        when(categoryRepository.retrieveOne(anyString(), anyString())).thenReturn(Optional.empty());
 
         assertThrows(CategoryServiceImpl.CategoryNotExisted.class, () -> underTest.modify(userId, categoryId, "New Test Category"));
     }
@@ -85,6 +86,6 @@ class CategoryServiceImplTest {
 
         underTest.delete(userId, categoryId);
 
-        then(categoryStorage).should().deleteAll(userId, Collections.singletonList(categoryId));
+        then(categoryRepository).should().deleteAll(userId, Collections.singletonList(categoryId));
     }
 }

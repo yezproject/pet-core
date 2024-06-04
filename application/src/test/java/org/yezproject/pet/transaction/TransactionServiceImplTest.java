@@ -14,6 +14,7 @@ import org.yezproject.pet.transaction.driven.CreateTransactionDto;
 import org.yezproject.pet.transaction.driven.ModifyTransactionDto;
 import org.yezproject.pet.transaction.driven.RetrieveTransactionDto;
 import org.yezproject.pet.transaction.driven.TransactionService;
+import org.yezproject.pet.transaction.driving.TransactionRepository;
 
 import java.util.ArrayList;
 import java.util.Optional;
@@ -36,7 +37,7 @@ class TransactionServiceImplTest {
     @Mock
     private IdGenerator idGenerator;
     @Mock
-    private TransactionStorage transactionStorage;
+    private TransactionRepository transactionRepository;
     @Captor
     private ArgumentCaptor<ArrayList<Transaction>> transactionsCaptor;
 
@@ -55,7 +56,7 @@ class TransactionServiceImplTest {
 
         final var result = underTest.create(new CreateTransactionDto(userId, categoryId, name, amount, transactionDate));
 
-        verify(transactionStorage).save(transactionArgumentCaptor.capture());
+        verify(transactionRepository).save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
                 .returns(id, Entity::getId)
@@ -79,12 +80,12 @@ class TransactionServiceImplTest {
         final var oldTransaction = randomTransaction();
 
         ArgumentCaptor<Transaction> transactionArgumentCaptor = ArgumentCaptor.forClass(Transaction.class);
-        when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
+        when(transactionRepository.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.of(oldTransaction));
 
         underTest.modify( new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate));
 
-        then(transactionStorage).should().save(transactionArgumentCaptor.capture());
+        then(transactionRepository).should().save(transactionArgumentCaptor.capture());
 
         assertThat(transactionArgumentCaptor.getValue())
                 .returns(oldTransaction.getId(), Entity::getId)
@@ -104,14 +105,14 @@ class TransactionServiceImplTest {
         final var transactionDate = randomInstant().toEpochMilli();
         final var categoryId = randomShortString();
 
-        when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
+        when(transactionRepository.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
         assertThrows(TransactionService.TransactionNotExisted.class,
                 () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
 
-        then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
-        then(transactionStorage).should(never()).save(any(Transaction.class));
+        then(transactionRepository).should().retrieveOneByIdAndUserId(modifyId, userId);
+        then(transactionRepository).should(never()).save(any(Transaction.class));
     }
 
     @Test
@@ -124,14 +125,14 @@ class TransactionServiceImplTest {
         final var categoryId = randomShortString();
         final var deletedTransaction = randomDeletedTransactionBuilder().build();
 
-        when(transactionStorage.retrieveOneByIdAndUserId(anyString(), anyString()))
+        when(transactionRepository.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.of(deletedTransaction));
 
         assertThrows(TransactionService.TransactionInvalidModify.class,
                 () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
 
-        then(transactionStorage).should().retrieveOneByIdAndUserId(modifyId, userId);
-        then(transactionStorage).should(never()).save(any(Transaction.class));
+        then(transactionRepository).should().retrieveOneByIdAndUserId(modifyId, userId);
+        then(transactionRepository).should(never()).save(any(Transaction.class));
     }
 
     @Test
@@ -139,13 +140,13 @@ class TransactionServiceImplTest {
         final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
         final var transactionIds = transactions.stream().map(Entity::getId).collect(Collectors.toSet());
         final var userId = randomShortString();
-        when(transactionStorage.retrieveAllByIdsAndUserId(anySet(), anyString()))
+        when(transactionRepository.retrieveAllByIdsAndUserId(anySet(), anyString()))
                 .thenReturn(transactions);
 
         underTest.delete(transactionIds, userId);
 
-        then(transactionStorage).should().retrieveAllByIdsAndUserId(transactionIds, userId);
-        verify(transactionStorage).save(transactionsCaptor.capture());
+        then(transactionRepository).should().retrieveAllByIdsAndUserId(transactionIds, userId);
+        verify(transactionRepository).save(transactionsCaptor.capture());
         final var isAllDeleteState = transactionsCaptor.getValue().stream()
                 .allMatch(Transaction::isDelete);
         assertThat(isAllDeleteState).isTrue();
@@ -155,12 +156,12 @@ class TransactionServiceImplTest {
     void retrieveAll() {
         final var userId = randomShortString();
         final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
-        when(transactionStorage.retrieveAllByUserId(any()))
+        when(transactionRepository.retrieveAllByUserId(any()))
                 .thenReturn(transactions);
 
         final var result = underTest.retrieveAll(userId);
 
-        then(transactionStorage).should().retrieveAllByUserId(userId);
+        then(transactionRepository).should().retrieveAllByUserId(userId);
         assertThat(result).hasSameSizeAs(transactions);
     }
 
@@ -169,12 +170,12 @@ class TransactionServiceImplTest {
         final var userId = randomShortString();
         final var transactionId = randomShortString();
         final var transaction = randomTransaction(transactionId);
-        when(transactionStorage.retrieveOneByIdAndUserId(any(), any()))
+        when(transactionRepository.retrieveOneByIdAndUserId(any(), any()))
                 .thenReturn(Optional.of(transaction));
 
         final var result = underTest.retrieve(userId, transactionId);
 
-        then(transactionStorage).should().retrieveOneByIdAndUserId(transactionId, userId);
+        then(transactionRepository).should().retrieveOneByIdAndUserId(transactionId, userId);
         assertThat(result)
                 .returns(transactionId, RetrieveTransactionDto::id)
                 .returns(transaction.getCategoryId(), RetrieveTransactionDto::categoryId)
@@ -189,7 +190,7 @@ class TransactionServiceImplTest {
     void retrieve_throw_not_existed_exception() {
         final var userId = randomShortString();
         final var transactionId = randomShortString();
-        when(transactionStorage.retrieveOneByIdAndUserId(any(), any()))
+        when(transactionRepository.retrieveOneByIdAndUserId(any(), any()))
                 .thenReturn(Optional.empty());
 
         assertThrows(TransactionService.TransactionNotExisted.class, () -> underTest.retrieve(userId, transactionId));

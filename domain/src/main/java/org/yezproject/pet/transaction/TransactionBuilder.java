@@ -76,7 +76,7 @@ public final class TransactionBuilder {
         return this;
     }
 
-    Transaction build() {
+    public Transaction build() {
         return new Transaction(this);
     }
 }

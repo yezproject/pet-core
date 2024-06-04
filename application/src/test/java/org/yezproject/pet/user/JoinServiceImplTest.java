@@ -12,6 +12,7 @@ import org.yezproject.pet.jwt.JwtService;
 import org.yezproject.pet.user.driven.JoinService;
 import org.yezproject.pet.user.driven.SignUpApplicationDto;
 import org.yezproject.pet.user.driving.PasswordService;
+import org.yezproject.pet.user.driving.UserRepository;
 
 import java.util.Optional;
 
@@ -31,7 +32,7 @@ class JoinServiceImplTest {
     @Mock
     private JwtService jwtService;
     @Mock
-    private UserStorage userStorage;
+    private UserRepository userRepository;
     @Mock
     private PasswordService passwordService;
     @Mock
@@ -40,7 +41,7 @@ class JoinServiceImplTest {
     @BeforeEach
     void setup() {
         underTest = new JoinServiceImpl(
-                userStorage,
+                userRepository,
                 jwtService,
                 passwordService,
                 idGenerator
@@ -59,7 +60,7 @@ class JoinServiceImplTest {
         final var encodedPassword = randomLongString();
 
         // when
-        when(userStorage.findByEmail(any())).thenReturn(Optional.empty());
+        when(userRepository.findByEmail(any())).thenReturn(Optional.empty());
         when(idGenerator.get()).thenReturn(newUserId);
         when(passwordService.encode(any())).thenReturn(encodedPassword);
 
@@ -67,10 +68,10 @@ class JoinServiceImplTest {
 
         // then
         final var userCaptor = ArgumentCaptor.forClass(User.class);
-        then(userStorage).should().findByEmail(dto.email());
+        then(userRepository).should().findByEmail(dto.email());
         then(idGenerator).should().get();
         then(passwordService).should().encode(dto.password());
-        verify(userStorage).store(userCaptor.capture());
+        verify(userRepository).store(userCaptor.capture());
 
         assertThat(userCaptor.getValue())
                 .returns(newUserId, Entity::getId)
@@ -89,12 +90,12 @@ class JoinServiceImplTest {
         );
 
         // when
-        when(userStorage.findByEmail(any())).thenReturn(Optional.of(randomUser()));
+        when(userRepository.findByEmail(any())).thenReturn(Optional.of(randomUser()));
 
         assertThrows(JoinService.UserExistedException.class, () -> underTest.signup(dto));
 
         // then
-        then(userStorage).should().findByEmail(dto.email());
+        then(userRepository).should().findByEmail(dto.email());
 
     }
 }

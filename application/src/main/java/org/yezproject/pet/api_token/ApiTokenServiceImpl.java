@@ -5,6 +5,7 @@ import org.springframework.stereotype.Component;
 import org.yezproject.pet.api_token.driven.ApiTokenIdWithNameDto;
 import org.yezproject.pet.api_token.driven.ApiTokenIdWithTokenDto;
 import org.yezproject.pet.api_token.driven.ApiTokenService;
+import org.yezproject.pet.api_token.driving.ApiTokenRepository;
 import org.yezproject.pet.id.IdGenerator;
 import org.yezproject.pet.jwt.JwtService;
 
@@ -15,12 +16,12 @@ import java.util.List;
 class ApiTokenServiceImpl implements ApiTokenService {
     private final IdGenerator idGenerator;
     private final JwtService jwtService;
-    private final ApiTokenStorage apiTokenStorage;
+    private final ApiTokenRepository apiTokenRepository;
 
     @Override
     public ApiTokenIdWithTokenDto create(String userId, String email, String name) {
         final var apiTokenId = idGenerator.get();
-        apiTokenStorage.store(new ApiTokenBuilder(apiTokenId)
+        apiTokenRepository.store(new ApiTokenBuilder(apiTokenId)
                 .userId(userId)
                 .name(name)
                 .build()
@@ -31,7 +32,7 @@ class ApiTokenServiceImpl implements ApiTokenService {
 
     @Override
     public List<ApiTokenIdWithNameDto> retrieveAllByUserId(String userId) {
-        return apiTokenStorage.findByUserId(userId)
+        return apiTokenRepository.findByUserId(userId)
                 .stream()
                 .map(domain -> new ApiTokenIdWithNameDto(domain.getId(), domain.getName()))
                 .toList();
@@ -39,6 +40,6 @@ class ApiTokenServiceImpl implements ApiTokenService {
 
     @Override
     public void delete(String userId, String id) {
-        apiTokenStorage.deleteById(userId, id);
+        apiTokenRepository.deleteById(userId, id);
     }
 }

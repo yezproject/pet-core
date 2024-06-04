@@ -8,7 +8,7 @@ import org.springframework.web.context.WebApplicationContext;
 import org.yezproject.pet.jwt.JwtService;
 import org.yezproject.pet.user.driven.AuthInfo;
 import org.yezproject.pet.user.driven.AuthService;
-import org.yezproject.pet.user.driving.UserDao;
+import org.yezproject.pet.user.driving.UserRepository;
 import org.yezproject.pet.web.security.SecurityConfig;
 
 import java.util.Collections;
@@ -24,7 +24,7 @@ public abstract class BaseControllerTest {
 
     /* Require for Security Auth */
     @MockBean
-    public UserDao userDAO;
+    public UserRepository userRepository;
     @MockBean
     public JwtService jwtService;
     @MockBean
