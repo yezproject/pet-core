@@ -6,6 +6,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.lang.NonNull;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -39,24 +40,28 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
-        final var tokenOptional = extractTokenFromRequest(request);
-        if (SecurityContextHolder.getContext().getAuthentication() == null && tokenOptional.isPresent()) {
-            final var jwtToken = tokenOptional.get();
-            final var email = jwtService.extractEmail(jwtToken);
-            if (StringUtils.isNotEmpty(email)) {
-                final UserInfo userInfo;
-                userInfo = (UserInfo) authService.loadUserByUsername(email);
-                if (jwtService.isTokenValid(jwtToken, userInfo.email())) {
-                    final var context = SecurityContextHolder.createEmptyContext();
-                    final var authenticationToken = new UsernamePasswordAuthenticationToken(
-                            userInfo,
-                            null,
-                            userInfo.getAuthorities());
-                    authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
-                    context.setAuthentication(authenticationToken);
-                    SecurityContextHolder.setContext(context);
+        try {
+            final var tokenOptional = extractTokenFromRequest(request);
+            if (SecurityContextHolder.getContext().getAuthentication() == null && tokenOptional.isPresent()) {
+                final var jwtToken = tokenOptional.get();
+                final var email = jwtService.extractEmail(jwtToken);
+                if (StringUtils.isNotEmpty(email)) {
+                    final UserInfo userInfo;
+                    userInfo = (UserInfo) authService.loadUserByUsername(email);
+                    if (jwtService.isTokenValid(jwtToken, userInfo.email())) {
+                        final var context = SecurityContextHolder.createEmptyContext();
+                        final var authenticationToken = new UsernamePasswordAuthenticationToken(
+                                userInfo,
+                                null,
+                                userInfo.getAuthorities());
+                        authenticationToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                        context.setAuthentication(authenticationToken);
+                        SecurityContextHolder.setContext(context);
+                    }
                 }
             }
+        } catch (JwtService.TokenExpiredException e) {
+            response.setStatus(HttpStatus.UNAUTHORIZED.value());
         }
         filterChain.doFilter(request, response);
     }

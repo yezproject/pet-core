@@ -1,5 +1,6 @@
 package org.yezproject.pet.jwt;
 
+import io.jsonwebtoken.ClaimJwtException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.io.Decoders;
@@ -31,7 +32,7 @@ public record JwtServiceImpl(
 
     @Override
     public boolean isTokenValid(String token, String email) {
-        return isEmailValid(token, email) && !isTokenExpired(token);
+        return isEmailValid(token, email);
     }
 
     private String generateToken(Map<String, Object> extractClaim, String email) {
@@ -52,25 +53,21 @@ public record JwtServiceImpl(
         return claimsResolvers.apply(claims);
     }
 
-    private boolean isTokenExpired(String token) {
-        return extractExpiration(token).before(new Date());
-    }
-
     private boolean isEmailValid(String token, String email) {
         final String extractedEmail = extractEmail(token);
         return extractedEmail.equals(email);
     }
 
-    private Date extractExpiration(String token) {
-        return extractClaim(token, Claims::getExpiration);
-    }
-
     private Claims extractAllClaims(String token) {
-        return Jwts.parser()
-                .verifyWith(getSigningKey())
-                .build()
-                .parseSignedClaims(token)
-                .getPayload();
+        try {
+            return Jwts.parser()
+                    .verifyWith(getSigningKey())
+                    .build()
+                    .parseSignedClaims(token)
+                    .getPayload();
+        } catch (ClaimJwtException e) {
+            throw new TokenExpiredException();
+        }
     }
 
     private SecretKey getSigningKey() {

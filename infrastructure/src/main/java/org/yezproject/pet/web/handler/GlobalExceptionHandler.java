@@ -1,5 +1,6 @@
 package org.yezproject.pet.web.handler;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -30,6 +31,12 @@ class GlobalExceptionHandler implements AuthenticationEntryPoint {
     void internalError(HttpServletResponse response, NullPointerException e) {
         log.warn("NullPointerException Occurred", e);
         response.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.value());
+    }
+
+    @ExceptionHandler(ExpiredJwtException.class)
+    void expiredToken(HttpServletResponse response, ExpiredJwtException e) {
+        log.warn("ExpiredJwtException Occurred", e);
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 
     @Override

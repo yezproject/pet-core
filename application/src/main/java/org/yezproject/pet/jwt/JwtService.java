@@ -7,4 +7,5 @@ public interface JwtService {
 
     boolean isTokenValid(String token, String email);
 
+    class TokenExpiredException extends RuntimeException {}
 }
