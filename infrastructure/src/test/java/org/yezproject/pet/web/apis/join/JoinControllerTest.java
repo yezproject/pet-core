@@ -36,7 +36,7 @@ class JoinControllerTest extends BaseControllerTest {
     @Test
     void signup_return_201() throws Exception {
         when(joinService.signup(any())).thenReturn(randomShortString());
-        this.mockMvc.perform(post("/auth/sign_up")
+        this.mockMvc.perform(post("/public/sign_up")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(signUpReq)))
                 .andExpect(status().isCreated());
@@ -45,7 +45,7 @@ class JoinControllerTest extends BaseControllerTest {
     @Test
     void signup_return_400() throws Exception {
         when(joinService.signup(any())).thenThrow(JoinService.UserNotFoundException.class);
-        this.mockMvc.perform(post("/auth/sign_up")
+        this.mockMvc.perform(post("/public/sign_up")
                         .contentType(MediaType.APPLICATION_JSON_VALUE)
                         .content(objectMapper.writeValueAsString(signUpReq)))
                 .andExpect(status().isBadRequest());

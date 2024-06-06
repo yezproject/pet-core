@@ -53,7 +53,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var transactionDTO = randomRetrieveTransactionDTO().get();
         when(this.transactionService.retrieve(anyString(), anyString())).thenReturn(transactionDTO);
 
-        final var result = this.mockMvc.perform(get("/api/transactions/" + transactionId)
+        final var result = this.mockMvc.perform(get("/transactions/" + transactionId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -78,7 +78,7 @@ class TransactionControllerTest extends BaseControllerTest {
         when(this.transactionService.retrieve(anyString(), anyString()))
                 .thenThrow(TransactionService.TransactionNotExisted.class);
 
-        this.mockMvc.perform(get("/api/transactions/" + transactionId)
+        this.mockMvc.perform(get("/transactions/" + transactionId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isNotFound());
     }
@@ -88,7 +88,7 @@ class TransactionControllerTest extends BaseControllerTest {
         final var transactionDTOs = randomShortList(randomRetrieveTransactionDTO());
         when(this.transactionService.retrieveAll(any())).thenReturn(transactionDTOs);
 
-        final var result = this.mockMvc.perform(get("/api/transactions")
+        final var result = this.mockMvc.perform(get("/transactions")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -123,7 +123,7 @@ class TransactionControllerTest extends BaseControllerTest {
         when(transactionService.create(any()))
                 .thenReturn(randomId);
 
-        this.mockMvc.perform(post("/api/transactions")
+        this.mockMvc.perform(post("/transactions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -151,7 +151,7 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomInstant().toEpochMilli()
         );
 
-        this.mockMvc.perform(post("/api/transactions")
+        this.mockMvc.perform(post("/transactions")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -168,7 +168,7 @@ class TransactionControllerTest extends BaseControllerTest {
         );
         final var requestModifyTransactionId = randomShortString();
 
-        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
+        this.mockMvc.perform(put("/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -199,7 +199,7 @@ class TransactionControllerTest extends BaseControllerTest {
         doThrow(TransactionService.TransactionNotExisted.class).when(this.transactionService)
                 .modify(any());
 
-        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
+        this.mockMvc.perform(put("/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -219,7 +219,7 @@ class TransactionControllerTest extends BaseControllerTest {
         doThrow(TransactionService.TransactionInvalidModify.class).when(this.transactionService)
                 .modify(any());
 
-        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
+        this.mockMvc.perform(put("/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -235,7 +235,7 @@ class TransactionControllerTest extends BaseControllerTest {
                 randomInstant().toEpochMilli()
         );
 
-        this.mockMvc.perform(put("/api/transactions/")
+        this.mockMvc.perform(put("/transactions/")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -254,7 +254,7 @@ class TransactionControllerTest extends BaseControllerTest {
         );
         final var requestModifyTransactionId = randomShortString();
 
-        this.mockMvc.perform(put("/api/transactions/" + requestModifyTransactionId)
+        this.mockMvc.perform(put("/transactions/" + requestModifyTransactionId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -264,7 +264,7 @@ class TransactionControllerTest extends BaseControllerTest {
     @Test
     void delete_return_204() throws Exception {
         String[] ids = randomShortList(RandomUtils::randomShortString).toArray(String[]::new);
-        this.mockMvc.perform(delete("/api/transactions")
+        this.mockMvc.perform(delete("/transactions")
                         .param("ids", ids)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isNoContent());

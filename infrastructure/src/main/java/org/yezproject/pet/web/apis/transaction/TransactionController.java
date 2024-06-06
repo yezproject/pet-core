@@ -15,13 +15,13 @@ import org.yezproject.pet.web.security.UserInfo;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/transactions")
+@RequestMapping("/transactions")
 @Tag(name = "Transaction", description = "Transaction management")
 @RequiredArgsConstructor
 class TransactionController {
     private final TransactionService transactionService;
 
-    @GetMapping("{transactionId}")
+    @GetMapping("/{transactionId}")
     RetrieveTransactionResponse retrieve(
             @PathVariable("transactionId") String transactionId,
             @RequestUser UserInfo user
@@ -74,7 +74,7 @@ class TransactionController {
         return new CreateTransactionResponse(id);
     }
 
-    @PutMapping("{transactionId}")
+    @PutMapping("/{transactionId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modify(
             @PathVariable("transactionId") String transactionId,

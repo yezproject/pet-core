@@ -10,7 +10,7 @@ import org.yezproject.pet.user.driven.SignUpApplicationDto;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/auth")
+@RequestMapping("/public")
 @Tag(name = "User", description = "Join System APIs")
 class JoinController {
     private final JoinService joinService;

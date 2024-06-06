@@ -12,7 +12,7 @@ import org.yezproject.pet.web.security.UserInfo;
 import java.util.List;
 
 @RestController
-@RequestMapping("api/categories")
+@RequestMapping("/categories")
 @Tag(name = "Category", description = "Category management")
 @RequiredArgsConstructor
 class CategoryController {
@@ -37,7 +37,7 @@ class CategoryController {
                 .toList();
     }
 
-    @PatchMapping("{categoryId}")
+    @PatchMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modifyName(
             @PathVariable("categoryId") String categoryId,
@@ -47,7 +47,7 @@ class CategoryController {
         categoryService.modify(user.id(), categoryId, request.name());
     }
 
-    @DeleteMapping("{categoryId}")
+    @DeleteMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(
             @PathVariable("categoryId") String categoryId,

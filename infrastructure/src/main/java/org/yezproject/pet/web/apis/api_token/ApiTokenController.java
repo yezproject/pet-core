@@ -11,7 +11,7 @@ import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("tokens")
+@RequestMapping("/tokens")
 class ApiTokenController {
     private final ApiTokenService apiTokenService;
 

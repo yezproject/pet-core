@@ -50,7 +50,7 @@ class CategoryControllerTest extends BaseControllerTest {
         final var categoryDTOs = randomShortList(randomCategoryDTO());
         when(categoryService.retrieveAll(anyString())).thenReturn(categoryDTOs);
 
-        final var result = this.mockMvc.perform(get("/api/categories")
+        final var result = this.mockMvc.perform(get("/categories")
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isOk())
                 .andReturn();
@@ -72,7 +72,7 @@ class CategoryControllerTest extends BaseControllerTest {
         final var newCategoryId = randomShortString();
         when(categoryService.create(anyString(), anyString())).thenReturn(newCategoryId);
 
-        this.mockMvc.perform(post("/api/categories")
+        this.mockMvc.perform(post("/categories")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -89,7 +89,7 @@ class CategoryControllerTest extends BaseControllerTest {
         final var requestBody = new ModifyCategoryRequest(randomShortString());
         final var modifyCategoryId = randomShortString();
 
-        this.mockMvc.perform(patch("/api/categories/" + modifyCategoryId)
+        this.mockMvc.perform(patch("/categories/" + modifyCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -110,7 +110,7 @@ class CategoryControllerTest extends BaseControllerTest {
         doThrow(CategoryService.CategoryNotExisted.class)
                 .when(categoryService).modify(anyString(), anyString(), anyString());
 
-        this.mockMvc.perform(patch("/api/categories/" + modifyCategoryId)
+        this.mockMvc.perform(patch("/categories/" + modifyCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -127,7 +127,7 @@ class CategoryControllerTest extends BaseControllerTest {
     void delete_return_204() throws Exception {
         final var deleteCategoryId = randomShortString();
 
-        this.mockMvc.perform(delete("/api/categories/" + deleteCategoryId)
+        this.mockMvc.perform(delete("/categories/" + deleteCategoryId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
                 .andExpect(status().isNoContent());
 
