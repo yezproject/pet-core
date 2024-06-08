@@ -1,5 +1,5 @@
 # Use maven with JDK 17 as the build image
-FROM maven:3.9.6-sapmachine-17 AS BUILD
+FROM maven:3.9.6-sapmachine-21 AS BUILD
 # Set the working directory
 WORKDIR /home/app
 # Copy pom.xml and get all dependencies
@@ -20,7 +20,7 @@ COPY infrastructure ./infrastructure
 RUN mvn -B clean test package
 
 # Use OpenJDK 17 as the runtime image
-FROM openjdk:17-jdk-alpine
+FROM eclipse-temurin:21
 # Copy the built jar file from the build image
 COPY --from=BUILD /home/app/infrastructure/target/*.jar app.jar
 # Expose the application's port
