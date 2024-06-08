@@ -1,6 +1,7 @@
 package org.yezproject.pet.api_token;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Component;
 import org.yezproject.pet.api_token.driven.ApiTokenIdWithNameDto;
 import org.yezproject.pet.api_token.driven.ApiTokenIdWithTokenDto;
@@ -45,6 +46,7 @@ class ApiTokenServiceImpl implements ApiTokenService {
     }
 
     @Override
+    @Cacheable(value = "token")
     public UserIdDto verify(String token) throws InvalidTokenException {
         return apiTokenRepository.findByToken(token)
                 .map(ApiToken::getUserId)
