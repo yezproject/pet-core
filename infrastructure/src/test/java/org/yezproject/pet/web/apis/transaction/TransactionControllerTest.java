@@ -9,6 +9,7 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.yezproject.pet.RandomUtils;
+import org.yezproject.pet.jwt.JwtService;
 import org.yezproject.pet.transaction.driven.CreateTransactionDto;
 import org.yezproject.pet.transaction.driven.ModifyTransactionDto;
 import org.yezproject.pet.transaction.driven.RetrieveTransactionDto;
@@ -29,6 +30,7 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yezproject.pet.RandomUtils.*;
+import static org.yezproject.pet.web.apis.TestUtils.randomJwtPayload;
 
 @WebMvcTest(value = TransactionController.class)
 class TransactionControllerTest extends BaseControllerTest {
@@ -38,11 +40,9 @@ class TransactionControllerTest extends BaseControllerTest {
     TransactionService transactionService;
 
     @BeforeEach
-    void authSetup() throws AuthService.UserNotFoundException {
-        when(this.jwtService.extractEmail(any()))
-                .thenReturn(randomShortString());
-        when(this.jwtService.isTokenValid(any(), any()))
-                .thenReturn(true);
+    void authSetup() throws AuthService.UserNotFoundException, JwtService.TokenInvalidException, JwtService.TokenExpiredException {
+        when(this.jwtService.extractPayload(anyString()))
+                .thenReturn(randomJwtPayload());
         when(this.authService.loadUserByEmail(any()))
                 .thenReturn(this.mockUser);
     }

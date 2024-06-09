@@ -17,8 +17,7 @@ import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.yezproject.pet.user.driven.AuthService;
-import org.yezproject.pet.web.filter.ApiTokenAuthenticationFilter;
-import org.yezproject.pet.web.filter.JwtAuthenticationFilter;
+import org.yezproject.pet.web.filter.PetAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -27,8 +26,7 @@ public class SecurityConfig {
     @Bean
     SecurityFilterChain securityFilterChain(
             final HttpSecurity http,
-            final JwtAuthenticationFilter jwtAuthenticationFilter,
-            final ApiTokenAuthenticationFilter apiTokenAuthenticationFilter,
+            final PetAuthenticationFilter petAuthenticationFilter,
             final AuthenticationProvider authenticationProvider,
             final AuthenticationEntryPoint authenticationEntryPoint
     ) throws Exception {
@@ -45,8 +43,7 @@ public class SecurityConfig {
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider)
                 .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint))
-                .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(apiTokenAuthenticationFilter, JwtAuthenticationFilter.class)
+                .addFilterBefore(petAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

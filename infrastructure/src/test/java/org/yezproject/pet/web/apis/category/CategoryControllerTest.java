@@ -10,6 +10,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.yezproject.pet.category.driven.CategoryService;
 import org.yezproject.pet.category.driven.RetrieveCategoryDto;
+import org.yezproject.pet.jwt.JwtService;
 import org.yezproject.pet.user.driven.AuthService;
 import org.yezproject.pet.web.apis.BaseControllerTest;
 
@@ -27,6 +28,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yezproject.pet.RandomUtils.randomShortList;
 import static org.yezproject.pet.RandomUtils.randomShortString;
+import static org.yezproject.pet.web.apis.TestUtils.randomJwtPayload;
 
 @WebMvcTest(value = CategoryController.class)
 class CategoryControllerTest extends BaseControllerTest {
@@ -36,11 +38,9 @@ class CategoryControllerTest extends BaseControllerTest {
     private CategoryService categoryService;
 
     @BeforeEach
-    void authSetup() throws AuthService.UserNotFoundException {
-        when(this.jwtService.extractEmail(any()))
-                .thenReturn(randomShortString());
-        when(this.jwtService.isTokenValid(any(), any()))
-                .thenReturn(true);
+    void authSetup() throws AuthService.UserNotFoundException, JwtService.TokenInvalidException, JwtService.TokenExpiredException {
+        when(this.jwtService.extractPayload(anyString()))
+                .thenReturn(randomJwtPayload());
         when(this.authService.loadUserByEmail(any()))
                 .thenReturn(this.mockUser);
     }

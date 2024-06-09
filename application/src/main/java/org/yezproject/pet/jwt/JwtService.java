@@ -1,11 +1,17 @@
 package org.yezproject.pet.jwt;
 
+import lombok.experimental.StandardException;
+
 public interface JwtService {
-    String extractEmail(String token);
+    @StandardException
+    class TokenExpiredException extends Exception {
+    }
+
+    @StandardException
+    class TokenInvalidException extends Exception {
+    }
 
     String generateToken(String email);
 
-    boolean isTokenValid(String token, String email);
-
-    class TokenExpiredException extends RuntimeException {}
+    JwtPayload extractPayload(String token) throws TokenExpiredException, TokenInvalidException;
 }
