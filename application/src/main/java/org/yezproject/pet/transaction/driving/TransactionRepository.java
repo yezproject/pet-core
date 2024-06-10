@@ -2,6 +2,7 @@ package org.yezproject.pet.transaction.driving;
 
 import org.yezproject.pet.transaction.Transaction;
 
+import java.time.Instant;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
@@ -17,7 +18,9 @@ public interface TransactionRepository {
 
     List<Transaction> retrieveAllByIdsAndUserId(Set<String> transactionId, String userId);
 
-    List<Transaction> retrieveAllByUserId(String userId);
+    List<Transaction> retrieveAll(String userId);
 
-    List<Transaction> retrieveAllByUserId(String userId, int limit);
+    List<Transaction> retrieveLastNonAfter(String userId, int limit);
+
+    List<Transaction> retrieveLastWithAfter(String userId, int limit, Instant after);
 }

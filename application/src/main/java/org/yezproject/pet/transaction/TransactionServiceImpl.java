@@ -43,7 +43,7 @@ class TransactionServiceImpl implements TransactionService {
         final var transactionOptional = transactionRepository.retrieveOneByIdAndUserId(dto.transactionId(), dto.userId());
         if (transactionOptional.isEmpty()) {
             log.info("not existed transaction id={} userId={}", dto.transactionId(), dto.userId());
-            throw new TransactionNotExisted();
+            throw new TransactionNotExistedException();
         }
         Transaction transaction = transactionOptional.get();
         try {
@@ -53,7 +53,7 @@ class TransactionServiceImpl implements TransactionService {
             transaction.modifyTransactionDate(Optional.ofNullable(dto.transactionDate()).map(Instant::ofEpochMilli).orElse(null));
         } catch (DomainException e) {
             log.info("modify transaction id={} has been deleted", transaction.getId());
-            throw new TransactionInvalidModify();
+            throw new TransactionInvalidModifyException();
         }
         transactionRepository.save(transaction);
     }
@@ -79,14 +79,23 @@ class TransactionServiceImpl implements TransactionService {
 
     @Override
     public List<RetrieveTransactionDto> retrieveAll(String userId) {
-        return transactionRepository.retrieveAllByUserId(userId).stream()
+        return transactionRepository.retrieveAll(userId).stream()
                 .map(RetrieveTransactionDto::fromDomain)
                 .toList();
     }
 
     @Override
-    public List<RetrieveTransactionDto> retrieveLast(final String userId, final int limit) {
-        return transactionRepository.retrieveAllByUserId(userId, limit).stream()
+    public List<RetrieveTransactionDto> retrieveLast(final String userId, final int limit, final Long after) {
+        return Optional.ofNullable(after)
+                .map(it -> {
+                    if (it > Instant.now().toEpochMilli()) {
+                        throw new TransactionService.TransactionQueryParamInvalidException();
+                    }
+                    return it;
+                })
+                .map(it -> transactionRepository.retrieveLastWithAfter(userId, limit, Instant.ofEpochMilli(it)))
+                .orElseGet(() -> transactionRepository.retrieveLastNonAfter(userId, limit))
+                .stream()
                 .map(RetrieveTransactionDto::fromDomain)
                 .toList();
     }
@@ -95,7 +104,7 @@ class TransactionServiceImpl implements TransactionService {
     public RetrieveTransactionDto retrieve(final String userId, final String transactionId) {
         final var transactionOptional = transactionRepository.retrieveOneByIdAndUserId(transactionId, userId);
         if (transactionOptional.isEmpty()) {
-            throw new TransactionNotExisted();
+            throw new TransactionNotExistedException();
         }
         return RetrieveTransactionDto.fromDomain(transactionOptional.get());
     }

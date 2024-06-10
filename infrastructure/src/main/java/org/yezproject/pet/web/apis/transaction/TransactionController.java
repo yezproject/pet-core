@@ -43,6 +43,7 @@ class TransactionController {
     @GetMapping(params = "limit")
     List<RetrieveTransactionResponse> retrieveLast(
             @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
+            @RequestParam(name = "after", required = false) Long after,
             @RequestUser UserInfo user
     ) {
         if (limit < 0) {
@@ -50,7 +51,7 @@ class TransactionController {
         } else if (limit > 100) {
             limit = 100;
         }
-        List<RetrieveTransactionDto> transactions = transactionService.retrieveLast(user.id(), limit);
+        List<RetrieveTransactionDto> transactions = transactionService.retrieveLast(user.id(), limit, after);
         return transactions.stream()
                 .map(RetrieveTransactionResponse::fromDTO)
                 .toList();
@@ -104,12 +105,12 @@ class TransactionController {
         transactionService.delete(ids, user.id());
     }
 
-    @ExceptionHandler(TransactionService.TransactionNotExisted.class)
+    @ExceptionHandler(TransactionService.TransactionNotExistedException.class)
     ResponseEntity<Void> transactionNotExistedHandler() {
         return ResponseEntity.notFound().build();
     }
 
-    @ExceptionHandler(TransactionService.TransactionInvalidModify.class)
+    @ExceptionHandler({TransactionService.TransactionInvalidModifyException.class, TransactionService.TransactionQueryParamInvalidException.class})
     ResponseEntity<Void> transactionInvalidModifyHandler() {
         return ResponseEntity.badRequest().build();
     }

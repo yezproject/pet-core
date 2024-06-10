@@ -6,6 +6,7 @@ import org.yezproject.pet.transaction.Transaction;
 import org.yezproject.pet.transaction.TransactionBuilder;
 import org.yezproject.pet.transaction.driving.TransactionRepository;
 
+import java.time.Instant;
 import java.util.*;
 
 @Component
@@ -38,16 +39,24 @@ record TransactionRepositoryImpl(
     }
 
     @Override
-    public List<Transaction> retrieveAllByUserId(String userId) {
-        return transactionJpaRepository.findAllByIsDeleteFalseAndCreatorUserId(userId)
+    public List<Transaction> retrieveAll(String userId) {
+        return transactionJpaRepository.findAll(userId)
                 .stream()
                 .map(this::toDomain)
                 .toList();
     }
 
     @Override
-    public List<Transaction> retrieveAllByUserId(String userId, int limit) {
-        return transactionJpaRepository.findAllByIsDeleteFalseAndCreatorUserId(userId, limit)
+    public List<Transaction> retrieveLastNonAfter(String userId, int limit) {
+        return transactionJpaRepository.findAll(userId, limit)
+                .stream()
+                .map(this::toDomain)
+                .toList();
+    }
+
+    @Override
+    public List<Transaction> retrieveLastWithAfter(String userId, int limit, Instant after) {
+        return transactionJpaRepository.findAll(userId, limit, after)
                 .stream()
                 .map(this::toDomain)
                 .toList();

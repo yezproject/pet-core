@@ -4,10 +4,13 @@ import java.util.Collection;
 import java.util.List;
 
 public interface TransactionService {
-    final class TransactionNotExisted extends RuntimeException {
-    } 
-    
-    final class TransactionInvalidModify extends RuntimeException {
+    final class TransactionNotExistedException extends RuntimeException {
+    }
+
+    final class TransactionInvalidModifyException extends RuntimeException {
+    }
+
+    final class TransactionQueryParamInvalidException extends RuntimeException {
     }
 
     String create(CreateTransactionDto createTransactionDTO);
@@ -20,7 +23,7 @@ public interface TransactionService {
 
     List<RetrieveTransactionDto> retrieveAll(String userId);
 
-    List<RetrieveTransactionDto> retrieveLast(String userId, int limit);
+    List<RetrieveTransactionDto> retrieveLast(String userId, int limit, Long createDate);
 
     RetrieveTransactionDto retrieve(String userId, String transactionId);
 }

@@ -76,7 +76,7 @@ class TransactionControllerTest extends BaseControllerTest {
     void retrieve_return_404() throws Exception {
         final var transactionId = randomShortString();
         when(this.transactionService.retrieve(anyString(), anyString()))
-                .thenThrow(TransactionService.TransactionNotExisted.class);
+                .thenThrow(TransactionService.TransactionNotExistedException.class);
 
         this.mockMvc.perform(get("/transactions/" + transactionId)
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -196,7 +196,7 @@ class TransactionControllerTest extends BaseControllerTest {
         );
         final var requestModifyTransactionId = randomShortString();
 
-        doThrow(TransactionService.TransactionNotExisted.class).when(this.transactionService)
+        doThrow(TransactionService.TransactionNotExistedException.class).when(this.transactionService)
                 .modify(any());
 
         this.mockMvc.perform(put("/transactions/" + requestModifyTransactionId)
@@ -216,7 +216,7 @@ class TransactionControllerTest extends BaseControllerTest {
         );
         final var requestModifyTransactionId = randomShortString();
 
-        doThrow(TransactionService.TransactionInvalidModify.class).when(this.transactionService)
+        doThrow(TransactionService.TransactionInvalidModifyException.class).when(this.transactionService)
                 .modify(any());
 
         this.mockMvc.perform(put("/transactions/" + requestModifyTransactionId)

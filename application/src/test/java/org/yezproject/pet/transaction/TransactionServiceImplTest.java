@@ -108,7 +108,7 @@ class TransactionServiceImplTest {
         when(transactionRepository.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(TransactionService.TransactionNotExisted.class,
+        assertThrows(TransactionService.TransactionNotExistedException.class,
                 () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
 
         then(transactionRepository).should().retrieveOneByIdAndUserId(modifyId, userId);
@@ -128,7 +128,7 @@ class TransactionServiceImplTest {
         when(transactionRepository.retrieveOneByIdAndUserId(anyString(), anyString()))
                 .thenReturn(Optional.of(deletedTransaction));
 
-        assertThrows(TransactionService.TransactionInvalidModify.class,
+        assertThrows(TransactionService.TransactionInvalidModifyException.class,
                 () -> underTest.modify(new ModifyTransactionDto(userId, modifyId, categoryId, name, amount, transactionDate)));
 
         then(transactionRepository).should().retrieveOneByIdAndUserId(modifyId, userId);
@@ -156,12 +156,12 @@ class TransactionServiceImplTest {
     void retrieveAll() {
         final var userId = randomShortString();
         final var transactions = randomShortList(TransactionRandomUtils::randomTransaction);
-        when(transactionRepository.retrieveAllByUserId(any()))
+        when(transactionRepository.retrieveAll(any()))
                 .thenReturn(transactions);
 
         final var result = underTest.retrieveAll(userId);
 
-        then(transactionRepository).should().retrieveAllByUserId(userId);
+        then(transactionRepository).should().retrieveAll(userId);
         assertThat(result).hasSameSizeAs(transactions);
     }
 
@@ -193,7 +193,7 @@ class TransactionServiceImplTest {
         when(transactionRepository.retrieveOneByIdAndUserId(any(), any()))
                 .thenReturn(Optional.empty());
 
-        assertThrows(TransactionService.TransactionNotExisted.class, () -> underTest.retrieve(userId, transactionId));
+        assertThrows(TransactionService.TransactionNotExistedException.class, () -> underTest.retrieve(userId, transactionId));
     }
 
 }
