@@ -42,5 +42,6 @@ class GlobalExceptionHandler implements AuthenticationEntryPoint {
     @Override
     public void commence(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) {
         log.warn("AuthenticationException Occurred");
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
     }
 }

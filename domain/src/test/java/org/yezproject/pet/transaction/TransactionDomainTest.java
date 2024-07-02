@@ -3,7 +3,9 @@ package org.yezproject.pet.transaction;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.*;
+import org.junit.jupiter.params.provider.EnumSource;
+import org.junit.jupiter.params.provider.MethodSource;
+import org.junit.jupiter.params.provider.NullAndEmptySource;
 
 import java.time.Instant;
 import java.util.stream.Stream;
@@ -133,13 +135,6 @@ class TransactionDomainTest {
     @MethodSource("invalidNames")
     void modify_violate_name_will_throw_exception(String invalidName) {
         assertThrows(Exception.class, () -> RANDOM_TRANSACTION_BUILDER.build().modifyName(invalidName));
-    }
-
-    @ParameterizedTest
-    @ValueSource(doubles = {0d})
-    @NullSource
-    void modify_violate_amount_will_throw_exception(Double invalidSource) {
-        assertThrows(Exception.class, () -> RANDOM_TRANSACTION_BUILDER.build().modifyAmount(invalidSource));
     }
 
     @ParameterizedTest

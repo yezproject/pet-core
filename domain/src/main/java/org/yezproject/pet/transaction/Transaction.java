@@ -29,7 +29,7 @@ public final class Transaction extends AggregateRoot<String> implements Deletabl
         super(builder.transactionId);
         categoryId = builder.categoryId;
         name = nameValidated(builder.name);
-        amount = amountValidated(builder.amount);
+        amount = Objects.requireNonNull(builder.amount);
         creatorUserId = Objects.requireNonNull(builder.creatorUserId);
         transactionDate = Optional.ofNullable(builder.transactionDate).orElse(Instant.now());
         currency = Optional.ofNullable(builder.currency).orElse(DEFAULT_CURRENCY);
@@ -55,7 +55,7 @@ public final class Transaction extends AggregateRoot<String> implements Deletabl
 
     public void modifyAmount(Double amount) {
         modify(() -> {
-            this.amount = amountValidated(amount);
+            this.amount = Objects.requireNonNull(amount);
             transactionClassify();
         });
     }
@@ -84,11 +84,6 @@ public final class Transaction extends AggregateRoot<String> implements Deletabl
         preModify();
         modification.run();
         postModify();
-    }
-
-    private Double amountValidated(final double amount) {
-        if (amount == 0) throw new DomainException("Transaction amount must not be zero");
-        return amount;
     }
 
     private String nameValidated(final String name) {

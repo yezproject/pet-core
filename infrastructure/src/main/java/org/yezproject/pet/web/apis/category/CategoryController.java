@@ -37,7 +37,7 @@ class CategoryController {
                 .toList();
     }
 
-    @PatchMapping("/{categoryId}")
+    @PutMapping("/{categoryId}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void modifyName(
             @PathVariable("categoryId") String categoryId,

@@ -89,7 +89,7 @@ class CategoryControllerTest extends BaseControllerTest {
         final var requestBody = new ModifyCategoryRequest(randomShortString());
         final var modifyCategoryId = randomShortString();
 
-        this.mockMvc.perform(patch("/categories/" + modifyCategoryId)
+        this.mockMvc.perform(put("/categories/" + modifyCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))
@@ -110,7 +110,7 @@ class CategoryControllerTest extends BaseControllerTest {
         doThrow(CategoryService.CategoryNotExisted.class)
                 .when(categoryService).modify(anyString(), anyString(), anyString());
 
-        this.mockMvc.perform(patch("/categories/" + modifyCategoryId)
+        this.mockMvc.perform(put("/categories/" + modifyCategoryId)
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(requestBody))
                         .header(HttpHeaders.AUTHORIZATION, "Bearer " + randomShortString()))

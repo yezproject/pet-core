@@ -15,7 +15,7 @@ interface TransactionJpaRepository extends JpaRepository<TransactionEntity, Stri
 
     List<TransactionEntity> findAllByIsDeleteFalseAndIdInAndCreatorUserId(Set<String> transactionIds, String creatorUserId);
 
-    @Query("select t from transactions t where t.creatorUserId = :creatorId")
+    @Query("select t from transactions t where t.isDelete = false and t.creatorUserId = :creatorId order by t.transactionDate desc")
     List<TransactionEntity> findAll(String creatorId);
 
     @Query("""
