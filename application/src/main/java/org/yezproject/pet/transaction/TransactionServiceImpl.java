@@ -2,6 +2,8 @@ package org.yezproject.pet.transaction;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Component;
 import org.yezproject.pet.common.error.DomainException;
 import org.yezproject.pet.id.IdGenerator;
@@ -98,6 +100,12 @@ class TransactionServiceImpl implements TransactionService {
                 .stream()
                 .map(RetrieveTransactionDto::fromDomain)
                 .toList();
+    }
+
+    @Override
+    public Page<RetrieveTransactionDto> retrievePage(final String userId, final int page, final int size) {
+        final var pageRequest = PageRequest.of(page, size);
+        return transactionRepository.retrievePage(userId, pageRequest).map(RetrieveTransactionDto::fromDomain);
     }
 
     @Override

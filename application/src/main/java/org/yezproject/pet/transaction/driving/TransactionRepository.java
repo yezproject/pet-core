@@ -1,5 +1,7 @@
 package org.yezproject.pet.transaction.driving;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.yezproject.pet.transaction.Transaction;
 
 import java.time.Instant;
@@ -23,4 +25,6 @@ public interface TransactionRepository {
     List<Transaction> retrieveLastNonAfter(String userId, int limit);
 
     List<Transaction> retrieveLastWithAfter(String userId, int limit, Instant after);
+
+    Page<Transaction> retrievePage(String userId, PageRequest pageRequest);
 }

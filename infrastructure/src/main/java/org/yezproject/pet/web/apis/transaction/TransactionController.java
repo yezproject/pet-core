@@ -2,6 +2,7 @@ package org.yezproject.pet.web.apis.transaction;
 
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -55,6 +56,16 @@ class TransactionController {
         return transactions.stream()
                 .map(RetrieveTransactionResponse::fromDTO)
                 .toList();
+    }
+
+    @GetMapping(params = {"page", "size"})
+    Page<RetrieveTransactionResponse> retrieveLast(
+            @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
+            @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
+            @RequestUser UserInfo user
+    ) {
+        Page<RetrieveTransactionDto> transactionsPage = transactionService.retrievePage(user.id(), page, size);
+        return transactionsPage.map(RetrieveTransactionResponse::fromDTO);
     }
 
     @PostMapping

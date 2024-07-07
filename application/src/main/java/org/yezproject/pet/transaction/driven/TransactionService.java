@@ -1,5 +1,7 @@
 package org.yezproject.pet.transaction.driven;
 
+import org.springframework.data.domain.Page;
+
 import java.util.Collection;
 import java.util.List;
 
@@ -24,6 +26,8 @@ public interface TransactionService {
     List<RetrieveTransactionDto> retrieveAll(String userId);
 
     List<RetrieveTransactionDto> retrieveLast(String userId, int limit, Long createDate);
+
+    Page<RetrieveTransactionDto> retrievePage(String userId, int page, int size);
 
     RetrieveTransactionDto retrieve(String userId, String transactionId);
 }

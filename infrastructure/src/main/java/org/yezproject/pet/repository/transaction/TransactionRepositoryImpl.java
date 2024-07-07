@@ -1,5 +1,8 @@
 package org.yezproject.pet.repository.transaction;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Component;
 import org.yezproject.pet.transaction.Currency;
 import org.yezproject.pet.transaction.Transaction;
@@ -60,6 +63,12 @@ record TransactionRepositoryImpl(
                 .stream()
                 .map(this::toDomain)
                 .toList();
+    }
+
+    @Override
+    public Page<Transaction> retrievePage(final String userId, final PageRequest pageRequest) {
+        final var sortPageRequest = pageRequest.withSort(Sort.by("transactionDate").descending());
+        return transactionJpaRepository.findAllPageable(userId, sortPageRequest).map(this::toDomain);
     }
 
     private TransactionEntity toEntity(Transaction domain) {
