@@ -11,7 +11,7 @@ public interface JwtService {
     class TokenInvalidException extends Exception {
     }
 
-    String generateToken(String email);
+    String generateToken(JwtUserRequest jwtUserRequest);
 
     JwtPayload extractPayload(String token) throws TokenExpiredException, TokenInvalidException;
 }

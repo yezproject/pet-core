@@ -8,6 +8,6 @@ import static org.yezproject.pet.RandomUtils.randomShortString;
 public record TestUtils() {
 
     public static JwtPayload randomJwtPayload() {
-        return new JwtPayload(randomShortString(), randomInstant());
+        return new JwtPayload(randomShortString(), randomInstant(), randomShortString());
     }
 }

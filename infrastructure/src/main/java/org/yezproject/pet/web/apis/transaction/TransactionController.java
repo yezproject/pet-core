@@ -59,7 +59,7 @@ class TransactionController {
     }
 
     @GetMapping(params = {"page", "size"})
-    Page<RetrieveTransactionResponse> retrieveLast(
+    Page<RetrieveTransactionResponse> retrievePage(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
             @RequestUser UserInfo user

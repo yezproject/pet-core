@@ -22,8 +22,10 @@ public record JwtServiceImpl(
 ) implements JwtService {
 
     @Override
-    public String generateToken(String email) {
-        return generateToken(new HashMap<>(), email);
+    public String generateToken(JwtUserRequest jwtUserRequest) {
+        final var claims = new HashMap<String, Object>();
+        claims.put("name", jwtUserRequest.name());
+        return generateToken(claims, jwtUserRequest.email());
     }
 
     @Override
@@ -40,7 +42,8 @@ public record JwtServiceImpl(
         }
         var email = claims.getSubject();
         var expiration = claims.getExpiration().toInstant();
-        return new JwtPayload(email, expiration);
+        var name = claims.get("name", String.class);
+        return new JwtPayload(email, expiration, name);
     }
 
     private String generateToken(Map<String, Object> extractClaim, String email) {

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 import org.yezproject.pet.id.IdGenerator;
 import org.yezproject.pet.jwt.JwtService;
+import org.yezproject.pet.jwt.JwtUserRequest;
 import org.yezproject.pet.user.driven.JoinService;
 import org.yezproject.pet.user.driven.SignUpApplicationDto;
 import org.yezproject.pet.user.driving.PasswordService;
@@ -21,11 +22,11 @@ class JoinServiceImpl implements JoinService {
     public String signIn(final String email, final String password) {
         final var existingUserOptional = userRepository.findByEmail(email);
         if (existingUserOptional.isEmpty()) throw new UserNotFoundException();
-
-        final var isPasswordValid = passwordService.matches(password, existingUserOptional.get().getPassword());
+        final var user = existingUserOptional.get();
+        final var isPasswordValid = passwordService.matches(password, user.getPassword());
         if (!isPasswordValid) throw new InvalidPasswordException();
 
-        return jwtService.generateToken(email);
+        return jwtService.generateToken(new JwtUserRequest(user.getEmail(), user.getFullName()));
     }
 
     @Override
