@@ -10,5 +10,7 @@
         <module>transaction</module>
         <module>test-common</module>
         <module>domain-common</module>
+        <module>security</module>
+        <module>shared</module>
     </modules>
 </project>
