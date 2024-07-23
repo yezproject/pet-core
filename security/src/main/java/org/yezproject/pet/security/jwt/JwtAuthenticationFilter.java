@@ -37,6 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             @NonNull HttpServletRequest request,
             @NonNull HttpServletResponse response,
             @NonNull FilterChain filterChain) throws ServletException, IOException {
+        log.info("start JwtAuthenticationFilter");
         if (SecurityContextHolder.getContext().getAuthentication() == null) {
             var tokenOptional = extractTokenFromRequest(request);
             if (tokenOptional.isPresent() && !isApiToken(tokenOptional.get())) {

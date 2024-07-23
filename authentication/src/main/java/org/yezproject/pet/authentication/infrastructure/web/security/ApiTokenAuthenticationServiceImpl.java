@@ -9,6 +9,7 @@ import org.yezproject.pet.security.token.ApiTokenAuthenticationService;
 record ApiTokenAuthenticationServiceImpl(
         ApiTokenService apiTokenService
 ) implements ApiTokenAuthenticationService {
+
     @Override
     public PetUserDetails authenticate(String token) {
         try {
