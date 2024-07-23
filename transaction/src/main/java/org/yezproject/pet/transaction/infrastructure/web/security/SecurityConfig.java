@@ -1,60 +1,53 @@
 package org.yezproject.pet.transaction.infrastructure.web.security;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationProvider;
-import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
+import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.config.http.SessionCreationPolicy;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.yezproject.pet.transaction.application.user.driven.AuthService;
-import org.yezproject.pet.transaction.infrastructure.web.filter.PetAuthenticationFilter;
+import org.yezproject.pet.security.jwt.JwtAuthConfig;
+import org.yezproject.pet.security.jwt.JwtAuthenticationFilter;
+import org.yezproject.pet.security.jwt.JwtAuthenticationProvider;
+import org.yezproject.pet.security.token.ApiTokenAuthConfig;
+import org.yezproject.pet.security.token.ApiTokenAuthenticationFilter;
+import org.yezproject.pet.security.token.ApiTokenAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
-@RequiredArgsConstructor
+@Import({JwtAuthConfig.class, ApiTokenAuthConfig.class})
 public class SecurityConfig {
+
     @Bean
     SecurityFilterChain securityFilterChain(
             final HttpSecurity http,
-            final PetAuthenticationFilter petAuthenticationFilter,
-            final AuthenticationProvider authenticationProvider,
+            final AuthenticationManager authenticationManager,
             final AuthenticationEntryPoint authenticationEntryPoint
     ) throws Exception {
+        return applyDefaultConfig(http, authenticationEntryPoint)
+                .addFilterBefore(new ApiTokenAuthenticationFilter(authenticationManager), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(new JwtAuthenticationFilter(authenticationManager), ApiTokenAuthenticationFilter.class)
+                .authorizeHttpRequests(req ->
+                        req
+                                .anyRequest().authenticated()
+                )
+                .build();
+    }
+
+    private HttpSecurity applyDefaultConfig(HttpSecurity http, AuthenticationEntryPoint authenticationEntryPoint) throws Exception {
         return http
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(req ->
-                        req.requestMatchers("/public/**",
-                                        "/v3/api-docs/**",
-                                        "/swagger-ui/**").permitAll()
-                                .anyRequest().authenticated()
-                )
-                .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
-                .authenticationProvider(authenticationProvider)
-                .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint))
-                .addFilterBefore(petAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
-                .build();
-    }
-
-    @Bean
-    public AuthenticationProvider authenticationProvider(
-            final UserDetailsService userDetailsService,
-            final PasswordEncoder passwordEncoder) {
-        DaoAuthenticationProvider authProvider = new DaoAuthenticationProvider();
-        authProvider.setUserDetailsService(userDetailsService);
-        authProvider.setPasswordEncoder(passwordEncoder);
-        return authProvider;
+                .sessionManagement(AbstractHttpConfigurer::disable)
+                .exceptionHandling(handling -> handling.authenticationEntryPoint(authenticationEntryPoint));
     }
 
     @Bean
@@ -63,14 +56,10 @@ public class SecurityConfig {
     }
 
     @Bean
-    UserDetailsService userDetailsService(AuthService authService) {
-        return username -> {
-            try {
-                final var authInfo = authService.loadUserByEmail(username);
-                return new UserInfo(authInfo.userId(), authInfo.email());
-            } catch (AuthService.UserNotFoundException e) {
-                throw new UsernameNotFoundException(e.getMessage());
-            }
-        };
+    AuthenticationManager authenticationManager(
+            JwtAuthenticationProvider jwtAuthenticationProvider,
+            ApiTokenAuthenticationProvider apiTokenAuthenticationProvider
+    ) {
+        return new ProviderManager(jwtAuthenticationProvider, apiTokenAuthenticationProvider);
     }
 }

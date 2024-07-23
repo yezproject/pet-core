@@ -9,15 +9,11 @@ import org.springframework.security.authentication.ProviderManager;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-import org.yezproject.pet.authentication.application.user.driven.UserQuery;
-import org.yezproject.pet.security.PetUserDetails;
 import org.yezproject.pet.security.jwt.JwtAuthConfig;
 import org.yezproject.pet.security.jwt.JwtAuthenticationFilter;
 import org.yezproject.pet.security.jwt.JwtAuthenticationProvider;
@@ -28,7 +24,7 @@ import org.yezproject.pet.security.token.ApiTokenAuthenticationProvider;
 @Configuration
 @EnableWebSecurity
 @Import({JwtAuthConfig.class, ApiTokenAuthConfig.class})
-class SecurityConfig {
+public class SecurityConfig {
 
     @Bean
     @Order(1)
@@ -57,6 +53,7 @@ class SecurityConfig {
                 .authorizeHttpRequests(req ->
                         req
                                 .requestMatchers("/tokens/**").authenticated()
+                                .requestMatchers("/auth/**").authenticated()
                                 .anyRequest().denyAll()
                 )
                 .build();
@@ -74,18 +71,6 @@ class SecurityConfig {
     @Bean
     PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
-    }
-
-    @Bean
-    UserDetailsService userDetailsService(UserQuery userQuery) {
-        return email -> {
-            try {
-                final var userInfo = userQuery.getByEmail(email);
-                return new PetUserDetails(userInfo.userId(), userInfo.email());
-            } catch (UserQuery.UserNotFoundException e) {
-                throw new UsernameNotFoundException(e.getMessage());
-            }
-        };
     }
 
     @Bean

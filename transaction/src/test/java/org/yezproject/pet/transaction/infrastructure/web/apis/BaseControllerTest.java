@@ -1,17 +1,19 @@
 package org.yezproject.pet.transaction.infrastructure.web.apis;
 
+import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.context.annotation.Import;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.web.context.WebApplicationContext;
-import org.yezproject.pet.transaction.application.api_token.driven.ApiTokenService;
-import org.yezproject.pet.transaction.application.jwt.JwtService;
-import org.yezproject.pet.transaction.application.user.driven.AuthInfo;
-import org.yezproject.pet.transaction.application.user.driven.AuthService;
-import org.yezproject.pet.transaction.application.user.driving.UserRepository;
+import org.yezproject.pet.security.PetUserDetails;
+import org.yezproject.pet.security.token.ApiTokenAuthenticationService;
 import org.yezproject.pet.transaction.infrastructure.web.security.SecurityConfig;
 
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.when;
 import static org.yezproject.pet.test_common.RandomUtils.randomShortString;
 
 @Import(SecurityConfig.class)
@@ -20,31 +22,17 @@ public abstract class BaseControllerTest {
     public WebApplicationContext webApplicationContext;
     @Autowired
     public MockMvc mockMvc;
+    public PetUserDetails mockUser = new PetUserDetails(randomShortString(), randomShortString());
 
-    /* Require for Security Auth */
     @MockBean
-    public UserRepository userRepository;
+    public ApiTokenAuthenticationService apiTokenAuthenticationService;
     @MockBean
-    public JwtService jwtService;
-    @MockBean
-    public AuthService authService;
-    @MockBean
-    public ApiTokenService apiTokenService;
+    public AuthenticationManager authenticationManager;
 
-    protected final AuthInfo mockUser = randomUser();
-    protected final AuthInfo mockAdmin = randomAdmin();
 
-    private static AuthInfo randomUser() {
-        return new AuthInfo(
-                randomShortString(),
-                randomShortString()
-        );
-    }
-
-    private static AuthInfo randomAdmin() {
-        return new AuthInfo(
-                randomShortString(),
-                randomShortString()
-        );
+    @BeforeEach
+    void authSetup() {
+        when(this.authenticationManager.authenticate(any()))
+                .thenReturn(new UsernamePasswordAuthenticationToken(mockUser, null, mockUser.getAuthorities()));
     }
 }

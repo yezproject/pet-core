@@ -1,16 +1,14 @@
 package org.yezproject.pet.security.jwt;
 
 import org.springframework.context.annotation.Bean;
-import org.springframework.security.core.userdetails.UserDetailsService;
 
 public class JwtAuthConfig {
 
     @Bean
     public JwtAuthenticationProvider jwtAuthenticationProvider(
-            JwtHelper jwtHelper,
-            UserDetailsService userDetailsService
+            JwtHelper jwtHelper
     ) {
-        return new JwtAuthenticationProvider(jwtHelper, userDetailsService);
+        return new JwtAuthenticationProvider(jwtHelper);
     }
 
     @Bean

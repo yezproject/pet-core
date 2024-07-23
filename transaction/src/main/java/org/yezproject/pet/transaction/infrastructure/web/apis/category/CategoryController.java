@@ -1,19 +1,17 @@
 package org.yezproject.pet.transaction.infrastructure.web.apis.category;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.yezproject.pet.security.PetUserDetails;
 import org.yezproject.pet.transaction.application.category.driven.CategoryService;
 import org.yezproject.pet.transaction.infrastructure.web.security.RequestUser;
-import org.yezproject.pet.transaction.infrastructure.web.security.UserInfo;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/categories")
-@Tag(name = "Category", description = "Category management")
 @RequiredArgsConstructor
 class CategoryController {
     private final CategoryService categoryService;
@@ -22,7 +20,7 @@ class CategoryController {
     @ResponseStatus(HttpStatus.CREATED)
     CreateCategoryResponse create(
             @RequestBody CreateCategoryRequest req,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         final var createdId = categoryService.create(user.id(), req.name());
         return new CreateCategoryResponse(createdId);
@@ -30,7 +28,7 @@ class CategoryController {
 
     @GetMapping
     List<RetrieveCategoryResponse> retrieveAll(
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         return categoryService.retrieveAll(user.id())
                 .stream().map(dto -> new RetrieveCategoryResponse(dto.id(), dto.name()))
@@ -42,7 +40,7 @@ class CategoryController {
     void modifyName(
             @PathVariable("categoryId") String categoryId,
             @RequestBody ModifyCategoryRequest request,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         categoryService.modify(user.id(), categoryId, request.name());
     }
@@ -51,7 +49,7 @@ class CategoryController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(
             @PathVariable("categoryId") String categoryId,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         categoryService.delete(user.id(), categoryId);
     }

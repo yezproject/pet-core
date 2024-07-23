@@ -1,23 +1,21 @@
 package org.yezproject.pet.transaction.infrastructure.web.apis.transaction;
 
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.yezproject.pet.security.PetUserDetails;
 import org.yezproject.pet.transaction.application.transaction.driven.CreateTransactionDto;
 import org.yezproject.pet.transaction.application.transaction.driven.ModifyTransactionDto;
 import org.yezproject.pet.transaction.application.transaction.driven.RetrieveTransactionDto;
 import org.yezproject.pet.transaction.application.transaction.driven.TransactionService;
 import org.yezproject.pet.transaction.infrastructure.web.security.RequestUser;
-import org.yezproject.pet.transaction.infrastructure.web.security.UserInfo;
 
 import java.util.List;
 
 @RestController
 @RequestMapping("/transactions")
-@Tag(name = "Transaction", description = "Transaction management")
 @RequiredArgsConstructor
 class TransactionController {
     private final TransactionService transactionService;
@@ -25,7 +23,7 @@ class TransactionController {
     @GetMapping("/{transactionId}")
     RetrieveTransactionResponse retrieve(
             @PathVariable("transactionId") String transactionId,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         RetrieveTransactionDto transactionDto = transactionService.retrieve(user.id(), transactionId);
         return RetrieveTransactionResponse.fromDTO(transactionDto);
@@ -33,7 +31,7 @@ class TransactionController {
 
     @GetMapping
     List<RetrieveTransactionResponse> retrieveAll(
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         List<RetrieveTransactionDto> transactions = transactionService.retrieveAll(user.id());
         return transactions.stream()
@@ -45,7 +43,7 @@ class TransactionController {
     List<RetrieveTransactionResponse> retrieveLast(
             @RequestParam(name = "limit", required = false, defaultValue = "10") Integer limit,
             @RequestParam(name = "after", required = false) Long after,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         if (limit < 0) {
             limit = 0;
@@ -62,7 +60,7 @@ class TransactionController {
     Page<RetrieveTransactionResponse> retrievePage(
             @RequestParam(name = "page", required = false, defaultValue = "1") Integer page,
             @RequestParam(name = "size", required = false, defaultValue = "20") Integer size,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         Page<RetrieveTransactionDto> transactionsPage = transactionService.retrievePage(user.id(), page, size);
         return transactionsPage.map(RetrieveTransactionResponse::fromDTO);
@@ -72,7 +70,7 @@ class TransactionController {
     @ResponseStatus(HttpStatus.CREATED)
     CreateTransactionResponse create(
             @RequestBody CreateTransactionRequest req,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         String id = transactionService.create(
                 new CreateTransactionDto(
@@ -91,7 +89,7 @@ class TransactionController {
     void modify(
             @PathVariable("transactionId") String transactionId,
             @RequestBody ModifyTransactionRequest req,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         transactionService.modify(
                 new ModifyTransactionDto(
@@ -102,7 +100,6 @@ class TransactionController {
                         req.amount(),
                         req.transactionDate()
                 )
-
         );
     }
 
@@ -110,7 +107,7 @@ class TransactionController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     void delete(
             @RequestParam("ids") List<String> ids,
-            @RequestUser UserInfo user
+            @RequestUser PetUserDetails user
     ) {
         if (ids.isEmpty()) return;
         transactionService.delete(ids, user.id());

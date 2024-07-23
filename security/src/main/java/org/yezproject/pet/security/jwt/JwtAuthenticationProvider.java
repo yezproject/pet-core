@@ -1,15 +1,14 @@
 package org.yezproject.pet.security.jwt;
 
 import org.springframework.security.authentication.AuthenticationProvider;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.yezproject.pet.security.PetUserDetails;
 
 public record JwtAuthenticationProvider(
-        JwtHelper jwlHelper,
-        UserDetailsService userDetailsService
+        JwtHelper jwlHelper
 ) implements AuthenticationProvider {
 
     @Override
@@ -21,7 +20,7 @@ public record JwtAuthenticationProvider(
                 PetUserDetails userDetails = new PetUserDetails(jwtDetails.uid(), jwtDetails.subject());
                 return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
             } catch (TokenExpiredException | TokenInvalidException e) {
-                return null;
+                throw new BadCredentialsException("Token Invalid");
             }
         }
         return null;

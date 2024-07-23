@@ -4,7 +4,7 @@ import lombok.experimental.StandardException;
 
 public interface UserQuery {
     @StandardException
-    final class UserNotFoundException extends Exception {
+    final class UserNotFoundException extends RuntimeException {
     }
 
     GeneralUserDto getByEmail(String email) throws UserNotFoundException;

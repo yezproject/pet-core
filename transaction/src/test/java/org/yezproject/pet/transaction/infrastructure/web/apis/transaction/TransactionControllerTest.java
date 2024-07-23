@@ -8,13 +8,12 @@ import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.yezproject.pet.test_common.RandomUtils;
-import org.yezproject.pet.transaction.application.jwt.JwtService;
 import org.yezproject.pet.transaction.application.transaction.driven.CreateTransactionDto;
 import org.yezproject.pet.transaction.application.transaction.driven.ModifyTransactionDto;
 import org.yezproject.pet.transaction.application.transaction.driven.RetrieveTransactionDto;
 import org.yezproject.pet.transaction.application.transaction.driven.TransactionService;
-import org.yezproject.pet.transaction.application.user.driven.AuthService;
 import org.yezproject.pet.transaction.infrastructure.web.apis.BaseControllerTest;
 
 import java.util.List;
@@ -30,7 +29,6 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yezproject.pet.test_common.RandomUtils.*;
-import static org.yezproject.pet.transaction.infrastructure.web.apis.TestUtils.randomJwtPayload;
 
 @WebMvcTest(value = TransactionController.class)
 class TransactionControllerTest extends BaseControllerTest {
@@ -38,14 +36,6 @@ class TransactionControllerTest extends BaseControllerTest {
 
     @MockBean
     TransactionService transactionService;
-
-    @BeforeEach
-    void authSetup() throws AuthService.UserNotFoundException, JwtService.TokenInvalidException, JwtService.TokenExpiredException {
-        when(this.jwtService.extractPayload(anyString()))
-                .thenReturn(randomJwtPayload());
-        when(this.authService.loadUserByEmail(any()))
-                .thenReturn(this.mockUser);
-    }
 
     @Test
     void retrieve_return_200() throws Exception {
@@ -131,7 +121,7 @@ class TransactionControllerTest extends BaseControllerTest {
 
         then(transactionService).should().create(
                 new CreateTransactionDto(
-                        mockUser.userId(),
+                        mockUser.id(),
                         requestBody.categoryId(),
                         requestBody.name(),
                         requestBody.amount(),
@@ -176,7 +166,7 @@ class TransactionControllerTest extends BaseControllerTest {
 
         then(this.transactionService).should().modify(
                 new ModifyTransactionDto(
-                        mockUser.userId(),
+                        mockUser.id(),
                         requestModifyTransactionId,
                         requestBody.categoryId(),
                         requestBody.name(),

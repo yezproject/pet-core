@@ -2,7 +2,6 @@ package org.yezproject.pet.transaction.infrastructure.web.apis.category;
 
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -10,8 +9,6 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.yezproject.pet.transaction.application.category.driven.CategoryService;
 import org.yezproject.pet.transaction.application.category.driven.RetrieveCategoryDto;
-import org.yezproject.pet.transaction.application.jwt.JwtService;
-import org.yezproject.pet.transaction.application.user.driven.AuthService;
 import org.yezproject.pet.transaction.infrastructure.web.apis.BaseControllerTest;
 
 import java.util.List;
@@ -19,7 +16,6 @@ import java.util.function.Supplier;
 import java.util.stream.IntStream;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.doThrow;
@@ -28,7 +24,6 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import static org.yezproject.pet.test_common.RandomUtils.randomShortList;
 import static org.yezproject.pet.test_common.RandomUtils.randomShortString;
-import static org.yezproject.pet.transaction.infrastructure.web.apis.TestUtils.randomJwtPayload;
 
 @WebMvcTest(value = CategoryController.class)
 class CategoryControllerTest extends BaseControllerTest {
@@ -36,14 +31,6 @@ class CategoryControllerTest extends BaseControllerTest {
 
     @MockBean
     private CategoryService categoryService;
-
-    @BeforeEach
-    void authSetup() throws AuthService.UserNotFoundException, JwtService.TokenInvalidException, JwtService.TokenExpiredException {
-        when(this.jwtService.extractPayload(anyString()))
-                .thenReturn(randomJwtPayload());
-        when(this.authService.loadUserByEmail(any()))
-                .thenReturn(this.mockUser);
-    }
 
     @Test
     void retrieve_all_return_200() throws Exception {
@@ -79,7 +66,7 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andExpect(status().isCreated());
 
         then(categoryService).should().create(
-                mockUser.userId(),
+                mockUser.id(),
                 requestBody.name()
         );
     }
@@ -96,7 +83,7 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andExpect(status().isNoContent());
 
         then(categoryService).should().modify(
-                mockUser.userId(),
+                mockUser.id(),
                 modifyCategoryId,
                 requestBody.name()
         );
@@ -117,7 +104,7 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andExpect(status().isNotFound());
 
         then(categoryService).should().modify(
-                mockUser.userId(),
+                mockUser.id(),
                 modifyCategoryId,
                 requestBody.name()
         );
@@ -132,7 +119,7 @@ class CategoryControllerTest extends BaseControllerTest {
                 .andExpect(status().isNoContent());
 
         then(categoryService).should().delete(
-                mockUser.userId(),
+                mockUser.id(),
                 deleteCategoryId
         );
     }
