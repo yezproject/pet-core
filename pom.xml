@@ -12,5 +12,6 @@
         <module>domain-common</module>
         <module>security</module>
         <module>shared</module>
+        <module>gateway</module>
     </modules>
 </project>

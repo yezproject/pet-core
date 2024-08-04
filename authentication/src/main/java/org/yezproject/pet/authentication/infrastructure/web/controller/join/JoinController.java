@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import org.yezproject.pet.authentication.application.user.driven.JoinService;
 import org.yezproject.pet.authentication.application.user.driven.SignInDto;
 import org.yezproject.pet.authentication.application.user.driven.SignUpDto;
-import org.yezproject.pet.security.jwt.JwtHelper;
+import org.yezproject.pet.authentication.infrastructure.web.security.JwtGenerator;
 
 import java.util.HashMap;
 
@@ -16,7 +16,7 @@ import java.util.HashMap;
 @RequestMapping("/public")
 class JoinController {
     private final JoinService joinService;
-    private final JwtHelper jwtHelper;
+    private final JwtGenerator jwtGenerator;
 
     @PostMapping("/sign_in")
     @ResponseStatus(HttpStatus.OK)
@@ -27,7 +27,7 @@ class JoinController {
         final var claims = new HashMap<String, Object>();
         claims.put("name", userDto.fullName());
         claims.put("uid", userDto.userId());
-        var token = jwtHelper.generateToken(claims, userDto.email());
+        var token = jwtGenerator.generateToken(claims, userDto.email());
         return new SignInResponse(token);
     }
 

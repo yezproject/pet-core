@@ -1,15 +1,10 @@
-package org.yezproject.pet.security.jwt;
+package org.yezproject.pet.gateway;
 
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
 
-public class JwtAuthConfig {
-
-    @Bean
-    public JwtAuthenticationProvider jwtAuthenticationProvider(
-            JwtHelper jwtHelper
-    ) {
-        return new JwtAuthenticationProvider(jwtHelper);
-    }
+@Configuration
+public class JwtConfig {
 
     @Bean
     JwtHelper jwtHelper() {
