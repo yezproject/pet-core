@@ -6,14 +6,20 @@ spring:
   cloud:
     gateway:
       routes:
-        - id: auth_service
+        - id: public_endpoint
+          uri: http://localhost:8081
+          predicates:
+            - Path=/auth/public/**
+          filters:
+            - RewritePath=/auth(?<segment>/?.*), $\{segment}
+        - id: auth_endpoint
           uri: http://localhost:8081
           predicates:
             - Path=/auth/**
           filters:
             - JwtAuthentication
             - RewritePath=/auth(?<segment>/?.*), $\{segment}
-        - id: transaction_service
+        - id: transaction_endpoint
           uri: http://localhost:8082
           predicates:
             - Path=/transaction/**
